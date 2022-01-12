@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <name>carob_fieldnav</name>
+  <version>0.0.0</version>
+  <description>This package moves the carob robot in a simulated field</description>
+  
+  <maintainer email="luis.emmi@car.upm-csic.es">Luis Emmi</maintainer>
+<!-- We chose bsd license because it's commonly used by ros -->
+  <license>BSD</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+<!-- declarations for the libraries used-->  
+  <build_depend>rospy</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  
+  <run_depend>rospy</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+
+<!-- STD_MESSAGES necessary declaration-->  
+  <run_depend>message_runtime</run_depend>
+  
+</package>

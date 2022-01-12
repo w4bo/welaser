@@ -1,0 +1,167 @@
+# When deploying to a production environment, please refer to the Helm Repository
+# for FIWARE Components in order to scale up to a proper architecture:
+#
+# see: https://github.com/FIWARE/helm-charts/
+version: "3.5"
+services:
+  # Orion is the context broker
+  orion:
+    image: fiware/orion:${ORION_VERSION}
+    hostname: orion
+    container_name: orion
+    depends_on:
+      - mongo-db-orion
+    networks:
+      - default
+    expose:
+      - "${ORION_PORT}"
+    ports:
+      - "${ORION_PORT_EXT}:${ORION_PORT}" # 1026
+    command: -corsOrigin __ALL -dbhost mongo-db-orion -logLevel DEBUG
+    healthcheck:
+      test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      interval: 5s
+
+  # Iot Agent 
+  # Useful sources:
+  # - https://hub.docker.com/r/fiware/iotagent-json/
+  # - https://fiware-iotagent-json.readthedocs.io/en/latest/installationguide/index.html#configuration
+  iot-agent:
+    image: fiware/iotagent-json:${JSON_VERSION}
+    hostname: iot-agent
+    container_name: iot-agent
+    depends_on:
+      - mongo-db-orion
+      - mosquitto
+    networks:
+      - default
+    expose:
+      - "${IOTA_NORTH_PORT}"
+    ports:
+      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # 4041
+      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+      core:
+        soft: 60000000
+        hard: 60000000
+      memlock:
+        soft: 60000000
+        hard: 60000000
+    environment:
+      - IOTA_CB_HOST=orion                      # Name of the context broker to update context
+      - IOTA_CB_PORT=${ORION_PORT}              # Port the context broker listens on to update context
+      - IOTA_NORTH_PORT=${IOTA_NORTH_PORT}
+      - IOTA_REGISTRY_TYPE=mongo-db-orion       # Whether to hold IoT device info in memory or in a database
+      - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
+      - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
+      - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
+      - IOTA_AUTOCAST=true                      # Ensure Ultralight number values are read as numbers not strings
+      - IOTA_MONGO_HOST=mongo-db-orion                  # The host name of MongoDB
+      - IOTA_MONGO_PORT=${MONGO_DB_FIWARE_PORT_INT}     # The port mongoDB is listening on
+      - IOTA_MONGO_DB=iotagentjs                        # The name of the database used in mongoDB
+      - "IOTA_MQTT_HOST=${MOSQUITTO_IP}"        # The host name of the MQTT Broker
+      - "IOTA_MQTT_PORT=${MOSQUITTO_PORT_EXT}"  # The port the MQTT Broker is listening on to receive topics
+      - "IOTA_MQTT_USERNAME=${MOSQUITTO_USER}"  # MQTT username
+      - "IOTA_MQTT_PASSWORD=${MOSQUITTO_PWD}"   # MQTT password
+      - IOTA_MQTT_CLIENT_ID=iota
+      - IOTA_DEFAULT_RESOURCE=                  # Default is blank. I'm using MQTT so I don't need a resource
+      - "IOTA_PROVIDER_URL=http://iot-agent:${IOTA_NORTH_PORT}"
+      - NODE_OPTIONS=--max_old_space_size=60000
+      - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
+      - IOTA_MULTI_CORE=True
+    healthcheck:
+      interval: 5s
+
+  # Database (ORION)
+  mongo-db-orion:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db-orion
+    container_name: mongo-db-orion
+    expose:
+      - "${MONGO_DB_FIWARE_PORT_INT}"
+    ports:
+      - "${MONGO_DB_FIWARE_PORT_EXT}:${MONGO_DB_FIWARE_PORT_INT}" # 27017
+    networks:
+      - default
+    volumes:
+      - mongo-db-orion:/data
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+  # MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:2.0.11
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - "${MOSQUITTO_PORT_EXT}"
+      - "9001"
+    ports:
+      - "${MOSQUITTO_PORT_EXT}:${MOSQUITTO_PORT_INT}"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/pwfile:/mosquitto/config/pwfile
+    networks:
+      - default
+    environment:
+      - "PUID=${MOSQUITTO_PORT_EXT}"
+      - "PGID=${MOSQUITTO_PORT_EXT}"
+
+  #Web server
+  node:
+    restart: always
+    build: ./webserver
+    ports:
+      - ${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}
+    networks:
+      - default
+    volumes:
+      - ./webserver:/code
+    depends_on:
+      - mongo-db-web
+      - orion
+      - iot-agent
+    environment:
+      - "API_KEY_FIWARE=${FIWARE_API_KEY}"
+      - "MONGO_LOCAL=${MONGO_DB_LOCAL}"
+      - "OCB_IP=${ORION_IP}"
+      - "OCB_PORT=${ORION_PORT_EXT}"
+      - "FIWARE_SERVICE=${FIWARE_SERVICE}"
+      - "FIWARE_SERVICEPATH=${FIWARE_SERVICEPATH}"
+      - "SERVER_PORT=${WEB_SERVER_PORT_INT}"
+      - "SERVER_ADDRESS=${WEB_SERVER_ADDRESS}"
+
+  # MongoDB (WebServer)
+  mongo-db-web:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db-web
+    container_name: mongo-db-web
+    command: mongod --port ${MONGO_DB_NODE_PORT_INT}
+    networks:
+      - default
+    ports:
+      - ${MONGO_DB_NODE_PORT_EXT}:${MONGO_DB_NODE_PORT_INT}
+    volumes:
+      - mongo-db-web:/webserver/data/db
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+networks:
+  default_net:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
+
+volumes:
+  mongo-db-orion: ~
+  mongo-db-web:

@@ -1,0 +1,19 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "${ZOOKEEPER_PORT_EXT}:2181"
+  kafka:
+    build: .
+    depends_on:
+      - zookeeper
+    ports:
+      - "${KAFKA_PORT_EXT}:9092"
+    environment:
+      DOCKER_API_VERSION: 1.22
+      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_IP}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "data.raw, data.collision, service.missionmanager, service.domainmanager, service.replaymanager"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

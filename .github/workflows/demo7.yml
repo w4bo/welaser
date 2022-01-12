@@ -1,0 +1,28 @@
+name: "Demo7"
+on:
+  push:
+    paths:
+      - 'demo7-replay/**'
+      - '.github/workflows/demo7.yml'
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Launch
+        run: |
+          cd demo7-replay
+          mv .env.example .env
+          mv mosquitto/pwfile.example mosquitto/pwfile
+          sed -i 's/127.0.0.1/'$(hostname)'/g' .env
+          cat .env
+          scripts/fixDraco.sh ota
+          ./launch.sh
+      - name: end-to-end
+        run: |
+          cd demo7-replay
+          ./launch.sh
+          cd testScripts
+          pip install -r requirements.txt
+          python test.py

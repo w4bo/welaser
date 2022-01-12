@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Demo</title>
+    <!-- Bootstrup should be no more needed <link rel="stylesheet" type="text/css" href="/static/css/style.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/entry.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- vuetify stuff -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <!-- vuex stuff -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/2.1.1/vuex.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://npmcdn.com/vue-router/dist/vue-router.js"></script>
+    <!-- Chart.sj -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <!-- Import components -->
+    <script src="/static/components/navbar.js"></script>
+    <script src="/static/components/footer.js"></script>
+    <!-- Import pages -->
+    <script src="/static/js/testfiware.js"></script>
+    <!-- Import utils -->
+    <script src="/static/js/404.js"></script>
+    <script src="/static/js/router.js"></script>
+    <script src="/static/env.js"></script>
+</head>
+
+<body style="height: 100%; min-height:100vh">
+<div id="app" class="back">
+    <v-app id="inspire">
+        <navbar></navbar>
+        <v-main>
+            <router-view></router-view>
+        </v-main>
+        <myfooter></myfooter>
+    </v-app>
+</div>
+
+<!-- import socket.io -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    Vue.mixin({
+        data: () => ({
+            fiwareIP: config["IP"],
+            webServerIP: config["IP"],
+            IOTAPort: config["IOTA_NORTH_PORT"],
+            OCBPOrt: config["ORION_PORT_EXT"],
+            webServerPort: config["WEB_SERVER_PORT_EXT"]
+        }),
+    })
+
+    // contiene lo stato globale. possibile fare modifiche solo tramite appositi metodi
+    const store = new Vuex.Store({
+        state: {},
+        getters: {},
+        mutations: {},
+        actions: {}
+    })
+
+    var app = new Vue({
+        router,
+        el: "#app",
+        //in questo modo lo store è accessibile all'interno della applicazione
+        store: store,
+        vuetify: new Vuetify(),
+        components: {
+            'myfooter': Footer,
+            'navbar': Navbar,
+        }
+    })
+
+    // Remove console info from Vue
+    Vue.config.devtools = false
+    Vue.config.productionTip = false
+</script>
+</body>
+</html>

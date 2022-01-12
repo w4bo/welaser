@@ -1,0 +1,306 @@
+# When deploying to a production environment, please refer to the Helm Repository
+# for FIWARE Components in order to scale up to a proper architecture:
+#
+# see: https://github.com/FIWARE/helm-charts/
+version: "3.5"
+services:
+  # Orion is the context broker
+  orion:
+    image: fiware/orion:${ORION_VERSION}   # This variable `${ORION_VERSION}` is drawn from the `.env` file
+    hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
+    container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
+    depends_on:
+      - mongo-db-orion                     # Create the `mongo-db-orion` before this container
+    networks:
+      - default                            # Name of the Docker network
+    expose:
+      - "${ORION_PORT}"                    # Port that is accessible from outside the container
+    ports:
+      - "${ORION_PORT_EXT}:${ORION_PORT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
+    # Append this string to the final command that is executed by the container
+    # Here, we are launching the OCB with: the possibility to perform "cors" requests, the name of the database, and the maximum payload parameter
+    # You can also set the log level by adding `-logLevel DEBUG`
+    command: -corsOrigin __ALL -dbhost mongo-db-orion -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
+    healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
+      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
+      interval: 5s
+
+  # Iot Agent
+  # Useful sources:
+  # - https://hub.docker.com/r/fiware/iotagent-json/
+  # - https://fiware-iotagent-json.readthedocs.io/en/latest/installationguide/index.html#configuration
+  iot-agent:
+    image: fiware/iotagent-json:${JSON_VERSION}
+    hostname: iot-agent
+    container_name: iot-agent
+    depends_on:
+      - mongo-db-orion
+      - mosquitto
+    networks:
+      - default
+    expose:
+      - "${IOTA_NORTH_PORT}"
+    ports:
+      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # 4041
+      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+      core:
+        soft: 60000000
+        hard: 60000000
+      memlock:
+        soft: 60000000
+        hard: 60000000
+    environment:
+      - IOTA_CB_HOST=orion                      # Name of the context broker to update context
+      - IOTA_CB_PORT=${ORION_PORT}              # Port the context broker listens on to update context
+      - IOTA_NORTH_PORT=${IOTA_NORTH_PORT}
+      - IOTA_REGISTRY_TYPE=mongo-db-orion       # Whether to hold IoT device info in memory or in a database
+      - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
+      - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
+      - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
+      - IOTA_AUTOCAST=true                      # Ensure Ultralight number values are read as numbers not strings
+      - IOTA_MONGO_HOST=mongo-db-orion                  # The host name of MongoDB
+      - IOTA_MONGO_PORT=${MONGO_DB_FIWARE_PORT_INT}     # The port mongoDB is listening on
+      - IOTA_MONGO_DB=iotagentjs                        # The name of the database used in mongoDB
+      - "IOTA_MQTT_HOST=${MOSQUITTO_IP}"        # The host name of the MQTT Broker
+      - "IOTA_MQTT_PORT=${MOSQUITTO_PORT_EXT}"  # The port the MQTT Broker is listening on to receive topics
+      - "IOTA_MQTT_USERNAME=${MOSQUITTO_USER}"  # MQTT username
+      - "IOTA_MQTT_PASSWORD=${MOSQUITTO_PWD}"   # MQTT password
+      - IOTA_MQTT_CLIENT_ID=iota
+      - IOTA_DEFAULT_RESOURCE=                  # Default is blank. I'm using MQTT so I don't need a resource
+      - "IOTA_PROVIDER_URL=http://iot-agent:${IOTA_NORTH_PORT}"
+      - NODE_OPTIONS=--max_old_space_size=60000
+      - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
+      - IOTA_MULTI_CORE=True
+    healthcheck:
+      interval: 5s
+
+  # Database (ORION)
+  mongo-db-orion:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db-orion
+    container_name: mongo-db-orion
+    expose:
+      - "${MONGO_DB_FIWARE_PORT_INT}"
+    ports:
+      - "${MONGO_DB_FIWARE_PORT_EXT}:${MONGO_DB_FIWARE_PORT_INT}" # 27017
+    networks:
+      - default
+    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db-orion`
+      - mongo-db-orion:/data
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+  # MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:2.0.11
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - "${MOSQUITTO_PORT_EXT}"
+      - "9001"
+    ports:
+      - "${MOSQUITTO_PORT_EXT}:${MOSQUITTO_PORT_INT}"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/pwfile:/mosquitto/config/pwfile
+    networks:
+      - default
+
+  # Web server
+  node:
+    restart: always
+    hostname: node
+    container_name: node
+    build: ./service-dashboard
+    ports:
+      - ${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}
+    networks:
+      - default
+    volumes:
+      - ./service-dashboard:/code
+    depends_on:
+#      - mongo-db-web
+      - mongo-db-pers
+      - orion
+      - iot-agent
+      - draco
+    environment:
+      - "KAFKA_IP=${KAFKA_IP}"
+      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+      - "API_KEY_FIWARE=${FIWARE_API_KEY}"
+#      - "MONGO_LOCAL=${MONGO_DB_LOCAL}"
+      - "MONGO_LOCAL=${MONGO_DB_PERS_LOCAL}"
+      - "OCB_IP=${ORION_IP}"
+      - "OCB_PORT=${ORION_PORT_EXT}"
+      - "FIWARE_SERVICE=${FIWARE_SERVICE}"
+      - "FIWARE_SERVICEPATH=${FIWARE_SERVICEPATH}"
+      - "SERVER_PORT=${WEB_SERVER_PORT_INT}"
+      - "SERVER_ADDRESS=${WEB_SERVER_ADDRESS}"
+
+  # MongoDB (WebServer)
+#  mongo-db-web:
+#    image: mongo:${MONGO_DB_VERSION}
+#    hostname: mongo-db-web
+#    container_name: mongo-db-web
+#    command: mongod --port ${MONGO_DB_NODE_PORT_INT}
+#    networks:
+#      - default
+#    ports:
+#      - ${MONGO_DB_NODE_PORT_EXT}:${MONGO_DB_NODE_PORT_INT}
+#    healthcheck:
+#      test: |
+#        host=`hostname --ip-address || echo '127.0.0.1'`;
+#        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+#      interval: 5s
+
+  mongo-db-pers:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db-pers
+    container_name: mongo-db-pers
+    command: mongod --port ${MONGO_DB_PERS_PORT_INT}
+    networks:
+      - default
+    ports:
+      - ${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+  # Draco
+  # In this mode, draco builds from a local image where the configuration is copied into
+  # the container (i.e., edits to the configuration are not persisted).
+  # To persist the edits, uncomment the `image` and the first `volume` entry, and comment `build`
+  # draco:
+  #   # image: ging/fiware-draco:${DRACO_VERSION}
+  #   build: ./draco
+  #   hostname: draco
+  #   container_name: draco
+  #   networks:
+  #     - default
+  #   environment:
+  #     - NIFI_WEB_HTTP_PORT=${DRACO_API_PORT}
+  #   expose:
+  #     - "${DRACO_PORT_EXT}"
+  #     - "${DRACO_API_PORT}"
+  #   ports:
+  #     - "${DRACO_API_PORT}:${DRACO_API_PORT}" # 9090
+  #     - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+  #   volumes:
+  #     # - ./draco/nifi_volume_demo7/conf:/opt/nifi/nifi-current/conf
+  #     - ./draco/config:/config
+  #   healthcheck:
+  #     test: curl --fail -s http://${DRACO_IP}:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
+  #     start_period: 1m
+
+  draco:
+    hostname: draco
+    build: ./etl
+    container_name: draco
+    expose:
+      - "${DRACO_PORT_EXT}"
+    ports:
+      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+    networks:
+      - default
+    # environment:
+    #   - "KAFKA_IP=${KAFKA_IP}"
+    env_file:
+      - .env
+
+  kafkaproxy:
+    restart: always
+    hostname: kafkaproxy
+    container_name: kafkaproxy
+    build: ./service-kafkaproxy
+    ports:
+      - "${PROXY_SERVER_PORT_EXT}:${PROXY_SERVER_PORT_INT}"
+    networks:
+      - default
+    volumes:
+      - ./service-kafkaproxy:/code
+    environment:
+      - "KAFKA_IP=${KAFKA_IP}"
+      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+      - "SERVER_ADDRESS=${PROXY_SERVER_ADDRESS}"
+      - "SERVER_PORT=${PROXY_SERVER_PORT_INT}"
+    depends_on:
+#      - mongo-db-web
+      - orion
+      - iot-agent
+      - draco
+
+  writetomongo:
+    hostname: writetomongo
+    build: ./service-writetomongo
+    container_name: writetomongo
+    networks:
+      - default
+    # environment:
+    #   - "KAFKA_IP=${KAFKA_IP}"
+    env_file:
+      - .env
+    depends_on:
+      - orion
+      - draco
+
+  domainmanager:
+    hostname: domainmanager
+    build: ./service-domainmanager
+    container_name: domainmanager
+    networks:
+      - default
+    environment:
+      - "KAFKA_IP=${KAFKA_IP}"
+      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+
+  missionmanager:
+    hostname: missionmanager
+    build: ./service-missionmanager
+    container_name: missionmanager
+    networks:
+      - default
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+    environment:
+      - "KAFKA_IP=${KAFKA_IP}"
+      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+      - "USER=${USER}"
+      - "DEVICE_IP=${IP}"
+      - "CODE_FOLDER=${CODE_FOLDER}"
+
+  replaymanager:
+    hostname: replaymanager
+    build: ./service-replay/replay-manager
+    container_name: replaymanager
+    networks:
+      - default
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+    environment:
+      - "USER=${USER}"
+      - "IP=${IP}"
+      - "KAFKA_IP=${KAFKA_IP}"
+      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+      - "CODE_FOLDER=${CODE_FOLDER}"
+      - "MONGO_DB_PERS_PORT_EXT=${MONGO_DB_PERS_PORT_EXT}"
+      - "MONGO_DB_PERS_IP=${MONGO_DB_PERS_IP}"
+
+volumes:
+  mongo-db-orion: ~
+#  mongo-db-web:
+
+networks:
+  default_net:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24

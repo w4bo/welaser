@@ -1,0 +1,6 @@
+{
+    "carob\\w+": {
+        "publisher": ["cmd"],
+        "subscriber": ["robotstatus", "weedingstatus", "gnss"]
+    }
+}
