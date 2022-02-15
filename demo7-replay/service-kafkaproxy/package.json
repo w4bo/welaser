@@ -16,7 +16,7 @@
   "homepage": "",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "bcryptjs": "^2.4.3",
     "chart.js": "^2.9.3",
     "cors": "^2.8.5",
