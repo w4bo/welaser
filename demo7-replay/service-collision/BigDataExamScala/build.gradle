@@ -81,7 +81,7 @@ dependencies {
      * Kafka libraries
      */
     implementation group: 'org.apache.spark', name: 'spark-streaming-kafka-0-10_2.11', version: '2.4.0'
-    implementation group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.11', version: '2.4.0'
+    implementation group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.11', version: '2.4.8.7.2.14.0-149'
 
     /**
      * JSON libraries
