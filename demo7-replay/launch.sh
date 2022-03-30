@@ -48,4 +48,4 @@ curl -iX POST \
 }'
 
 cd devices
-./gradlew runCanaries & > /dev/null
+./gradlew runCanaries &>/dev/null &
