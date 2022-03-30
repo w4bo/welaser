@@ -47,4 +47,5 @@ curl -iX POST \
   }
 }'
 
-devices/gradlew runCanaries &
+cd devices
+./gradlew runCanaries # & > /dev/null

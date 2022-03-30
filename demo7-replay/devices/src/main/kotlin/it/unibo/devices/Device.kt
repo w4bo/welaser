@@ -21,7 +21,7 @@ import java.util.Map
 import kotlin.random.Random
 
 // Get some costants. NB: comments from the dotenv file will be loaded as strings as well! Be careful!
-val dotenv: Dotenv = Dotenv.configure().directory(".env").load()
+val dotenv: Dotenv = Dotenv.configure().directory("../.env").load()
 val DRACO_IP = dotenv["DRACO_IP"]
 val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"]
 val ORION_IP = dotenv["ORION_IP"]

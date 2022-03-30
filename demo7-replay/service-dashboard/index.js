@@ -39,14 +39,14 @@ app.use('/static', express.static(__dirname + '/public'));
 // Connect to MongoDB
 mongoose
     .connect(
-        process.env.MONGO_LOCAL,
+        process.env.MONGO_DB_PERS,
         {useNewUrlParser: true}
     )
     .then(() => console.log('MongoDB Connected (LOCAL)'))
     .catch(err => console.log(err));
 
 
-global.kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT]
+global.kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]
 global.kafkaDynamicTopics = {}
 
 const kafka = new Kafka({
@@ -85,6 +85,6 @@ routes(app)
 app.use(express.json())
 
 // http
-http.listen(process.env.SERVER_PORT, process.env.SERVER_ADDRESS, function () {
-    console.log('Node Server listening on port ' + process.env.SERVER_PORT)
+http.listen(process.env.WEB_SERVER_PORT_INT, process.env.WEB_SERVER_ADDRESS, function () {
+    console.log('Node Server listening on port ' + process.env.WEB_SERVER_PORT_INT)
 })

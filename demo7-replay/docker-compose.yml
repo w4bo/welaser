@@ -131,35 +131,9 @@ services:
       - mongo-db-pers
       - orion
       - iot-agent
-      - draco
-    environment:
-      - "KAFKA_IP=${KAFKA_IP}"
-      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
-      - "API_KEY_FIWARE=${FIWARE_API_KEY}"
-#      - "MONGO_LOCAL=${MONGO_DB_LOCAL}"
-      - "MONGO_LOCAL=${MONGO_DB_PERS_LOCAL}"
-      - "OCB_IP=${ORION_IP}"
-      - "OCB_PORT=${ORION_PORT_EXT}"
-      - "FIWARE_SERVICE=${FIWARE_SERVICE}"
-      - "FIWARE_SERVICEPATH=${FIWARE_SERVICEPATH}"
-      - "SERVER_PORT=${WEB_SERVER_PORT_INT}"
-      - "SERVER_ADDRESS=${WEB_SERVER_ADDRESS}"
-
-  # MongoDB (WebServer)
-#  mongo-db-web:
-#    image: mongo:${MONGO_DB_VERSION}
-#    hostname: mongo-db-web
-#    container_name: mongo-db-web
-#    command: mongod --port ${MONGO_DB_NODE_PORT_INT}
-#    networks:
-#      - default
-#    ports:
-#      - ${MONGO_DB_NODE_PORT_EXT}:${MONGO_DB_NODE_PORT_INT}
-#    healthcheck:
-#      test: |
-#        host=`hostname --ip-address || echo '127.0.0.1'`;
-#        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
-#      interval: 5s
+      # - draco
+    env_file:
+      - .env
 
   mongo-db-pers:
     image: mongo:${MONGO_DB_VERSION}
@@ -202,20 +176,20 @@ services:
   #     test: curl --fail -s http://${DRACO_IP}:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
   #     start_period: 1m
 
-  draco:
-    hostname: draco
-    build: ./etl
-    container_name: draco
-    expose:
-      - "${DRACO_PORT_EXT}"
-    ports:
-      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
-    networks:
-      - default
-    # environment:
-    #   - "KAFKA_IP=${KAFKA_IP}"
-    env_file:
-      - .env
+  #  draco:
+  #    hostname: draco
+  #    build: ./etl
+  #    container_name: draco
+  #    expose:
+  #      - "${DRACO_PORT_EXT}"
+  #    ports:
+  #      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+  #    networks:
+  #      - default
+  #    # environment:
+  #    #   - "KAFKA_IP=${KAFKA_IP}"
+  #    env_file:
+  #      - .env
 
   kafkaproxy:
     restart: always
@@ -234,10 +208,10 @@ services:
       - "SERVER_ADDRESS=${PROXY_SERVER_ADDRESS}"
       - "SERVER_PORT=${PROXY_SERVER_PORT_INT}"
     depends_on:
-#      - mongo-db-web
       - orion
       - iot-agent
-      - draco
+      # - mongo-db-web
+      # - draco
 
   writetomongo:
     hostname: writetomongo
@@ -245,13 +219,11 @@ services:
     container_name: writetomongo
     networks:
       - default
-    # environment:
-    #   - "KAFKA_IP=${KAFKA_IP}"
     env_file:
       - .env
     depends_on:
       - orion
-      - draco
+      # - draco
 
   domainmanager:
     hostname: domainmanager
