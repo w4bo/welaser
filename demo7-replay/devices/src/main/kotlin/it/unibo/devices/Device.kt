@@ -1,3 +1,4 @@
+package it.unibo.devices
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -17,7 +18,6 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 import java.util.Map
-import java.util.concurrent.Executors
 import kotlin.random.Random
 
 // Get some costants. NB: comments from the dotenv file will be loaded as strings as well! Be careful!
@@ -28,8 +28,6 @@ val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"]
 val IOTA_IP = dotenv["IOTA_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"]
-val DOMAIN = "canary"
-val MISSION = "dummy"
 val FIWARE_SERVICE = dotenv["FIWARE_SERVICE"]
 val FIWARE_SERVICEPATH = dotenv["FIWARE_SERVICEPATH"]
 val FIWARE_API_KEY = dotenv["FIWARE_API_KEY"]
@@ -242,14 +240,17 @@ abstract class Device(
     val moving: Boolean,
     var latitude: Double,
     var longitude: Double,
+    val domain: String,
+    val mission: String,
     val s: ISensor,
-    val p: IProtocol
+    val p: IProtocol,
+    val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
     open val id: String = "" + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (m: Map<String, String>) -> Unit = {}
-
+    val r = Random(3)
     abstract fun getStatus(): String
     open fun getRegister(): String = getStatus()
     override fun getType(): EntityType = s.getType()
@@ -261,18 +262,22 @@ abstract class Device(
         }
     }
 
-    override fun exec(m: java.util.Map<String, String>) {
-        // println("command received " + m)
+    override fun exec(m: Map<String, String>) {
         status = m.entrySet().first().key == "on"
     }
 
     fun run() {
         register(getRegister())
         listen(listenTopic, listenCallback)
-        while (true) {
+        var i = 0
+        while (i++ < times) {
             Thread.sleep(timeoutMs.toLong())
             if (status) {
                 send(sense(), sendTopic)
+            }
+            if (moving) {
+                latitude += (r.nextDouble() - 0.5) / 10000
+                longitude += (r.nextDouble() - 0.5) / 10000
             }
         }
     }
@@ -284,9 +289,11 @@ class DeviceSubscription(
     moving: Boolean,
     latitude: Double,
     longitude: Double,
+    domain: String,
+    mission: String,
     s: ISensor,
     p: IProtocol
-) : Device(status, timeoutMs, moving, latitude, longitude, s, p) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override fun getStatus(): String {
         return """{"data": [{
                 "id": "urn:ngsi-ld:$id",
@@ -297,8 +304,8 @@ class DeviceSubscription(
                 "Latitude":                                                             {"value": $latitude,                        "type": "Float"},
                 "Location":                                                             {"value": "foo",                            "type": "String"},
                 "Longitude":                                                            {"value": $longitude,                       "type": "Float"},
-                "Mission":                                                              {"value": "$MISSION",                       "type": "String"},
-                "Domain":                                                               {"value": "$DOMAIN",                        "type": "String"}
+                "Mission":                                                              {"value": "$mission",                       "type": "String"},
+                "Domain":                                                               {"value": "$domain",                        "type": "String"}
             }]}""".replace("\\s+".toRegex(), " ")
     }
 
@@ -311,9 +318,11 @@ open class DeviceFIWARE(
     moving: Boolean,
     latitude: Double,
     longitude: Double,
+    domain: String,
+    mission: String,
     s: ISensor,
     p: IProtocol
-) : Device(status, timeoutMs, moving, latitude, longitude, s, p) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override fun getStatus(): String {
         return """{
                 "id": "urn:ngsi-ld:$id",
@@ -323,8 +332,8 @@ open class DeviceFIWARE(
                 "Time":                                                                 {"value": ${System.currentTimeMillis()},    "type": "Integer"},
                 "Latitude":                                                             {"value": $latitude,                        "type": "Float"},
                 "Longitude":                                                            {"value": $longitude,                       "type": "Float"},
-                "Mission":                                                              {"value": "$MISSION",                       "type": "String"},
-                "Domain":                                                               {"value": "$DOMAIN",                        "type": "String"}
+                "Mission":                                                              {"value": "$mission",                       "type": "String"},
+                "Domain":                                                               {"value": "$domain",                        "type": "String"}
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -339,9 +348,11 @@ class DeviceKafka(
     moving: Boolean,
     latitude: Double,
     longitude: Double,
+    domain: String,
+    mission: String,
     s: ISensor,
     p: IProtocol
-) : DeviceFIWARE(status, timeoutMs, moving, latitude, longitude, s, p) {
+) : DeviceFIWARE(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override fun sense(): String = getStatus().replace("OCB", "KAFKA")
 }
 
@@ -351,9 +362,11 @@ class DeviceMQTT(
     moving: Boolean,
     latitude: Double,
     longitude: Double,
+    domain: String,
+    mission: String,
     s: ISensor,
     p: IProtocol
-) : Device(status, timeoutMs, moving, latitude, longitude, s, p) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override val id = getType().toString() + getId()
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
@@ -379,8 +392,8 @@ class DeviceMQTT(
                             {"object_id": "where", "name": "Location",     "type": "String"}
                         ],
                         "static_attributes": [
-                            {"name": "Mission", "type": "String", "value": "$MISSION"},
-                            {"name": "Domain", "type": "String", "value": "$DOMAIN"}
+                            {"name": "Mission", "type": "String", "value": "$mission"},
+                            {"name": "Domain", "type": "String", "value": "$domain"}
                         ]
                     }]
                 }""".replace("\\s+".toRegex(), " ")
@@ -398,32 +411,5 @@ class DeviceMQTT(
 
     override fun sense(): String {
         return getStatus()
-    }
-}
-
-fun main(args: Array<String>) {
-    val s1: ISensor = Camera()
-    val s2: ISensor = Thermometer()
-    val p1: IProtocol = ProtocolHTTP()
-    val p2: IProtocol = ProtocolHTTP()
-    val p3: IProtocol = ProtocolMQTT()
-    val p4: IProtocol = ProtocolMQTT()
-    val p5: IProtocol = ProtocolSubscription()
-    val p6: IProtocol = ProtocolSubscription()
-    val p7: IProtocol = ProtocolKafka()
-    val p8: IProtocol = ProtocolKafka()
-
-    val executor = Executors.newCachedThreadPool()
-    listOf(
-        DeviceFIWARE(true, 1000, true, 44.0, 12.010, s1, p1),
-        DeviceFIWARE(true, 1000, true, 44.0, 12.015, s2, p2),
-        DeviceMQTT(true, 1000, true, 44.0, 12.020, s1, p3),
-        DeviceMQTT(true, 1000, true, 44.0, 12.025, s2, p4),
-        DeviceSubscription(true, 1000, true, 44.0, 12.010, s1, p5),
-        DeviceSubscription(true, 1000, true, 44.0, 12.015, s2, p6),
-        DeviceKafka(true, 1000, true, 44.0, 12.010, s1, p7),
-        DeviceKafka(true, 1000, true, 44.0, 12.015, s2, p8)
-    ).forEach { d ->
-        executor.submit { d.run() }
     }
 }

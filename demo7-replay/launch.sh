@@ -47,7 +47,4 @@ curl -iX POST \
   }
 }'
 
-devices/thermometerMQTT/launcher.sh canary1 on 1000 "Spain" 40.31275148286198 -3.4808443373094113 canary-m852149 canary true&>/dev/null &
-devices/thermometerMQTT/launcher.sh canary2 on 1000 "Spain" 40.31275148287198 -3.4808443373594113 canary-m852149 canary false&>/dev/null &
-
-
+devices/gradlew runCanaries &

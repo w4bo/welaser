@@ -26,7 +26,6 @@ javadoc { failOnError true }
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    jcenter()
     mavenCentral()
     maven { url "https://repository.cloudera.com/artifactory/cloudera-repos/" }
 }
@@ -50,12 +49,25 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     implementation 'org.apache.kafka:kafka-clients:3.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-cli:0.3.4'
 }
 
 test {
     // useJUnit()
     useJUnitPlatform()
     maxHeapSize = '1G'
+}
+
+task runCanaries(type: JavaExec) {
+    description = "Run the canary sensors"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.devices.Canaries'
+}
+
+task runMission(type: JavaExec) {
+    description = "Run a mission"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.devices.MissionSimulator'
 }
 
 defaultTasks 'clean', 'build', 'check', 'javadoc', 'shadowJar'
