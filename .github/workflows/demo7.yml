@@ -24,6 +24,6 @@ jobs:
           ./launch.sh
       - name: Tests
         run: |
-          cd testScripts
+          cd demo7-replay/testScripts
           pip install -r requirements.txt
           python test.py
