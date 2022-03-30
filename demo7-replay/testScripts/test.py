@@ -76,9 +76,17 @@ headers = {
   'fiware-servicepath': '/'
 }
 
-response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(config["ORION_IP"], config["ORION_PORT_EXT"], mission), headers=headers, data={})
-responseBody = [x for x in loads(response.text) if x["type"] == "Thermometer"][0]
-assert(response.status_code == 200)
+responseBody = []
+i == 0
+while i < 5 or len(responseBody) == 0:
+    if i > 0:
+        sleep(10)
+    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(config["ORION_IP"], config["ORION_PORT_EXT"], mission), headers=headers, data={})
+    assert(response.status_code == 200)
+    responseBody = [x for x in loads(response.text) if x["type"] == "Thermometer"]
+    i += 1
+
+responseBody = responseBody[0]
 assert(len(responseBody["id"]) > 0)
 assert(responseBody["type"] == "Thermometer")
 assert(responseBody["Domain"] == domain)
