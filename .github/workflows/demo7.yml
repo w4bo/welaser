@@ -10,18 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.8.10'
+          architecture: 'x64'
       - name: Launch
         run: |
           cd demo7-replay
           mv .env.example .env
-          mv mosquitto/pwfile.example mosquitto/pwfile
           sed -i 's/127.0.0.1/'$(hostname)'/g' .env
-          cat .env
+          mv mosquitto/pwfile.example mosquitto/pwfile
+          mv service-dashboard/public/env.js.example service-dashboard/public/env.js
           ./launch.sh
-      - name: end-to-end
+      - name: Tests
         run: |
-          cd demo7-replay
-          ./launch.sh
           cd testScripts
           pip install -r requirements.txt
           python test.py
