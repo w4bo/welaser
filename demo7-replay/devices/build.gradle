@@ -70,4 +70,4 @@ task runMission(type: JavaExec) {
     main = 'it.unibo.devices.MissionSimulator'
 }
 
-defaultTasks 'clean', 'build', 'check', 'javadoc', 'shadowJar'
+defaultTasks 'clean', 'build', 'check', 'shadowJar'

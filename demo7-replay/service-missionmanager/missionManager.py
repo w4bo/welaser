@@ -34,13 +34,13 @@ def handleLaunch(missionName, domainName):
   response["domain_topic"] = "data." + domainName + ".realtime"
   response["mission_topic"] = "data." + domainName + ".realtime." + missionName
   producer.send(TOPIC, response)
-  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/launchMission1.sh {} {} {} &".format(USER, IP, USER, CODE_FOLDER, missionName, domainName, CODE_FOLDER)
+  command = "scripts/launchMission1.sh {} {} {} &".format(missionName, domainName, CODE_FOLDER)
   os.system(command)
   print(command)
 
 def handleStop(missionName):
   print("stop mission", missionName)
-  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/stopMission1.sh {} &".format(USER, IP, USER, CODE_FOLDER, missionName)
+  command = "scripts/stopMission1.sh {} &".format(missionName)
   os.system(command)
   print(command)
   response = {}

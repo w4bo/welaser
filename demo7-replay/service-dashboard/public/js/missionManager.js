@@ -1,5 +1,5 @@
 const missionManager = {
-  template: `
+    template: `
     <v-main>
       <v-container>
         <v-row>
@@ -43,77 +43,77 @@ const missionManager = {
       </v-container>
     </v-main>
   `,
-  data() {
-    return {
-      remoteSocket: null,
-      localSocket: null,
-      domains: [],
-      missions: [],
-      selectedDomain: "",
-      selectedMission: "",
-      missionName: ""
+    data() {
+        return {
+            remoteSocket: null,
+            localSocket: null,
+            domains: [],
+            missions: [],
+            selectedDomain: "",
+            selectedMission: "",
+            missionName: ""
+        }
+    },
+    methods: {
+        init() {
+            this.remoteSocket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
+            this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
+            this.loadMissionsData()
+            this.loadDomainsData()
+
+            this.localSocket.on("updateTopic", data => {
+                this.loadMissionsData()
+                this.loadDomainsData()
+            })
+        },
+
+        startMission() {
+            data = {
+                topic: this.missionManagerTopic,
+                data: {
+                    type: "request",
+                    command: "start",
+                    mission: this.missionName,
+                    domain: this.selectedDomain
+                }
+            }
+            this.remoteSocket.emit("publish", data)
+        },
+
+        stopMission() {
+            data = {
+                topic: this.missionManagerTopic,
+                data: {
+                    type: "request",
+                    command: "stop",
+                    mission: this.selectedMission,
+                }
+            }
+            console.log(data)
+            this.remoteSocket.emit("publish", data)
+        },
+
+        loadMissionsData() {
+            axios
+                .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/mission`)
+                .then(response => {
+                    this.missions = response.data.map(e => {
+                        return {id: `${e.topic.split(".")[1]} - ${e.id}`, mission: `${e.topic.split(".")[3]}`}
+                    })
+                })
+        },
+
+        loadDomainsData() {
+            axios
+                .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/domain`)
+                .then(response => {
+                    this.domains = response.data.map(e => {
+                        return {id: `${e.id}`, domain: `${e.id}`}
+                    })
+                })
+        },
+    },
+    mounted() {
+        this.init()
     }
-  },
-  methods: {
-    init() {
-      this.remoteSocket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
-      this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
-      this.loadMissionsData()
-      this.loadDomainsData()
-
-      this.localSocket.on("updateTopic", data => {
-        this.loadMissionsData()
-        this.loadDomainsData()
-      })
-    },
-
-    startMission(){
-      data = {
-        topic: this.missionManagerTopic,
-        data: {
-          type: "request",
-          command: "start",
-          mission: this.missionName,
-          domain: this.selectedDomain
-        }
-      }
-      this.remoteSocket.emit("publish", data)
-    },
-
-    stopMission(){
-      data = {
-        topic: this.missionManagerTopic,
-        data: {
-          type: "request",
-          command: "stop",
-          mission: this.selectedMission,
-        }
-      }
-      console.log(data)
-      this.remoteSocket.emit("publish", data)
-    },
-
-    loadMissionsData(){
-      axios
-        .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/mission`)
-        .then(response => {
-          this.missions = response.data.map(e => {
-            return {id: `${e.topic.split(".")[1]} - ${e.id}`, mission: `${e.topic.split(".")[3]}`}
-          })
-        })
-    },
-
-    loadDomainsData(){
-      axios
-        .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/domain`)
-        .then(response => {
-          this.domains = response.data.map(e => {
-            return {id: `${e.id}`, domain: `${e.id}`}
-          })
-        })
-    },
- },
-  mounted(){
-    this.init()
-  }
 }

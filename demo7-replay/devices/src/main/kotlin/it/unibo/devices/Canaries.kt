@@ -12,7 +12,7 @@ val latitude = 40.3123117652
 val longitude = -3.481042237784
 
 fun rnd(d: Double, p: Int): Double {
-    return d + (r.nextDouble() - 0.1) / pow(10.0, p * 1.0)
+    return d + (r.nextDouble() - 0.5) / pow(10.0, p * 1.0)
 }
 
 fun main(args: Array<String>) {
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     val p7: IProtocol = ProtocolKafka()
     val p8: IProtocol = ProtocolKafka()
 
-    val executor = Executors.newCachedThreadPool()
+    val executor = Executors.newFixedThreadPool(8)
     listOf(
         DeviceFIWARE(true, 1000, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
         DeviceFIWARE(true, 1000, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p2),

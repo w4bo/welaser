@@ -236,7 +236,8 @@ services:
     networks:
       - default
     volumes:
-      - ~/.ssh:/root/.ssh:ro
+      # - ~/.ssh:/root/.ssh:ro
+      - "${CODE_FOLDER}:${CODE_FOLDER}"
     env_file:
       - .env
 

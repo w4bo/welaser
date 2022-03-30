@@ -77,18 +77,19 @@ headers = {
 }
 
 responseBody = []
-i == 0
-while i < 5 or len(responseBody) == 0:
+i = 0
+while i < 5 and len(responseBody) == 0:
     if i > 0:
+        print("Retry...")
         sleep(10)
-    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(config["ORION_IP"], config["ORION_PORT_EXT"], mission), headers=headers, data={})
+    print("http://{}:{}/v2/entities?options=keyValues".format(config["ORION_IP"], config["ORION_PORT_EXT"]))
+    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(config["ORION_IP"], config["ORION_PORT_EXT"]), headers=headers, data={})
     assert(response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["type"] == "Thermometer"]
+    responseBody = [x for x in loads(response.text) if "Thermometer" == x["type"]]
     i += 1
 
 responseBody = responseBody[0]
 assert(len(responseBody["id"]) > 0)
-assert(responseBody["type"] == "Thermometer")
 assert(responseBody["Domain"] == domain)
 assert(responseBody["Latitude"] >= -90)
 assert(responseBody["Longitude"] >= -180)

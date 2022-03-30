@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.cdimascio.dotenv.Dotenv
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.eclipse.paho.client.mqttv3.IMqttClient
@@ -71,8 +72,10 @@ class Camera : ISensor {
      * @return get an image from src/main/resources, the image is encoded in Base64
      */
     override fun sense(): String {
-        val inputFile = File(javaClass.classLoader.getResource("img0" + Random.nextInt(1, 4) + ".png").file)
-        val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
+        val inputstream = Camera::class.java.getResourceAsStream("/img0" + Random.nextInt(1, 4) + ".png")
+        val fileContent: ByteArray = IOUtils.toByteArray(inputstream)
+        // val inputFile = File(javaClass.classLoader.getResource("img0" + Random.nextInt(1, 4) + ".png").file)
+        // val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
         return Base64.getEncoder().encodeToString(fileContent)
     }
 }

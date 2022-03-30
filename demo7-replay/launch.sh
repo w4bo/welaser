@@ -16,6 +16,14 @@ else
   exit 1
 fi
 
+if [ -f devices/build/libs/devices-all.jar ]; then
+  echo "devices-all.jar already exists"
+else
+  cd devices
+  ./gradlew
+  cd ..
+fi
+
 ./stop.sh
 ./scripts/setupAll.sh
 
@@ -48,4 +56,4 @@ curl -iX POST \
 }'
 
 cd devices
-./gradlew runCanaries &>/dev/null &
+java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &
