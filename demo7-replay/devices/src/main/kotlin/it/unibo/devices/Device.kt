@@ -273,11 +273,13 @@ abstract class Device(
         while (i++ < times) {
             Thread.sleep(timeoutMs.toLong())
             if (status) {
-                send(sense(), sendTopic)
+                val s = sense()
+                // println(s)
+                send(s, sendTopic)
             }
             if (moving) {
-                latitude += (r.nextDouble() - 0.5) / 10000
-                longitude += (r.nextDouble() - 0.5) / 10000
+                latitude += (r.nextDouble() - 0.5) / 100000
+                longitude += (r.nextDouble() - 0.5) / 100000
             }
         }
     }

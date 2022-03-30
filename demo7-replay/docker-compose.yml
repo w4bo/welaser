@@ -131,7 +131,7 @@ services:
       - mongo-db-pers
       - orion
       - iot-agent
-      # - draco
+      - etl
     env_file:
       - .env
 
@@ -176,20 +176,18 @@ services:
   #     test: curl --fail -s http://${DRACO_IP}:${DRACO_API_PORT}/nifi-api/system-diagnostics || exit 1
   #     start_period: 1m
 
-  #  draco:
-  #    hostname: draco
-  #    build: ./etl
-  #    container_name: draco
-  #    expose:
-  #      - "${DRACO_PORT_EXT}"
-  #    ports:
-  #      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
-  #    networks:
-  #      - default
-  #    # environment:
-  #    #   - "KAFKA_IP=${KAFKA_IP}"
-  #    env_file:
-  #      - .env
+  etl:
+    hostname: etl
+    build: ./etl
+    container_name: etl
+    expose:
+      - "${DRACO_PORT_EXT}"
+    ports:
+      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+    networks:
+      - default
+    env_file:
+      - .env
 
   kafkaproxy:
     restart: always
@@ -202,16 +200,13 @@ services:
       - default
     volumes:
       - ./service-kafkaproxy:/code
-    environment:
-      - "KAFKA_IP=${KAFKA_IP}"
-      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
-      - "SERVER_ADDRESS=${PROXY_SERVER_ADDRESS}"
-      - "SERVER_PORT=${PROXY_SERVER_PORT_INT}"
+    env_file:
+      - .env
     depends_on:
       - orion
       - iot-agent
       # - mongo-db-web
-      # - draco
+      - etl
 
   writetomongo:
     hostname: writetomongo
@@ -223,7 +218,7 @@ services:
       - .env
     depends_on:
       - orion
-      # - draco
+      - etl
 
   domainmanager:
     hostname: domainmanager
@@ -231,9 +226,8 @@ services:
     container_name: domainmanager
     networks:
       - default
-    environment:
-      - "KAFKA_IP=${KAFKA_IP}"
-      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
+    env_file:
+      - .env
 
   missionmanager:
     hostname: missionmanager
@@ -243,12 +237,8 @@ services:
       - default
     volumes:
       - ~/.ssh:/root/.ssh:ro
-    environment:
-      - "KAFKA_IP=${KAFKA_IP}"
-      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
-      - "USER=${USER}"
-      - "DEVICE_IP=${IP}"
-      - "CODE_FOLDER=${CODE_FOLDER}"
+    env_file:
+      - .env
 
   replaymanager:
     hostname: replaymanager
@@ -258,18 +248,11 @@ services:
       - default
     volumes:
       - ~/.ssh:/root/.ssh:ro
-    environment:
-      - "USER=${USER}"
-      - "IP=${IP}"
-      - "KAFKA_IP=${KAFKA_IP}"
-      - "KAFKA_PORT=${KAFKA_PORT_EXT}"
-      - "CODE_FOLDER=${CODE_FOLDER}"
-      - "MONGO_DB_PERS_PORT_EXT=${MONGO_DB_PERS_PORT_EXT}"
-      - "MONGO_DB_PERS_IP=${MONGO_DB_PERS_IP}"
+    env_file:
+      - .env
 
 volumes:
   mongo-db-orion: ~
-#  mongo-db-web:
 
 networks:
   default_net:

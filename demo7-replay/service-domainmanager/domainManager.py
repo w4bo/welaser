@@ -5,19 +5,19 @@ import os
 
 TOPIC = "service.domainmanager"
 KAFKA_IP = os.getenv("KAFKA_IP")
-KAFKA_PORT = os.getenv("KAFKA_PORT")
+KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
 print(KAFKA_IP)
-print(KAFKA_PORT)
+print(KAFKA_PORT_EXT)
 print(TOPIC)
 
 producer = KafkaProducer(
-  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
+  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   value_serializer=lambda x: dumps(x).encode('utf-8')
 )
 
 consumer = KafkaConsumer(
   TOPIC,
-  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
+  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   auto_offset_reset='earliest',
   enable_auto_commit=True,
   group_id='service.domainmanager',

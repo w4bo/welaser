@@ -376,6 +376,10 @@ const mapDashboard = {
                     this.topics.push({'id': 'collision', 'topic': 'data.collision'})
                     this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
                 })
+                .catch(err => {
+                    console.log(`http://${this.webServerIP}:${this.webServerPort}/api/topic`);
+                    console.log(err)
+                });
         },
 
         init() {

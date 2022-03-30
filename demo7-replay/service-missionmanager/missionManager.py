@@ -5,19 +5,19 @@ import os
 
 TOPIC = "service.missionmanager"
 KAFKA_IP = os.getenv("KAFKA_IP")
-KAFKA_PORT = os.getenv("KAFKA_PORT")
+KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
 USER = os.getenv("USER")
-DEVICE_IP = os.getenv("DEVICE_IP")
+IP = os.getenv("IP")
 CODE_FOLDER = os.getenv("CODE_FOLDER")
 
 producer = KafkaProducer(
-  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
+  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   value_serializer=lambda x: dumps(x).encode('utf-8')
 )
 
 consumer = KafkaConsumer(
   TOPIC,
-  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
+  bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   auto_offset_reset='earliest',
   enable_auto_commit=True,
   group_id='service.missionmanager',
@@ -34,13 +34,13 @@ def handleLaunch(missionName, domainName):
   response["domain_topic"] = "data." + domainName + ".realtime"
   response["mission_topic"] = "data." + domainName + ".realtime." + missionName
   producer.send(TOPIC, response)
-  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/launchMission1.sh {} {} {} &".format(USER, DEVICE_IP, USER, CODE_FOLDER, missionName, domainName, CODE_FOLDER)
+  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/launchMission1.sh {} {} {} &".format(USER, IP, USER, CODE_FOLDER, missionName, domainName, CODE_FOLDER)
   os.system(command)
   print(command)
 
 def handleStop(missionName):
   print("stop mission", missionName)
-  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/stopMission1.sh {} &".format(USER, DEVICE_IP, USER, CODE_FOLDER, missionName)
+  command = "ssh {}@{} /home/{}/{}/service-missionmanager/scripts/stopMission1.sh {} &".format(USER, IP, USER, CODE_FOLDER, missionName)
   os.system(command)
   print(command)
   response = {}

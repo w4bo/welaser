@@ -15,6 +15,7 @@ var cors = require('cors');
 const topicController = require('./src/controllers/topicController')
 
 env.config()
+console.log(process.env);
 
 io.on('connection', (socket) => {
     console.log('a user connected')
@@ -24,16 +25,13 @@ io.on('connection', (socket) => {
 });
 
 global.localSocket = io
-
 global.appRoot = path.resolve(__dirname);
 
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-
 app.use(cors())
-
 app.use('/static', express.static(__dirname + '/public'));
 
 // Connect to MongoDB
@@ -42,8 +40,11 @@ mongoose
         process.env.MONGO_DB_PERS,
         {useNewUrlParser: true}
     )
-    .then(() => console.log('MongoDB Connected (LOCAL)'))
-    .catch(err => console.log(err));
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => {
+        console.log(process.env.MONGO_DB_PERS);
+        console.log(err)
+    });
 
 
 global.kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]
