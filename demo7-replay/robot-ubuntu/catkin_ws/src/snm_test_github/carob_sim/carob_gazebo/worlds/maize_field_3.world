@@ -1,0 +1,4841 @@
+<?xml version="1.0" ?>
+ <sdf version="1.6">
+   <world name="default">
+ 
+     <!-- A global light source -->
+     <include>
+       <uri>model://sun</uri>
+     </include>
+ 
+     <!-- A ground plane -->
+     <include>
+       <uri>model://ground_dirt</uri>
+     </include>
+ 
+     <scene>
+       <sky>
+         <clouds>
+           <speed>12</speed>
+         </clouds>
+       </sky>
+     </scene>
+ 
+     <physics type='ode'>
+       <gravity>0 0 -9.8</gravity>
+       <ode>
+         <solver>
+           <type>quick</type>
+           <iters>20</iters>
+           <sor>1.0</sor>
+         </solver>
+         <constraints>
+           <cfm>0.0</cfm>
+           <erp>0.2</erp>
+           <contact_max_correcting_vel>100.0</contact_max_correcting_vel>
+           <contact_surface_layer>0.0</contact_surface_layer>
+         </constraints>
+       </ode>
+       <max_step_size>0.001</max_step_size>
+     </physics>
+     <model name="crop0">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0724586977845676 -0.9078724715974746 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop1">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1625374142035176 -0.29335055928516307 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop2">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.124102755654826 0.4713130446570443 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop3">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.145951121011839 1.1405733912405727 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop4">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1967122611518084 1.8683411076866274 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop5">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0101355906381637 2.5177054287432674 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop6">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1989258948740646 3.2448270421460044 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop7">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1996325803833185 3.904618663200155 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop8">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1342939748998324 4.685402715369446 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop9">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0739615145634396 5.373336327214529 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop10">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0158762842837192 6.0240871465962345 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop11">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0222089455159624 6.770754859389194 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop12">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0746461828652407 7.404034941697343 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop13">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.103594839885862 8.109324224545297 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop14">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.1737734427227133 8.80126001584783 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop15">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.0052806156808183 9.565764566819588 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop16">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3767210399594707 -0.9859798730318811 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop17">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.2971981402398853 -0.27591616296490645 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop18">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.251757599740517 0.493015109679889 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop19">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3781339275272018 1.1815567885896987 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop20">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.310727866021909 1.8437552142873128 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop21">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3380645150757573 2.5678702438049505 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop22">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.352399160379793 3.298510850554083 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop23">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.369306640319295 3.9840552381661714 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop24">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3616281310977776 4.69185674138016 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop25">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3047958683035703 5.3340422487890935 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop26">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.2313718137166756 6.077612370078616 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop27">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.359700815839053 6.714359012735748 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop28">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.350223247013291 7.450835982043554 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop29">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.332872083484146 8.138807376255924 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop30">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.2857687831938978 8.872465603667628 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop31">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.3188678328317485 9.54427505807169 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop32">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.41377826151854 -0.9468328283474051 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop33">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.4635953560775894 -0.21379363210444702 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop34">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.54073201062184 0.43649373250546253 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop35">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5548167600812426 1.1364517685718312 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop36">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5931820583540253 1.8400087277666322 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop37">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.519954398429604 2.5920268742945187 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop38">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.441231249156717 3.2744127241983034 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop39">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.4168228516174763 3.9362273969125496 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop40">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5153825404741132 4.666379188168189 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop41">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.4179643249099394 5.355724110094484 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop42">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.4057284646926993 6.074969608648858 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop43">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5008015065782208 6.714303779043106 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop44">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5142702931413337 7.4723676557990295 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop45">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.5611785604501436 8.159128800395653 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop46">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.4588136356115546 8.815229243881735 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop47">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.493297832120208 9.596166146336419 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop48">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.69709475077487 -0.90919060249723 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop49">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.6811501458925453 -0.23848017458053297 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop50">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.672624590363399 0.49263676046095395 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop51">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7785613804227096 1.1085982299353243 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop52">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.791760868409603 1.8154860297718045 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop53">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7494292079367915 2.5255032979604715 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop54">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7028820007619005 3.282493633334777 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop55">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.630910897751919 3.9998339397525826 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop56">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.786588906389495 4.681977488434748 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop57">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.704081645288949 5.334728840186676 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop58">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.738223923630282 6.016056428359136 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop59">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.685347393043282 6.777477863237862 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop60">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7979107760618254 7.445266033289693 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop61">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.689782925585487 8.183388137944004 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop62">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7047604431408856 8.858858927428434 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop63">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.7147042829825594 9.58849910359122 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop64">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.876662025632643 -0.99628870677416 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop65">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.9609017809777267 -0.2842203397642029 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop66">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.927277305968672 0.41863649970705047 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop67">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.97168691913886 1.1476994523121722 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop68">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.978656031232145 1.8596565239615428 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop69">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.962165177872502 2.532842020163283 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop70">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.852200234864009 3.2952820128878098 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop71">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.904476743523804 3.926861284778839 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop72">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.8450285024723523 4.6124787164291465 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop73">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.8039497300363223 5.386008440187715 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop74">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.8372794849967287 6.028360738736091 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop75">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.9138696138059603 6.74547966528959 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop76">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.9333089526303326 7.400308362436068 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop77">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.9222992277518904 8.101374878485476 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop78">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.803147078969401 8.833826255728342 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop79">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>3.838467276779614 9.54333905257212 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop80">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.043740636910318 -0.9276633760878242 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop81">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.141019505006127 -0.2491656902260121 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop82">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.028705979835889 0.40951028551500446 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop83">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.048687244104001 1.1221214982510508 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop84">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.16768395729993 1.8919272804805205 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop85">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.145796439520588 2.538766650622881 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop86">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.154032514788912 3.2326884543847574 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop87">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.01655617105514 3.910436230714049 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop88">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.128372807415002 4.641205506959623 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop89">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.008607707636044 5.3711413085152655 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop90">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.0245482307095966 6.0619630359600825 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop91">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.0187953891377965 6.778060857314878 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop92">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.099857429420322 7.424515159360059 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop93">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.098500147945513 8.172811749366806 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop94">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.1840798639158026 8.876714022324032 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop95">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.035170323170631 9.578765524638353 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop96">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.3427126659794935 -0.9168551071133719 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop97">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.371820774011097 -0.29150254134967096 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop98">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.300464690790717 0.4979057317256046 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop99">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.301357642166067 1.1669091765157555 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop100">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.391949989269527 1.8670483304049799 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop101">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.348851602831053 2.5371374449974473 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop102">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.274784176551313 3.249870217016166 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop103">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.2132569373128925 3.928614885892464 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop104">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.224818365962973 4.633314969381962 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop105">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.357437746990056 5.3941067445138335 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop106">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.322777052262839 6.093059623894155 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop107">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.228484321917215 6.7931181249197135 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop108">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.254374480372279 7.487202453313706 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop109">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.285939843124744 8.178020652856933 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop110">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.346913513195745 8.8495035731007 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop111">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.341287712610207 9.56059984251632 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop112">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.404413568616973 -0.9343743966145617 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop113">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.517097763462562 -0.26354452176964 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop114">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.473299017475785 0.46637148866079076 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop115">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.442617597290521 1.100746338307696 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop116">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.589304904573197 1.8962583198026004 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop117">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.591838806210419 2.590536793949738 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop118">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.445343478820547 3.2947533761976318 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop119">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.567979469961344 3.989983060734795 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop120">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.402798120802649 4.630663679656489 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop121">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.551066103416767 5.360225826584434 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop122">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.557752949497004 6.09605701081877 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop123">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.547716556423305 6.7323204997250805 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop124">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.582965781270819 7.423181892568877 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop125">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.589167157105088 8.14823905439115 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop126">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.538455780877144 8.881784616985888 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop127">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.45986695989423 9.57372879831664 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop128">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.697195039918942 -0.9126828493719035 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop129">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.687355415697813 -0.25265127528110554 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop130">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.7960325265748285 0.44985043971491373 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop131">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.685478140880504 1.1419251152375889 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop132">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.655061503531788 1.8485549500252723 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop133">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.723450758147044 2.574326147408857 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop134">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.621344836847786 3.2063575235836423 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop135">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.761955997451073 3.918999070176059 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop136">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.654093706206733 4.682669344569451 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop137">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.724421177511568 5.326271483518149 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop138">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.6033603538124295 6.079224597622664 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop139">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.697369384811277 6.748386682492043 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop140">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.63154791279701 7.446565764255507 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop141">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.630014040569429 8.18206885012599 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop142">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.769874561777834 8.870182865882477 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop143">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.736385452944473 9.514336568369828 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop144">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.9938646994849 -0.9153544925671947 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop145">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.920167764168414 -0.23128399883902795 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop146">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.936844331672332 0.4673797748277899 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop147">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.89228723581825 1.1889035216049948 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop148">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.889216907053493 1.868407300299703 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop149">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.863530796108089 2.560752782361859 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop150">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.881386964753875 3.251686553120532 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop151">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.929692739157406 3.9267335635057825 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop152">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.9467997368593055 4.681725008211523 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop153">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.992836664264437 5.367041684577486 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop154">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.972572494622395 6.092959713148193 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop155">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.849642397268054 6.731710637244966 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop156">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.999064549637121 7.421022405223082 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop157">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.946810413309652 8.151565140890565 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop158">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.980753045495238 8.876907826070696 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop159">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>4.994722929943106 9.564133171606347 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop160">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.018218789084496 -0.9214643748546721 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop161">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.063054518954108 -0.23407962714316888 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop162">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.0874677697931805 0.48497898971341047 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop163">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.14965869285271 1.1242030825893534 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop164">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.167209397775632 1.8077941591666131 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop165">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.009081810545263 2.5844802813107073 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop166">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.048202971826755 3.240480938711346 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop167">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.172465145478268 3.938174766805001 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop168">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.00727218155406 4.646308048123681 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop169">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.1764327661360765 5.348908477320365 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop170">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.018507209956812 6.079477297394785 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop171">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.12311987328776 6.721019534445265 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop172">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.186299000385387 7.470618896939174 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop173">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.0547499730094225 8.157333479373104 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop174">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.090803277930856 8.855264618921844 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop175">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.004253680532974 9.542922853647818 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop176">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.30957013459372 -0.9826533703822019 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop177">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.387673344747807 -0.2301897496125729 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop178">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.207088799858498 0.48665502612900147 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop179">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.335917682456368 1.1186862137847509 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop180">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.326515586657788 1.8140063790576877 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop181">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.3769796769740985 2.524437656294497 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop182">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.3808092631615505 3.2997659472062817 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop183">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.337312468962138 3.9876582087339796 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop184">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.327080279059017 4.675743147145774 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop185">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.379890614895912 5.345274812752447 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop186">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.223050915795465 6.055177833582063 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop187">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.2657052787291425 6.705964593809287 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop188">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.2528305116371135 7.412516604881935 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop189">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.33132205886781 8.157415238776963 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop190">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.356920596436964 8.811804795788843 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop191">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.214375816645473 9.526458707647175 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop192">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.579605131139611 -0.9712288545145481 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop193">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.526974814140252 -0.2882799072273228 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop194">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.524581528232443 0.43007345517371875 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop195">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.522486198009872 1.1972202038432898 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop196">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.475242479392006 1.8820820826010343 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop197">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.524351960684147 2.5770137455420796 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop198">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.5713876214781015 3.2182797651427704 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop199">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.580751157507012 3.9418488275497 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop200">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.450842641309091 4.627131030805892 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop201">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.467770426625145 5.336454926149086 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop202">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.48368400973912 6.066053559799242 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop203">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.54220864543786 6.72028075305287 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop204">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.450336841900653 7.486828830796069 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop205">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.544558261934203 8.134923625743594 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop206">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.510516170031249 8.85699926478446 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop207">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.413647695770355 9.588402087852055 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop208">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.750083611684977 -0.9014131559537232 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop209">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.771596245210068 -0.28389294651045444 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop210">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.771264231151685 0.4926747147688887 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop211">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.616236344129443 1.1193213831778195 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop212">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.753981465793455 1.8326572890600208 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop213">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.775132239990556 2.5641882777733285 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop214">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.642267358879635 3.2719480334249043 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop215">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.649272693510428 3.990207830662307 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop216">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.780393789096337 4.658231873709571 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop217">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.772617071895866 5.341738522175763 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop218">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.794411254453433 6.00226793630215 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop219">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.723698032056177 6.723581917014776 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop220">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.771156732041233 7.496538884677454 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop221">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.629506052610854 8.184471261362567 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop222">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.740778352773924 8.849339770648735 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop223">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.668467950987033 9.517182428374689 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop224">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.805035644027826 -0.9747648354099268 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop225">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.858483967225162 -0.26093035377452145 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop226">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.997447104575552 0.4787308105132374 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop227">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.883619714455767 1.1655892903029503 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop228">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.894697923905132 1.848260902510466 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop229">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.88718878280484 2.5465110246969243 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop230">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.983192406817497 3.2347374798295228 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop231">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.839845059352887 3.9692051881244166 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop232">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.8598309910708135 4.677273623600537 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop233">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.803094867268355 5.38487596541862 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop234">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.9030358631380535 6.010809833846392 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop235">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.812393884296513 6.791574637725458 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop236">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.961296136294957 7.489431643060277 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop237">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.997550787523213 8.14805035923081 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop238">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.927348136100105 8.848187634948728 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop239">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>5.866726480684814 9.555122178444094 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop240">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.0366440511960935 -0.9802921551306836 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop241">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.195725379153739 -0.23909249841898278 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop242">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.141499687576105 0.4765169681953981 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop243">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.189278518305655 1.1435627590714625 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop244">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.141355509519281 1.8673959415202057 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop245">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.143230858583509 2.537391958409798 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop246">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.178735178223493 3.276740992528599 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop247">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.165296018730083 3.9607420529243025 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop248">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.0996433649817385 4.670615596688727 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop249">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.061346956032999 5.377605654617939 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop250">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.183709961086664 6.06332806054618 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop251">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.060685659206388 6.769134481809774 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop252">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.189185847661602 7.475154180731089 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop253">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.12471057379759 8.196680256438324 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop254">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.100344817915913 8.863697572507586 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop255">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.132844645720475 9.544445485294434 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop256">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.354842085969975 -0.9311281647728934 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop257">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.279560652207889 -0.26763928160913225 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop258">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.232632308472335 0.4964707284409512 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop259">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.317822074808538 1.1506807082314139 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop260">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.211604854827282 1.8259214451309096 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop261">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.353736202668974 2.537558858549447 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop262">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.234569047644302 3.287407500039105 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop263">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.335819630606569 3.9685015674825865 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop264">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.2483817873346785 4.623702708240974 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop265">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.257990242211309 5.344994825130942 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop266">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.349577423913445 6.012025287752588 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop267">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.375598694681761 6.742985172823498 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop268">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.2226230530649245 7.463180322354474 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop269">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.297911803901359 8.145974713063744 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop270">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.256981607661789 8.860631742214201 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop271">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.2857264861551725 9.578078777059535 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop272">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.494464066792396 -0.9627417840921751 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop273">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.492120968344448 -0.2282411016789079 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop274">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.561210283781913 0.4468569130101204 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop275">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.563175699155698 1.1462753476299352 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop276">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.478653667419118 1.8959804846911261 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop277">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.406716404080474 2.5520963993659347 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop278">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.414058746445082 3.251175623741415 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop279">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.438710454076373 3.9364037101742224 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop280">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.531879320952835 4.678639672248625 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop281">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.404759322319185 5.367260842069568 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop282">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.58709340124253 6.018746368315064 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop283">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.560495393605896 6.77089752188097 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop284">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.595490581422834 7.467067909581236 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop285">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.465118479847731 8.134740006749663 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop286">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.541818443199044 8.88965557774283 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop287">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.5649851013103016 9.54883883466198 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop288">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.751333636810974 -0.9567660001529043 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop289">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.79480324777407 -0.2074151335389868 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop290">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.682988345197514 0.48207559637501163 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop291">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.741096017749642 1.1064377220308648 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop292">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.731967434583539 1.8920801551317012 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop293">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.664445923526823 2.5422172139699737 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop294">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.649707484433738 3.2213824296523135 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop295">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.780892262210517 3.9700591685345556 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop296">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.63129264376512 4.674362478893358 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop297">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.762327926949123 5.351498366881165 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop298">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.733888800508144 6.053452358894764 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop299">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.670035717169692 6.721857905983922 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop300">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.79866430451886 7.441378385199174 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop301">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.731484554977751 8.179455866707874 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop302">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.7705035414314 8.88584245225676 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop303">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.620080403286704 9.596288824201215 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop304">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.8938829115963305 -0.912590340186402 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop305">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.831161763102669 -0.20122314502674368 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop306">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.806788302928736 0.4270216441842975 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop307">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.983675048090017 1.1145607998221636 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop308">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.973822308946621 1.8315066077350826 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop309">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.810405689292044 2.521912559333396 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop310">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.839658851108783 3.2307932798073584 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop311">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.991987535580053 3.9565869854396327 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop312">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.907301615073654 4.664731667781799 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop313">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.938640953910095 5.355431387232309 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop314">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.967579942338549 6.0519060149284085 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop315">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.835567560111199 6.743263589075145 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop316">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.958615892441026 7.417769724401733 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop317">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.927208200998456 8.143896428270265 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop318">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.895695461261353 8.867280391662977 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop319">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>6.817458070232822 9.552384422972084 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop320">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.038215956561095 -0.9111040336373979 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop321">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.072781268850509 -0.2331948537403059 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop322">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.012806996217305 0.44308401891534654 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop323">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.196881638038314 1.174104837691758 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop324">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.175212879613786 1.8961088053891988 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop325">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.090196459530243 2.5188328113399114 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop326">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.186047646611719 3.235183547664 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop327">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.15846776549853 3.938154744205092 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop328">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.0650436146738205 4.69791478931774 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop329">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.0821407171773005 5.380156715525459 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop330">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.143390267753008 6.0198542660494825 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop331">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.163972256912059 6.720465500817821 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop332">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.133325774284661 7.438892146685249 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop333">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.179661144945992 8.14925057526742 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop334">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.153193411537055 8.814459657472796 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop335">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.126774757771862 9.549038127119138 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop336">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.386132517445005 -0.9922661361362455 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop337">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.286522230221967 -0.2760929501537942 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop338">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.3685186147228565 0.4397982176579135 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop339">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.264797915273587 1.14194045736499 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop340">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.226729073645147 1.8270026677780076 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop341">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.301845392076271 2.5314768412933057 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop342">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.360615996190471 3.206510064288209 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop343">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.253258152760186 3.980943824917715 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop344">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.330737676391712 4.678953111314298 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop345">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.368286143903433 5.321928619017076 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop346">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.226133001886322 6.011879334376646 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop347">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.3075409306222125 6.773704910069983 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop348">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.399701486163985 7.429965276501864 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop349">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.2122589336602285 8.134429574468372 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop350">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.281311118540917 8.840599263831336 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop351">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.31444254080413 9.501078389540925 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop352">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.4622555306224685 -0.9930960906313835 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop353">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.422142508672492 -0.28900519775218103 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop354">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.564266519501825 0.41060114780220264 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop355">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.531913355530686 1.101171403156694 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop356">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.489147744897141 1.8989217785716637 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop357">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.524519356776073 2.54125361625543 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop358">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.479713740965796 3.2392736925919396 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop359">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.421779445986288 3.965429543128379 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop360">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.517899361332219 4.619002941471156 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop361">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.511782262952126 5.317738421841757 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop362">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.536369921801196 6.046997073912494 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop363">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.543698926758528 6.791492104231038 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop364">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.57943659693382 7.474214165169468 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop365">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.535843061702495 8.168006034740861 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop366">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.4397535210741355 8.832634248253243 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop367">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.4738760133328626 9.523241168039224 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop368">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.656201256152732 -0.9782426083518005 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop369">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.627378488066259 -0.2512213066662087 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop370">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.682944006722659 0.48886823271838425 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop371">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.6706491869491 1.1110182646072493 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop372">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.761684099904882 1.896893139821102 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop373">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.667158958368569 2.5088867984400745 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop374">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.761459768516022 3.289171748485786 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop375">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.65695847919823 3.977075317343628 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop376">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.691304107949295 4.696143709860118 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop377">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.633600792327526 5.324939626657503 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop378">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.738021982257123 6.0006499122733645 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop379">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.618879141452859 6.759483415575376 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop380">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.6645054089015 7.407033560710125 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop381">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.654251899106114 8.114659724541843 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop382">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.701889179035722 8.804572381618316 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop383">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.721595462735105 9.568011073169503 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop384">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.9830795479352386 -0.9536916850296238 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop385">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.8303133294395595 -0.2560816648820834 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop386">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.895904088858102 0.47453797155937466 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop387">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.853547357436037 1.1596822182878412 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop388">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.99454067676657 1.822918081371299 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop389">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.988538919709115 2.518015530812375 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop390">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.842662504868255 3.2906171049329545 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop391">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.914773565421562 3.9363634193150348 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop392">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.949637951071726 4.659316645798474 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop393">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.9231071531225465 5.386609256241089 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop394">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.925783201618701 6.031950372642608 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop395">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.8735415085444656 6.726760271824298 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop396">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.8323654365528395 7.430640754808426 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop397">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.8832894727572755 8.11117010040469 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop398">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.921092587895811 8.837019881380103 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop399">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>7.981848521441011 9.5379236964406 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop400">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.10240473172277 -0.9628507914700892 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop401">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.06921568200074 -0.29161091694044294 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop402">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.198972811144886 0.45384944736750676 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop403">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.026831649428994 1.1036775549395963 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop404">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.092691003971703 1.8545714539069083 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop405">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.1830964168035 2.5826348937038683 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop406">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.139092051746006 3.270368411962579 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop407">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.004628954356068 3.900749875087397 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop408">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.17327254248216 4.645967446557957 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop409">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.051945209318744 5.345882753328924 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop410">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.193455054075088 6.0991782654503774 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop411">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.181444047444806 6.720525489961075 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop412">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.02828702103358 7.4126964133442215 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop413">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.063434211923648 8.178536779639293 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop414">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.161304277874757 8.82536959413663 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop415">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.07965353817934 9.507676657254082 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop416">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.215328454937685 -0.9557893477139303 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop417">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.346858743419023 -0.23832805082688735 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop418">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.341343502858258 0.4379820429558376 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop419">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.236053453782564 1.1754892156092502 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop420">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.27399529269578 1.8040140210870168 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop421">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.374287491036757 2.585010799685379 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop422">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.353511725046648 3.243275053554891 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop423">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.330675860632708 3.987102545626045 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop424">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.233796442454901 4.634374859082699 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop425">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.298049878100231 5.356991868522721 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop426">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.265444700301293 6.069290139530879 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop427">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.346911080601732 6.743846423827031 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop428">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.380926674651278 7.469100723493132 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop429">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.271954262106902 8.126723780035826 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop430">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.210453509122845 8.89194513977853 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop431">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.373726695632334 9.550250598480096 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop432">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.575296812261133 -0.9345797348767036 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop433">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.50657677008966 -0.2843305936495351 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop434">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.55166055275647 0.43666776889177333 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop435">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.51362796890783 1.1493791012443666 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop436">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.5303013380112 1.8099889019479691 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop437">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.536144841885207 2.5616753501885605 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop438">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.438979211526886 3.2285268200300106 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop439">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.43819481948514 3.918055106493288 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop440">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.50982078403665 4.667387399425313 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop441">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.448744443434606 5.3176022574541815 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop442">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.404884174740715 6.0789847282878835 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop443">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.47546515905956 6.702555092935647 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop444">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.581708976595786 7.481809601744343 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop445">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.433515291554603 8.190081664760973 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop446">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.475184824921422 8.803920396357677 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop447">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.56066108955406 9.556920506792727 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop448">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.69990189653884 -0.9364512924897237 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop449">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.662940945092316 -0.21303907618437817 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop450">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.695406480080353 0.4418168105677682 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop451">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.675767884285076 1.1909523313409136 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop452">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.633040430681616 1.8681024411868439 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop453">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.626484566291143 2.5317860483339825 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop454">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.72433858148124 3.213338286497383 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop455">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.728650643332934 3.950674546625599 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop456">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.764285543385526 4.66029576817448 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop457">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.634896179251234 5.363576182466152 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop458">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.603506010774632 6.098995829813116 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop459">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.68149909183637 6.753986810668464 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop460">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.723195194490062 7.432214751867947 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop461">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.711339169190653 8.177332489043678 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop462">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.654612045821029 8.875028621483093 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop463">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.708432495563523 9.544919249953674 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop464">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.825922167030635 -0.9479310131733015 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop465">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.983806144028676 -0.2519930649226526 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop466">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.927110678905374 0.4069249258885484 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop467">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.894439528277852 1.1520326573562973 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop468">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.87006864468335 1.8890471553252488 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop469">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.865308405630113 2.561314075023697 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop470">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.954229594348938 3.286265535831929 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop471">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.843874208403587 3.9158064529976597 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop472">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.970186940027475 4.615744867268843 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop473">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.988409492998201 5.3415618740237125 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop474">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.887539299466711 6.026692486152161 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop475">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.985511998927485 6.7170544491921245 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop476">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.859754164153633 7.49533385583659 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop477">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.863484542981832 8.153440627523183 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop478">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.813941063843624 8.823200079409629 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+     <model name="crop479">
+         <include>
+             <static>true</static>
+             <uri>model://plants</uri>
+             <pose>8.80852891330375 9.587099054215553 0 0 0 0</pose>
+             <box>
+                 <size>10 10 1</size>
+             </box>
+         </include>
+     </model>
+  </world>
+ </sdf>

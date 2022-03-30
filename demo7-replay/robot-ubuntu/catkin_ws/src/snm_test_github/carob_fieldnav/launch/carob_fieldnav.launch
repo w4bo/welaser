@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+<arg name="proto" default="1"/>
+<arg name="gui" default="false"/>
+<arg name="world" default="empty"/>
+<arg name="firos" default="true"/>
+<arg name="id" default=""/>
+
+<include file="$(find carob_gazebo)/launch/carob.launch">
+	<arg name="proto" default="$(arg proto)"/>
+	<arg name="gui" value="$(arg gui)"/>
+	<arg name="world" default="$(arg world)"/>
+</include>
+
+<group if="$(arg firos)">
+	<include file="$(find firos)/launch/firos.launch"/>
+</group>
+
+<node pkg="carob_fieldnav" name="carob_field_nav" type="carob_field_nav.py" output="screen" args="$(find carob_fieldnav)/src/maize_mission.json $(arg id)"/>
+
+</launch>
