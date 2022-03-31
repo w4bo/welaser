@@ -5,10 +5,7 @@ import sys
 
 
 config = dotenv_values("../../.env")
-print(config["KAFKA_IP"])
-
-connection_string = config["KAFKA_IPIP"] + ":" + config["KAFKA_PORT_EXT"]
-print(connection_string)
+connection_string = config["KAFKA_IP"] + ":" + config["KAFKA_PORT_EXT"]
 
 producer = KafkaProducer(
   bootstrap_servers=[connection_string],

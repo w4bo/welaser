@@ -219,15 +219,6 @@ services:
       - orion
       - etl
 
-  domainmanager:
-    hostname: domainmanager
-    build: ./service-domainmanager
-    container_name: domainmanager
-    networks:
-      - default
-    env_file:
-      - .env
-
   missionmanager:
     hostname: missionmanager
     build: ./service-missionmanager
