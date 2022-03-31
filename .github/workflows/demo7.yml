@@ -19,6 +19,7 @@ jobs:
           cd demo7-replay
           mv .env.example .env
           sed -i 's/127.0.0.1/'$(hostname)'/g' .env
+          sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
           mv mosquitto/pwfile.example mosquitto/pwfile
           mv service-dashboard/public/env.js.example service-dashboard/public/env.js
           ./launch.sh
@@ -26,4 +27,4 @@ jobs:
         run: |
           cd demo7-replay/testScripts
           pip install -r requirements.txt
-          python test.py
+          for FILE in *; do python $FILE; done
