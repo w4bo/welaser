@@ -14,6 +14,7 @@ from kafka import KafkaProducer
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
 DRACO_PORT = int(os.getenv("DRACO_PORT_EXT"))
+DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
 
 producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
@@ -59,7 +60,7 @@ class S(BaseHTTPRequestHandler):
             d["timestamp_subscription"] = time.time()
             producer.send('data.' + domain + ".realtime", value=d)
             producer.send('data.' + domain + ".realtime." + mission, value=d)
-            producer.send('raw', value=d)
+            producer.send(DRACO_RAW_TOPIC, value=d)
             print(domain + " " + mission)
             # self.i = (self.i + 1) % 1000
             # if self.i == 1:

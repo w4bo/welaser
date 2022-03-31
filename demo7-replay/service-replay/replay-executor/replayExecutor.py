@@ -22,13 +22,13 @@ if __name__ == '__main__':
   MISSION_NAME = os.getenv("MISSION_NAME")
   ID = os.getenv("ID")
   KAFKA_IP = os.getenv("KAFKA_IP")
-  KAFKA_PORT = os.getenv("KAFKA_PORT")
+  KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
   MONGO_IP = os.getenv("MONGO_IP")
   MONGO_PORT = os.getenv("MONGO_PORT")
   # MISSION_NAME = "m1"
   # ID = "632753c7"
 
-  KAFKA_BROKER = KAFKA_IP + ":" + KAFKA_PORT
+  KAFKA_BROKER = KAFKA_IP + ":" + KAFKA_PORT_EXT
   MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 
   producer = KafkaProducer(

@@ -8,8 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <title>Demo</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/static/css/entry.css">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -19,7 +18,7 @@
     <!-- vuex stuff -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/2.1.1/vuex.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://npmcdn.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/vue-router@3.5.3/dist/vue-router.js"></script>
     <!-- Chart.sj -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
     <!-- Import components -->
@@ -37,9 +36,9 @@
     <script src="/static/env.js"></script>
 
     <style>
-      canvas {
-        transform: matrix(1, 0, 0, 1, 0, 0) !important;
-      }
+        canvas {
+            transform: matrix(1, 0, 0, 1, 0, 0) !important;
+        }
     </style>
 </head>
 
@@ -60,11 +59,10 @@
 <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.1/build/ol.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.1/css/ol.css" type="text/css">
 
-
 <script>
-	Vue.mixin({
-		data: () => ({
-	        fiwareIP: config["IP"],
+    Vue.mixin({
+        data: () => ({
+            fiwareIP: config["IP"],
             webServerIP: config["IP"],
             proxyIP: config["PROXY_IP"],
             proxyPort: config["PROXY_PORT_EXT"],
@@ -75,29 +73,29 @@
             missionManagerTopic: 'service.missionmanager',
             replayManagerTopic: 'service.replaymanager'
         }),
-	})
+    })
 
-	const store = new Vuex.Store({
-		state: {},
-		getters: {},
-		mutations: {},
-		actions: {}
-	})
+    const store = new Vuex.Store({
+        state: {},
+        getters: {},
+        mutations: {},
+        actions: {}
+    })
 
-	var app = new Vue({
-		router,
-		el: "#app",
-		store: store,
-		vuetify: new Vuetify(),
-		components: {
-			'myfooter': Footer,
-			'navbar': Navbar,
-		}
-	})
+    var app = new Vue({
+        router,
+        el: "#app",
+        store: store,
+        vuetify: new Vuetify(),
+        components: {
+            'myfooter': Footer,
+            'navbar': Navbar,
+        }
+    })
 
-	// Remove console info from Vue
-	Vue.config.devtools = false
-	Vue.config.productionTip = false
+    // Remove console info from Vue
+    Vue.config.devtools = false
+    Vue.config.productionTip = false
 </script>
 </body>
 </html>

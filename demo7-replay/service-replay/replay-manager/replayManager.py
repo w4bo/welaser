@@ -8,11 +8,11 @@ TOPIC = "service.replaymanager"
 USER = os.getenv("USER")
 IP = os.getenv("IP")
 KAFKA_IP = os.getenv("KAFKA_IP")
-KAFKA_PORT = os.getenv("KAFKA_PORT")
+KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
 CODE_FOLDER = os.getenv("CODE_FOLDER")
 MONGO_DB_PERS_IP = os.getenv("MONGO_DB_PERS_IP")
 MONGO_DB_PERS_PORT_EXT = os.getenv("MONGO_DB_PERS_PORT_EXT")
-KAFKA_SERVER = KAFKA_IP + ":" + KAFKA_PORT
+KAFKA_SERVER = KAFKA_IP + ":" + KAFKA_PORT_EXT
 
 producer = KafkaProducer(
   bootstrap_servers=[KAFKA_SERVER],
@@ -30,7 +30,7 @@ consumer = KafkaConsumer(
 
 def handleStart(missionName):
   UUID = str(uuid.uuid4())[:8]
-  command = "ssh {}@{} /home/{}/{}/service-replay/replay-manager/scripts/launchReplay.sh {} {} {} {} {} {}".format(USER, IP, USER, CODE_FOLDER, missionName, UUID, KAFKA_IP, KAFKA_PORT, MONGO_DB_PERS_IP, MONGO_DB_PERS_PORT_EXT)
+  command = "ssh {}@{} /home/{}/{}/service-replay/replay-manager/scripts/launchReplay.sh {} {} {} {} {} {}".format(USER, IP, USER, CODE_FOLDER, missionName, UUID, KAFKA_IP, KAFKA_PORT_EXT, MONGO_DB_PERS_IP, MONGO_DB_PERS_PORT_EXT)
   print("start replay", command)
   os.system(command)
   response = {}

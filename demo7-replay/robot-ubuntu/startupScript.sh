@@ -10,7 +10,7 @@ uuid=$(uuidgen)
 
 sed -i "s/carob/carob-$uuid/g" src/snm_test_github/firos/config/robots.json
 
-roslaunch carob_fieldnav carob_fieldnav.launch id:=$uuid &>/dev/null &
+roslaunch carob_fieldnav carob_fieldnav.launch id:=$uuid &
 
 sleep 10
 

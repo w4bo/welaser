@@ -16,6 +16,14 @@ else
   exit 1
 fi
 
+if [ -f devices/build/libs/devices-all.jar ]; then
+  echo "devices-all.jar already exists"
+else
+  cd devices
+  ./gradlew
+  cd ..
+fi
+
 ./stop.sh
 ./scripts/setupAll.sh
 
@@ -47,7 +55,5 @@ curl -iX POST \
   }
 }'
 
-devices/thermometerMQTT/launcher.sh canary1 on 1000 "Spain" 40.31275148286198 -3.4808443373094113 canary-m852149 canary true&>/dev/null &
-devices/thermometerMQTT/launcher.sh canary2 on 1000 "Spain" 40.31275148287198 -3.4808443373594113 canary-m852149 canary false&>/dev/null &
-
-
+cd devices
+java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &

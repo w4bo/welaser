@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/sh
 
 set -e
 set -o xtrace
@@ -24,7 +24,7 @@ docker run \
   --env MISSION=${MISSION} \
   --name robot_${NUM}_${MISSION} \
   --env-file .env \
-  fiware-robot &>/dev/null &
+  fiware-robot &
 
 while [ "$(docker ps | grep robot_${NUM}_${MISSION} | wc -l)" != 1 ]
 do

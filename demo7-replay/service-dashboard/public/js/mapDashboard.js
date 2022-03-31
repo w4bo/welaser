@@ -376,6 +376,10 @@ const mapDashboard = {
                     this.topics.push({'id': 'collision', 'topic': 'data.collision'})
                     this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
                 })
+                .catch(err => {
+                    console.log(`http://${this.webServerIP}:${this.webServerPort}/api/topic`);
+                    console.log(err)
+                });
         },
 
         init() {
@@ -383,9 +387,7 @@ const mapDashboard = {
             this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
             this.loadMap()
             this.loadTopics()
-            this.localSocket.on("updateTopic", data => {
-                this.loadTopics()
-            })
+            this.localSocket.on("updateTopic", data => this.loadTopics())
             this.listenTopic()
         }
     },

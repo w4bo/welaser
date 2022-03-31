@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 MISSION_NAME=$1
 
