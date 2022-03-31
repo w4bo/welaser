@@ -3,8 +3,8 @@ from json import dumps
 from dotenv import dotenv_values
 import sys
 
-config = dotenv_values("../.env")
-connection_string = config["KAFKA_IP"] + ":" + config["KAFKA_PORT_EXT"]
+conf = dotenv_values("../.env")
+connection_string = conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]
 producer = KafkaProducer(
   bootstrap_servers=[connection_string],
   value_serializer=lambda x: dumps(x).encode('utf-8')
@@ -18,5 +18,5 @@ command = {
   "command": "stop",
   "mission": mission
 }
-s = producer.send("service.missionmanager", command)
+s = producer.send(conf["MISSION_MANAGER_TOPIC"], command)
 result = s.get(timeout=60)

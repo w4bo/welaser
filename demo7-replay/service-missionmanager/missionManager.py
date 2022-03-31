@@ -32,8 +32,8 @@ def handleLaunch(missionName, domainName):
   response["status"] = "created"
   response["mission"] = missionName
   response["domain"] = domainName
-  response["domain_TOPIC_MM"] = "data." + domainName + ".realtime"
-  response["mission_TOPIC_MM"] = "data." + domainName + ".realtime." + missionName
+  response["domain_topic"] = "data." + domainName + ".realtime"
+  response["mission_topic"] = "data." + domainName + ".realtime." + missionName
   producer.send(TOPIC_MM, response)
   command = "scripts/launchMission1.sh {} {} {} &".format(missionName, domainName, CODE_FOLDER)
   os.system(command)
