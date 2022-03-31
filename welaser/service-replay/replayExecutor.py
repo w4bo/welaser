@@ -1,9 +1,7 @@
-from time import strftime
 from json import loads, dumps
 from kafka import KafkaConsumer, KafkaProducer
 import os
 from pymongo import MongoClient, ASCENDING
-from pprint import pprint
 import time
 
 def sendKafka(producer, id, doc):
@@ -18,15 +16,13 @@ if __name__ == '__main__':
     print(k + ':' + v)
   print('\n')
 
-  TOPIC = "service.replayexecutor"
+  TOPIC = os.getenv("REPLAY_MANAGER_TOPIC")
   MISSION_NAME = os.getenv("MISSION_NAME")
   ID = os.getenv("ID")
   KAFKA_IP = os.getenv("KAFKA_IP")
   KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
   MONGO_IP = os.getenv("MONGO_IP")
   MONGO_PORT = os.getenv("MONGO_PORT")
-  # MISSION_NAME = "m1"
-  # ID = "632753c7"
 
   KAFKA_BROKER = KAFKA_IP + ":" + KAFKA_PORT_EXT
   MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)

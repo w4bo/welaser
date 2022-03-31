@@ -221,7 +221,7 @@ services:
 
   missionmanager:
     hostname: missionmanager
-    build: ./service-missionmanager
+    build: service-manager
     container_name: missionmanager
     networks:
       - default
@@ -229,17 +229,6 @@ services:
       # - ~/.ssh:/root/.ssh:ro
       - "${CODE_FOLDER}:${CODE_FOLDER}"
       - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      - .env
-
-  replaymanager:
-    hostname: replaymanager
-    build: ./service-replay/replay-manager
-    container_name: replaymanager
-    networks:
-      - default
-    volumes:
-      - ~/.ssh:/root/.ssh:ro
     env_file:
       - .env
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 MISSION_NAME=$1
@@ -16,4 +16,4 @@ docker run \
   --env MONGO_IP=${MONGO_DB_PERS_IP} \
   --env MONGO_PORT=${MONGO_PORT} \
   --name replayexecutor-${MISSION_NAME}-${ID} \
-  fiware-service/replay-executor &>/dev/null &
+  conf/replay-executor &>/dev/null &
