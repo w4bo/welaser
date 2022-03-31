@@ -205,7 +205,6 @@ services:
     depends_on:
       - orion
       - iot-agent
-      # - mongo-db-web
       - etl
 
   writetomongo:
@@ -238,6 +237,7 @@ services:
     volumes:
       # - ~/.ssh:/root/.ssh:ro
       - "${CODE_FOLDER}:${CODE_FOLDER}"
+      - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
 
