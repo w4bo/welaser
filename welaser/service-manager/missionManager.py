@@ -5,7 +5,7 @@ import uuid
 
 TOPIC_MM = os.getenv("MISSION_MANAGER_TOPIC")
 TOPIC_DM = os.getenv("DOMAIN_MANAGER_TOPIC")
-TOPIC_RM = "service.replaymanager"
+TOPIC_RM = os.getenv("REPLAY_MANAGER_TOPIC")
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
 USER = os.getenv("USER")
@@ -36,7 +36,7 @@ def start_mission(missionName, domainName):
   response["domain"] = domainName
   response["domain_topic"] = "data." + domainName + ".realtime"
   response["mission_topic"] = "data." + domainName + ".realtime." + missionName
-  producer.send(TOPIC_MM, response)
+  producer.send(TOPIC_MM, response).get(timeout=30)
   command = "scripts/launchMission.sh {} {} {} &".format(missionName, domainName, CODE_FOLDER)
   os.system(command)
 
@@ -48,7 +48,7 @@ def stop_mission(missionName):
   response["type"] = "response"
   response["status"] = "deleted"
   response["mission"] = missionName
-  producer.send(TOPIC_MM, response)
+  producer.send(TOPIC_MM, response).get(timeout=30)
 
 def start_replay(missionName):
   print("start replay", missionName)
@@ -60,7 +60,7 @@ def start_replay(missionName):
   response["status"] = "created"
   response["replay"] = "{}.{}".format(missionName, UUID)
   response["topic"] = "data.{}.replay.{}".format(missionName, UUID)
-  producer.send(TOPIC_RM, response)
+  producer.send(TOPIC_RM, response).get(timeout=30)
 
 def stop_replay(replayName):
   print("start replay", replayName)
@@ -70,7 +70,7 @@ def stop_replay(replayName):
   response["type"] = "response"
   response["status"] = "deleted"
   response["replay"] = replayName
-  producer.send(TOPIC_RM, response)
+  producer.send(TOPIC_RM, response).get(timeout=30)
 
 for message in consumer:
   if message.topic == TOPIC_MM:
@@ -87,7 +87,7 @@ for message in consumer:
       response["status"] = "created"
       response["domain"] = message.value["domain"]
       response["topic"] = "data." + message.value["domain"] + ".realtime"
-      producer.send(TOPIC_DM, response)
+      producer.send(TOPIC_DM, response).get(timeout=30)
   else:
     if message.value["type"] == "request":
       if message.value["command"] == "start":

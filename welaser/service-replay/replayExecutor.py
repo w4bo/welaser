@@ -12,9 +12,6 @@ def sendKafka(producer, id, doc):
   producer.flush()
 
 if __name__ == '__main__':
-  for k, v in sorted(os.environ.items()):
-    print(k + ':' + v)
-  print('\n')
 
   TOPIC = os.getenv("REPLAY_MANAGER_TOPIC")
   MISSION_NAME = os.getenv("MISSION_NAME")
@@ -23,7 +20,6 @@ if __name__ == '__main__':
   KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
   MONGO_IP = os.getenv("MONGO_IP")
   MONGO_PORT = os.getenv("MONGO_PORT")
-
   KAFKA_BROKER = KAFKA_IP + ":" + KAFKA_PORT_EXT
   MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 

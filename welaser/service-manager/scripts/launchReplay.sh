@@ -16,4 +16,4 @@ docker run \
   --env MONGO_IP=${MONGO_DB_PERS_IP} \
   --env MONGO_PORT=${MONGO_PORT} \
   --name replayexecutor-${MISSION_NAME}-${ID} \
-  conf/replay-executor &>/dev/null &
+  replay-executor &
