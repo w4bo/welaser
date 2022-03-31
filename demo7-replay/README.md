@@ -9,11 +9,37 @@ Check the variables from the `.env` and `webserver/public/env.js` files.
 
 ```sh
 docker run -v $(pwd)/mosquitto:/mosquitto -it eclipse-mosquitto sh
-cd mosquitto/config
+cd mosquitto
 mosquitto_passwd -c pwfile <user> <pwd>
 ```
 
 Where `<user>` and `<pwd>` corresponds to `MOSQUITTO_USER` and `MOSQUITTO_PWD` variables defined in `.env`
+
+# MQTT Broker
+
+To create a user and a password
+
+```sh
+docker run -v $(pwd)/mosquitto:/mosquitto -it eclipse-mosquitto sh
+```
+and from within the container
+```sh
+cd mosquitto/config
+mosquitto_passwd -c pwfile <user> <pwd>
+```
+  
+By default the MQTT broker is exposed on port 1883.
+You can edit `MOSQUITTO_PORT_EXT` in `.env` to specify another port
+
+Register a subscriber
+```sh
+docker run -it --rm efrecon/mqtt-client sub -h <ip> -p 1883 -t "foo" -u <user> -P <pwd>
+```
+
+Publish some messages
+```sh
+docker run -it --rm efrecon/mqtt-client pub -h <ip> -p 1883 -t "foo" -m "bar" -u <user> -P <pwd>
+```
 
 ## Interacting with the demo
 
