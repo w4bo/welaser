@@ -27,6 +27,10 @@ jobs:
           cd welaser/testScripts
           pip install -r requirements.txt
           for FILE in *.py; do echo $FILE; python $FILE; done
+      - name: Stop
+        run: |
+          cd welaser
+          ./stop.sh
   release:
     needs:
       - build
