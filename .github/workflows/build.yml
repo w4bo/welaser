@@ -1,9 +1,8 @@
-name: "Demo7"
+name: "WeLASER"
 on:
   push:
-    paths:
-      - 'demo7-replay/**'
-      - '.github/workflows/demo7.yml'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   launch:
