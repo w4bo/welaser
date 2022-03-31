@@ -3,8 +3,8 @@ from json import loads, dumps
 from kafka import KafkaConsumer, KafkaProducer
 import os
 
-TOPIC_MM = "service.missionmanager"
-TOPIC_DM = "service.domainmanager"
+TOPIC_MM = os.getenv("MISSION_MANAGER_TOPIC")
+TOPIC_DM = os.getenv("DOMAIN_MANAGER_TOPIC")
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT_EXT = os.getenv("KAFKA_PORT_EXT")
 USER = os.getenv("USER")
@@ -20,7 +20,6 @@ consumer = KafkaConsumer(
   bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   auto_offset_reset='earliest',
   enable_auto_commit=True,
-  group_id='service.missionmanager',
   value_deserializer=lambda x: loads(x.decode('utf-8'))
 )
 consumer.subscribe([TOPIC_DM, TOPIC_MM])

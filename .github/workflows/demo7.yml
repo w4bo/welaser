@@ -27,4 +27,4 @@ jobs:
         run: |
           cd demo7-replay/testScripts
           pip install -r requirements.txt
-          for FILE in *; do python $FILE; done
+          for FILE in *.py; do python $FILE; done

@@ -8,9 +8,6 @@ from time import sleep
 import random
 
 conf = dotenv_values("../.env")
-domain = "d" + str(random.randrange(1000000) + 10)
-with open("createdomain.txt", "w") as f:
-    f.write(domain)
 connection_string = conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]
 consumer = KafkaConsumer(
   conf["DOMAIN_MANAGER_TOPIC"],
@@ -23,14 +20,19 @@ producer = KafkaProducer(
   bootstrap_servers=[connection_string],
   value_serializer=lambda x: dumps(x).encode('utf-8')
 )
-command = {
-  "type": "request",
-  "command": "create",
-  "domain": domain
-}
-producer.send(conf["DOMAIN_MANAGER_TOPIC"], command)
+i = 0
+while i < 10:
+    domain = "d" + str(random.randrange(1000000) + 10)
+    with open("createdomain.txt", "w") as f:
+        f.write(domain)
+    command = { "type": "request", "command": "create", "domain": domain }
+    producer.send(conf["DOMAIN_MANAGER_TOPIC"], command)
+    print(command)
+    i += 1
+    sleep(2)
 producer.close()
 for msg in consumer:
+  print(msg)
   if msg.value["type"] == "response" and msg.value["domain"] == domain:
     assert(msg.value["type"] == "response")
     assert(msg.value["status"] == "created")
