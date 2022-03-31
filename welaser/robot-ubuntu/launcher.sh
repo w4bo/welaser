@@ -13,7 +13,7 @@ fi
 DOMAIN=${1}
 MISSION=${2}
 NUM=${3}
-NETWORK="demo7-replay_default"
+NETWORK="welaser_default"
 
 # pass NUM to docker as env variable
 docker run \

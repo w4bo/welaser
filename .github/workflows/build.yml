@@ -15,7 +15,7 @@ jobs:
           architecture: 'x64'
       - name: Launch
         run: |
-          cd demo7-replay
+          cd welaser
           mv .env.example .env
           sed -i 's/127.0.0.1/'$(hostname)'/g' .env
           sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
@@ -24,7 +24,7 @@ jobs:
           ./launch.sh
       - name: Tests
         run: |
-          cd demo7-replay/testScripts
+          cd welaser/testScripts
           pip install -r requirements.txt
           for FILE in *.py; do echo $FILE; python $FILE; done
   release:

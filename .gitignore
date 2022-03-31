@@ -9,7 +9,7 @@ dump.txt
 pwfile
 core-site.xml
 hdfs-site.xml
-demo7-replay/draco/config
+welaser/draco/config
 .idea/
 **/conf/archive
 **/keys
@@ -288,7 +288,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-demo7-replay/.env
+welaser/.env
 .env.test
 .env.production
 
