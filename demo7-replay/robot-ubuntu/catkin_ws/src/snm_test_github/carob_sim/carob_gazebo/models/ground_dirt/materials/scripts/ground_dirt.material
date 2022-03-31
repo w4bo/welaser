@@ -1,0 +1,18 @@
+    material GroundDirt/Image
+    {
+      technique
+      {
+        pass
+        {
+          ambient 0.5 0.5 0.5 1.0
+          diffuse 1.0 1.0 1.0 1.0
+          specular 0.03 0.03 0.03 1.000000
+
+          texture_unit
+          {
+            texture dirt_2.png
+            scale 0.1 0.1
+          }
+        }
+      }
+    }

@@ -1,0 +1,22 @@
+{
+  "carob":{
+        "topics": {
+            "cmd": {
+                "msg": "std_msgs.msg.String",
+                "type": "publisher"
+            },
+            "robotstatus": {
+                "msg": "std_msgs.msg.String",
+                "type": "subscriber"
+            },
+            "weedingstatus": {
+                "msg": "std_msgs.msg.String",
+                "type": "subscriber"
+            },
+            "gnss": {
+                "msg": "std_msgs.msg.String",
+                "type": "subscriber"
+            }
+        }
+    }
+}

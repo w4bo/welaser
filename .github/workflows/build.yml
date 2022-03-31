@@ -1,0 +1,43 @@
+name: "Build"
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.8.10'
+          architecture: 'x64'
+      - name: Launch
+        run: |
+          cd demo7-replay
+          mv .env.example .env
+          sed -i 's/127.0.0.1/'$(hostname)'/g' .env
+          sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
+          mv mosquitto/pwfile.example mosquitto/pwfile
+          mv service-dashboard/public/env.js.example service-dashboard/public/env.js
+          ./launch.sh
+      - name: Tests
+        run: |
+          cd demo7-replay/testScripts
+          pip install -r requirements.txt
+          for FILE in *.py; do echo $FILE; python $FILE; done
+  release:
+    needs:
+      - build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.0
+      - name: Release
+        run: |
+          npm install
+          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
