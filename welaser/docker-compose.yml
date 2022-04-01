@@ -136,7 +136,7 @@ services:
       - .env
 
   mongo-db-pers:
-    image: mongo:${MONGO_DB_VERSION}
+    image: mongo:4.2
     hostname: mongo-db-pers
     container_name: mongo-db-pers
     command: mongod --port ${MONGO_DB_PERS_PORT_INT}
