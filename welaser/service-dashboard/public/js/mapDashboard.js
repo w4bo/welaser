@@ -212,7 +212,10 @@ const mapDashboard = {
                     this.remoteSocket.on(this.socketName, data => {
                         this.handleRemoteSocketData(JSON.parse(data))
                     })
-                })
+                }).catch(err => {
+                    console.log(`http://${this.proxyIP}:${this.proxyPort}/api/register/${this.selectedTopic}`);
+                    console.log(err)
+                });
         },
 
         handleRemoteSocketData(data) {

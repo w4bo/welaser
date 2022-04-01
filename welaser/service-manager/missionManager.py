@@ -73,6 +73,7 @@ def stop_replay(replayName):
   producer.send(TOPIC_RM, response).get(timeout=30)
 
 for message in consumer:
+  print(message)
   if message.topic == TOPIC_MM:
     if message.value["type"] == "request":
       if message.value["command"] == "start":

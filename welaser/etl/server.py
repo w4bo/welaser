@@ -61,23 +61,20 @@ class S(BaseHTTPRequestHandler):
             producer.send('data.' + domain + ".realtime", value=d)
             producer.send('data.' + domain + ".realtime." + mission, value=d)
             producer.send(DRACO_RAW_TOPIC, value=d)
-            print(domain + " " + mission)
-            # self.i = (self.i + 1) % 1000
-            # if self.i == 1:
-            # logging.info('Alive...\n')
+            print(d)
 
 def run(server_class=HTTPServer, handler_class=S, port=DRACO_PORT):
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
     server_address = ('0.0.0.0', port)
     print(server_address)
     httpd = server_class(server_address, handler_class)
-    logging.info('Starting httpd...\n')
+    # logging.info('Starting httpd...\n')
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    logging.info('Stopping httpd...\n')
+    # logging.info('Stopping httpd...\n')
 
 print("running")
 run()

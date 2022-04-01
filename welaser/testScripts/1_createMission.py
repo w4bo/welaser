@@ -34,6 +34,7 @@ command = {
 }
 producer.send(conf["MISSION_MANAGER_TOPIC"], command)
 for msg in consumer:
+  print(msg)
   if msg.value["type"] == "response" and msg.value["domain"] == domain and msg.value["mission"] == mission:
     assert(msg.value["status"] == "created")
     assert(msg.value["domain_topic"] == "data.{}.realtime".format(domain))
