@@ -18,12 +18,14 @@ fi
 
 docker-compose up --build &>/dev/null &
 
-./wait-for-it.sh ${MOSQUITTO_IP}:${MOSQUITTO_PORT_EXT} --timeout=480 -- echo "Mosquitto is up"
 ./wait-for-it.sh ${ORION_IP}:${ORION_PORT_EXT} --timeout=480 -- echo "OCB is up"
+./wait-for-it.sh ${MOSQUITTO_IP}:${MOSQUITTO_PORT_EXT} --timeout=480 -- echo "Mosquitto is up"
 ./wait-for-it.sh ${IOTA_IP}:${IOTA_NORTH_PORT} --timeout=480 -- echo "IoTA is up"
 
+sleep 2
+
 # Setup the service group
-curl -ivX POST --trace-ascii dump.txt \
+curl -ivX POST \
   "http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/services" \
   -H "Content-Type: application/json" \
   -H "fiware-service: ${FIWARE_SERVICE}" \
@@ -38,5 +40,3 @@ curl -ivX POST --trace-ascii dump.txt \
    }
  ]
 }'
-
-rm dump.txt
