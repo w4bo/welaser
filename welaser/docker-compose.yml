@@ -99,7 +99,7 @@ services:
 
   # MQTT Broker
   mosquitto:
-    image: eclipse-mosquitto:2.0.11
+    image: eclipse-mosquitto:2.0.14
     hostname: mosquitto
     container_name: mosquitto
     expose:
