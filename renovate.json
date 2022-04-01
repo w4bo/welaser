@@ -16,7 +16,7 @@
       "semanticCommitType": "ci"
     }
   ],
-  "ignorePaths": ["**/service-dashboard/**", "**/service-dashboard/**"],
+  "ignorePaths": ["**/service-dashboard/**", "**/service-dashboard/**", "**/robot-ubuntu/**"],
   "prConcurrentLimit": 25,
   "prHourlyLimit": 0,
   "separateMajorMinor": true,
