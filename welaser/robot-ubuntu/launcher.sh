@@ -1,13 +1,12 @@
 #!/bin/sh
-
 set -e
 set -o xtrace
 
-echo $(pwd)
 if [ -f .env ]; then
   export $(echo $(cat .env | sed 's/#.*//g' | xargs) | envsubst)
 else
   echo "Could not find the .env file"
+  exit 1
 fi
 
 DOMAIN=${1}
@@ -17,9 +16,6 @@ NETWORK="welaser_default"
 
 # pass NUM to docker as env variable
 docker run \
-  --network ${NETWORK} \
-  --env ORION_IP=${ORION_IP} \
-  --env ORION_PORT=${ORION_PORT_EXT} \
   --env DOMAIN=${DOMAIN} \
   --env MISSION=${MISSION} \
   --name robot_${NUM}_${MISSION} \
