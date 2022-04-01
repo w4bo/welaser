@@ -67,7 +67,7 @@ assert(len(responseBody["id"]) > 0)
 # assert(int(responseBody["Temperature"]) >= 0)
 
 i = 0
-while i < 10 and len(robots) == 0:
+while i < 30 and len(robots) == 0:
     if i > 0:
         print("Retry...")
         sleep(10)
