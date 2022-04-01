@@ -16,11 +16,7 @@ jobs:
       - name: Launch
         run: |
           cd welaser
-          mv .env.example .env
-          sed -i 's/127.0.0.1/'$(hostname)'/g' .env
-          sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
-          mv mosquitto/pwfile.example mosquitto/pwfile
-          mv service-dashboard/public/env.js.example service-dashboard/public/env.js
+          scripts/config.sh
           ./launch.sh
       - name: Tests
         run: |

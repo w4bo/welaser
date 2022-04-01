@@ -29,7 +29,7 @@ while i < 10:
     producer.send(conf["DOMAIN_MANAGER_TOPIC"], command)
     print(command)
     i += 1
-    sleep(2)
+    sleep(1)
 producer.close()
 for msg in consumer:
   print(msg)

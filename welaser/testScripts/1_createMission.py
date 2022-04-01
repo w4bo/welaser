@@ -34,6 +34,7 @@ command = {
 }
 producer.send(conf["MISSION_MANAGER_TOPIC"], command)
 for msg in consumer:
+  print(msg)
   if msg.value["type"] == "response" and msg.value["domain"] == domain and msg.value["mission"] == mission:
     assert(msg.value["status"] == "created")
     assert(msg.value["domain_topic"] == "data.{}.realtime".format(domain))
@@ -46,24 +47,36 @@ headers = {
 }
 
 responseBody = []
+robots = []
 i = 0
-while i < 5 and len(responseBody) == 0:
+while i < 10 and len(responseBody) == 0:
     if i > 0:
         print("Retry...")
         sleep(10)
-    print("http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
     response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
     assert(response.status_code == 200)
     responseBody = [x for x in loads(response.text) if "Thermometer" == x["type"] and x["Domain"] == domain and x["Mission"] == mission]
     i += 1
-
+assert(len(responseBody) > 0)
+print(responseBody)
 responseBody = responseBody[0]
 assert(len(responseBody["id"]) > 0)
-assert(responseBody["Domain"] == domain)
-assert(responseBody["Latitude"] >= -90)
-assert(responseBody["Longitude"] >= -180)
-assert(responseBody["Status"])
-assert(int(responseBody["Temperature"]) >= 0)
+# assert(responseBody["Latitude"] >= -90)
+# assert(responseBody["Longitude"] >= -180)
+# assert(responseBody["Status"])
+# assert(int(responseBody["Temperature"]) >= 0)
+
+i = 0
+while i < 30 and len(robots) == 0:
+    if i > 0:
+        print("Retry...")
+        sleep(10)
+    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
+    assert(response.status_code == 200)
+    print([x for x in loads(response.text) if "ROBOT" == x["type"]])
+    robots = [x for x in loads(response.text) if "ROBOT" == x["type"] and "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
+    i += 1
+assert(len(robots) > 0)
 
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers={'fiware-service': 'openiot', 'fiware-servicepath': '/'}, data={})
 responseBody = loads(response.text)[0]

@@ -80,7 +80,7 @@ services:
 
   # Database (ORION)
   mongo-db-orion:
-    image: mongo:${MONGO_DB_VERSION}
+    image: mongo:4.2
     hostname: mongo-db-orion
     container_name: mongo-db-orion
     expose:
@@ -94,7 +94,7 @@ services:
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+        mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
 
   # MQTT Broker
@@ -136,7 +136,7 @@ services:
       - .env
 
   mongo-db-pers:
-    image: mongo:${MONGO_DB_VERSION}
+    image: mongo:4.2
     hostname: mongo-db-pers
     container_name: mongo-db-pers
     command: mongod --port ${MONGO_DB_PERS_PORT_INT}
@@ -147,7 +147,7 @@ services:
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+        mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
 
   # Draco
@@ -221,7 +221,7 @@ services:
 
   missionmanager:
     hostname: missionmanager
-    build: ./service-missionmanager
+    build: service-manager
     container_name: missionmanager
     networks:
       - default
@@ -229,17 +229,6 @@ services:
       # - ~/.ssh:/root/.ssh:ro
       - "${CODE_FOLDER}:${CODE_FOLDER}"
       - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      - .env
-
-  replaymanager:
-    hostname: replaymanager
-    build: ./service-replay/replay-manager
-    container_name: replaymanager
-    networks:
-      - default
-    volumes:
-      - ~/.ssh:/root/.ssh:ro
     env_file:
       - .env
 

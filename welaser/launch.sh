@@ -56,4 +56,4 @@ curl -iX POST \
 }'
 
 cd devices
-java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &
+java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>/dev/null &
