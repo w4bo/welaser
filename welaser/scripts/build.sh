@@ -6,4 +6,5 @@ set -o xtrace
 docker-compose build
 docker-compose --file kafka-docker/docker-compose.yml --env-file .env build
 docker build -t replay-executor ./service-replay
-docker build -t fiware-robot ./robot-ubuntu # --no-cache
+# docker build -t fiware-robot ./robot-ubuntu # --no-cache
+docker pull ghcr.io/w4bo/welaser-robot:master

@@ -24,7 +24,8 @@ docker run \
   --env MISSION=${MISSION} \
   --name robot_${NUM}_${MISSION} \
   --env-file .env \
-  fiware-robot &
+  ghcr.io/w4bo/welaser-robot:master &
+  # fiware-robot &
 
 while [ "$(docker ps | grep robot_${NUM}_${MISSION} | wc -l)" != 1 ]
 do
