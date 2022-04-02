@@ -80,7 +80,7 @@ services:
 
   # Database (ORION)
   mongo-db-orion:
-    image: mongo:4.2
+    image: mongo:4.4
     hostname: mongo-db-orion
     container_name: mongo-db-orion
     expose:
@@ -136,7 +136,7 @@ services:
       - .env
 
   mongo-db-pers:
-    image: mongo:4.2
+    image: mongo:4.4
     hostname: mongo-db-pers
     container_name: mongo-db-pers
     command: mongod --port ${MONGO_DB_PERS_PORT_INT}
