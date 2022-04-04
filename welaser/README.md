@@ -43,9 +43,9 @@ The GUI is available at `IP:8080`.
 The following command returns the entity status
 
 ```sh
-watch -n1 "curl -X GET 'IP:IOTA_NORTH_PORT/iot/devices' -H 'fiware-service: openiot' -H 'fiware-servicepath: /' | python -m json.tool"
-watch -n1 "curl -X GET 'IP:ORION_PORT_EXT/v2/entities' -H 'fiware-service: openiot' -H 'fiware-servicepath: /' | python -m json.tool"
-watch -n1 "curl -X GET 'IP:ORION_PORT_EXT/v2/entities?options=keyValues' -H 'fiware-service: openiot' -H 'fiware-servicepath: /' | python -m json.tool"
+watch -n1 "curl -X GET "${IP}:${IOTA_NORTH_PORT}/iot/devices" -H "fiware-service: ${FIWARE_SERVICE}" -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" | python -m json.tool"
+watch -n1 "curl -X GET "${IP}:${ORION_PORT_EXT}/v2/entities" -H "fiware-service: ${FIWARE_SERVICE}" -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" | python -m json.tool"
+watch -n1 "curl -X GET "${IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues" -H "fiware-service: ${FIWARE_SERVICE}" -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" | python -m json.tool"
 ```
 
 Shut down the environment
@@ -85,8 +85,8 @@ Note that, while creating an MQTT device and its attributes, we also defined sho
 The following command returns the entity status
 
 ```sh
-curl --location --request GET 'IP:ORION_PORT_EXT/v2/entities' --header 'fiware-service: openiot' --header 'fiware-servicepath: /' | python -m json.tool
-curl --location --request GET 'IP:ORION_PORT_EXT/v2/entities?options=keyValues' --header 'fiware-service: openiot' --header 'fiware-servicepath: /' | python -m json.tool
+curl --location --request GET "${IP}:${ORION_PORT_EXT}/v2/entities" --header "fiware-service: ${FIWARE_SERVICE}" --header "fiware-servicepath: ${FIWARE_SERVICEPATH}" | python -m json.tool
+curl --location --request GET "${IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues" --header "fiware-service: ${FIWARE_SERVICE}" --header "fiware-servicepath: ${FIWARE_SERVICEPATH}" | python -m json.tool
 ```
 
 The result is

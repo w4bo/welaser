@@ -141,8 +141,8 @@ const mapDashboard = {
         execute(deviceId, command) {
             const headers = {
                 'Content-Type': 'application/json',
-                'fiware-service': 'openiot',
-                'fiware-servicepath': '/'
+                'fiware-service': this.fiwareService,
+                'fiware-servicepath': this.fiwareServicePath
             }
             var data = {}
             data[command] = {

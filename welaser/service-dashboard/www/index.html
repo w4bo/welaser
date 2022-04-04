@@ -62,16 +62,18 @@
 <script>
     Vue.mixin({
         data: () => ({
-            fiwareIP: config["IP"],
-            webServerIP: config["IP"],
-            proxyIP: config["PROXY_IP"],
-            proxyPort: config["PROXY_PORT_EXT"],
-            IOTAPort: config["IOTA_NORTH_PORT"],
-            OCBPort: config["ORION_PORT_EXT"],
-            webServerPort: config["WEB_SERVER_PORT_EXT"],
-            domainManagerTopic: 'service.domainmanager',
-            missionManagerTopic: 'service.missionmanager',
-            replayManagerTopic: 'service.replaymanager'
+            fiwareIP: config['IP'],
+            webServerIP: config['IP'],
+            proxyIP: config['PROXY_IP'],
+            proxyPort: config['PROXY_PORT_EXT'],
+            IOTAPort: config['IOTA_NORTH_PORT'],
+            OCBPort: config['ORION_PORT_EXT'],
+            webServerPort: config['WEB_SERVER_PORT_EXT'],
+            domainManagerTopic: config['DOMAIN_MANAGER_TOPIC'],
+            missionManagerTopic: config['MISSION_MANAGER_TOPIC'],
+            replayManagerTopic: config['REPLAY_MANAGER_TOPIC'],
+            fiwareService: config['FIWARE_SERVICE'],
+            fiwareServicePath: config['FIWARE_SERVICEPATH']
         }),
     })
 
