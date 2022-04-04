@@ -62,10 +62,10 @@ print(responseBody)
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
-# assert(responseBody["Latitude"] >= -90)
-# assert(responseBody["Longitude"] >= -180)
-# assert(responseBody["Status"])
-# assert(int(responseBody["Temperature"]) >= 0)
+assert(responseBody["Latitude"] >= -90)
+assert(responseBody["Longitude"] >= -180)
+assert(responseBody["Status"])
+assert(int(responseBody["Temperature"]) >= 0)
 
 received = False  # global variable for message reception
 
