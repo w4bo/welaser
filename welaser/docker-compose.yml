@@ -6,7 +6,7 @@ version: "3.5"
 services:
   # Orion is the context broker
   orion:
-    image: fiware/orion:${ORION_VERSION}   # This variable `${ORION_VERSION}` is drawn from the `.env` file
+    image: fiware/orion:2.5.2              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
     depends_on:
@@ -14,9 +14,9 @@ services:
     networks:
       - default                            # Name of the Docker network
     expose:
-      - "${ORION_PORT}"                    # Port that is accessible from outside the container
+      - "${ORION_PORT_INT}"                    # Port that is accessible from outside the container
     ports:
-      - "${ORION_PORT_EXT}:${ORION_PORT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
+      - "${ORION_PORT_EXT}:${ORION_PORT_INT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
     # Append this string to the final command that is executed by the container
     # Here, we are launching the OCB with: the possibility to perform "cors" requests, the name of the database, and the maximum payload parameter
     # You can also set the log level by adding `-logLevel DEBUG`
@@ -54,24 +54,24 @@ services:
         soft: 60000000
         hard: 60000000
     environment:
-      - IOTA_CB_HOST=orion                      # Name of the context broker to update context
-      - IOTA_CB_PORT=${ORION_PORT}              # Port the context broker listens on to update context
-      - IOTA_NORTH_PORT=${IOTA_NORTH_PORT}
+      - "IOTA_CB_HOST=${ORION_IP}"              # Name of the context broker to update context
+      - "IOTA_CB_PORT=${ORION_PORT_EXT}"        # Port the context broker listens on to update context
+      - "IOTA_NORTH_PORT=${IOTA_NORTH_PORT}"
       - IOTA_REGISTRY_TYPE=mongo-db-orion       # Whether to hold IoT device info in memory or in a database
       - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
       - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
       - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
       - IOTA_AUTOCAST=true                      # Ensure Ultralight number values are read as numbers not strings
-      - IOTA_MONGO_HOST=mongo-db-orion                  # The host name of MongoDB
-      - IOTA_MONGO_PORT=${MONGO_DB_FIWARE_PORT_INT}     # The port mongoDB is listening on
-      - IOTA_MONGO_DB=iotagentjs                        # The name of the database used in mongoDB
+      - IOTA_MONGO_HOST=mongo-db-orion                # The host name of MongoDB
+      - "IOTA_MONGO_PORT=${MONGO_DB_FIWARE_PORT_INT}" # The port mongoDB is listening on
+      - IOTA_MONGO_DB=iotagentjs                      # The name of the database used in mongoDB
       - "IOTA_MQTT_HOST=${MOSQUITTO_IP}"        # The host name of the MQTT Broker
       - "IOTA_MQTT_PORT=${MOSQUITTO_PORT_EXT}"  # The port the MQTT Broker is listening on to receive topics
       - "IOTA_MQTT_USERNAME=${MOSQUITTO_USER}"  # MQTT username
       - "IOTA_MQTT_PASSWORD=${MOSQUITTO_PWD}"   # MQTT password
       - IOTA_MQTT_CLIENT_ID=iota
       - IOTA_DEFAULT_RESOURCE=                  # Default is blank. I'm using MQTT so I don't need a resource
-      - "IOTA_PROVIDER_URL=http://iot-agent:${IOTA_NORTH_PORT}"
+      - "IOTA_PROVIDER_URL=http://${IOTA_IP}:${IOTA_NORTH_PORT}"
       - NODE_OPTIONS=--max_old_space_size=60000
       - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
       - IOTA_MULTI_CORE=True
