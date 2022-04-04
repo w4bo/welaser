@@ -13,8 +13,8 @@ docker run -v $(pwd)/mosquitto:/mosquitto -it eclipse-mosquitto sh
 ```
 and from within the container
 ```sh
-cd mosquitto/config
-mosquitto_passwd -c pwfile <user> <pwd>
+cd mosquitto
+mosquitto_passwd -c pwfile <user>
 ```
 Where `<user>` and `<pwd>` corresponds to `MOSQUITTO_USER` and `MOSQUITTO_PWD` variables defined in `.env`
 
