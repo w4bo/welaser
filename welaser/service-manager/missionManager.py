@@ -1,7 +1,11 @@
 from json import loads, dumps
 from kafka import KafkaConsumer, KafkaProducer
 import os
+from time import sleep
 import uuid
+
+# Wait for kafka to be up and running
+sleep(30)
 
 TOPIC_MM = os.getenv("MISSION_MANAGER_TOPIC")
 TOPIC_DM = os.getenv("DOMAIN_MANAGER_TOPIC")
@@ -20,6 +24,7 @@ producer = KafkaProducer(
 )
 
 consumer = KafkaConsumer(
+  group_id = str(uuid.uuid1()),
   bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT_EXT],
   auto_offset_reset='earliest',
   enable_auto_commit=True,

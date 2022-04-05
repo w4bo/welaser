@@ -1,8 +1,13 @@
 from kafka import KafkaConsumer
 from pymongo import MongoClient
+from time import sleep
 import json
 import os
 import time
+import uuid
+
+# Wait for kafka to be up and running
+sleep(30)
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
@@ -14,8 +19,8 @@ MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 
 consumer = KafkaConsumer(
     DRACO_RAW_TOPIC,
+    group_id = str(uuid.uuid1()),
     bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
-    group_id='service.writetomongo',
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
 
