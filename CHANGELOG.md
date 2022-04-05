@@ -1,3 +1,19 @@
+### [1.0.1](https://github.com/w4bo/welaser/compare/1.0.0...1.0.1) (2022-04-05)
+
+
+### Bug Fixes
+
+* **kafka:** add group id to consumers and fix topics in the dashboard ([d32980c](https://github.com/w4bo/welaser/commit/d32980cd25b1e9adb2ee34418cf5315f74226528))
+
+
+### Dependency updates
+
+* **deps:** update dependency fiware/iotagent-json to v1.17.2 ([22612f4](https://github.com/w4bo/welaser/commit/22612f40063f14c3f36b0760cd7a1e1886629e0f))
+* **deps:** update dependency fiware/iotagent-json to v1.21.1 ([69dff33](https://github.com/w4bo/welaser/commit/69dff33c67bf9dc299837919f7db200b9231af25))
+* **deps:** update dependency fiware/orion to v2.6.1 ([024dc39](https://github.com/w4bo/welaser/commit/024dc39d9e2fde075ed096c300bce486d0d53ff9))
+* **deps:** update dependency fiware/orion to v3 ([3313f39](https://github.com/w4bo/welaser/commit/3313f39e0d1124f32aedca52f285ed91da548581))
+* **deps:** update dependency pymongo to v4.1.0 ([2faf1fc](https://github.com/w4bo/welaser/commit/2faf1fc94f5cda86bf720dbf534ad9e494e04a25))
+
 ## 1.0.0 (2022-04-04)
 
 
