@@ -6,7 +6,7 @@ version: "3.5"
 services:
   # Orion is the context broker
   orion:
-    image: fiware/orion:2.6.1              # This variable `${ORION_VERSION}` is drawn from the `.env` file
+    image: fiware/orion:3.6.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
     depends_on:
