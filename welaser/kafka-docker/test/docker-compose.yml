@@ -46,7 +46,7 @@ services:
       - "*/*.kafka.sh"
 
   kafkacattest:
-    image: confluentinc/cp-kafkacat:7.0.2
+    image: confluentinc/cp-kafkacat:7.1.0
     environment:
        - BROKER_LIST
        - KAFKA_VERSION=${KAFKA_VERSION-2.7.0}
