@@ -1,3 +1,15 @@
+### [1.0.2](https://github.com/w4bo/welaser/compare/1.0.1...1.0.2) (2022-04-07)
+
+
+### Bug Fixes
+
+* **mongodb:** use a single mongodb instance ([57d74c0](https://github.com/w4bo/welaser/commit/57d74c075449d0d09433443149046b42d5a0bc55))
+
+
+### Dependency updates
+
+* **deps:** update dependency confluentinc/cp-kafkacat to v7.1.0 ([fefb50f](https://github.com/w4bo/welaser/commit/fefb50f99f84f0a8a7afc9e2f2822c029f1379cb))
+
 ### [1.0.1](https://github.com/w4bo/welaser/compare/1.0.0...1.0.1) (2022-04-05)
 
 
