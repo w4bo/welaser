@@ -140,6 +140,7 @@ An example of topic for the thermometer is
 An example of MQTT message sent by an MQTT publisher running on docker is:
 
 ```
+source scripts/loadEnv.sh
 docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 37.5}' -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 38.5, "time": 1635433018000}' -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 ```
