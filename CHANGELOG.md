@@ -1,3 +1,10 @@
+### [1.0.3](https://github.com/w4bo/welaser/compare/1.0.2...1.0.3) (2022-04-12)
+
+
+### Bug Fixes
+
+* **ci:** test java version ([#124](https://github.com/w4bo/welaser/issues/124)) ([4a02fbb](https://github.com/w4bo/welaser/commit/4a02fbb6431e4f6401e2c7b0d20d32d427e8c361))
+
 ### [1.0.2](https://github.com/w4bo/welaser/compare/1.0.1...1.0.2) (2022-04-07)
 
 
