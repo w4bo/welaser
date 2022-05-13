@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -xo
 
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
