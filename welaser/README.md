@@ -23,12 +23,12 @@ You can edit `MOSQUITTO_PORT_EXT` in `.env` to specify another port
 
 Register a subscriber
 ```sh
-docker run -it --rm efrecon/mqtt-client sub -h <ip> -p 1883 -t "foo" -u <user> -P <pwd>
+docker run -it --rm efrecon/mqtt-client sub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "foo" -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 ```
 
 Publish some messages
 ```sh
-docker run -it --rm efrecon/mqtt-client pub -h <ip> -p 1883 -t "foo" -m "bar" -u <user> -P <pwd>
+docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "foo" -m "bar" -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 ```
 
 ## Interacting with the demo
@@ -140,8 +140,9 @@ An example of topic for the thermometer is
 An example of MQTT message sent by an MQTT publisher running on docker is:
 
 ```
-docker run -it --rm efrecon/mqtt-client pub -h MOSQUITTO_IP -p MOSQUITTO_PORT_EXT -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 37.5}' -u MOSQUITTO_USER -P MOSQUITTO_PWD
-docker run -it --rm efrecon/mqtt-client pub -h MOSQUITTO_IP -p MOSQUITTO_PORT_EXT -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 38.5, "time": 1635433018000}' -u MOSQUITTO_USER -P MOSQUITTO_PWD
+source scripts/loadEnv.sh
+docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 37.5}' -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
+docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "/4jggokgpepnvsb2uv4s40d59ov/thermometer1/attrs" -m '{"t": 38.5, "time": 1635433018000}' -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 ```
 
 ### HDFS
@@ -150,7 +151,3 @@ docker run -it --rm efrecon/mqtt-client pub -h MOSQUITTO_IP -p MOSQUITTO_PORT_EX
 hdfs dfs -ls /user/fiware/camera/d1/m1/urn-ngsi-ld-camera-1m1
 hdfs dfs -get /user/fiware/camera/d1/m1/urn-ngsi-ld-camera-1m1/urn-ngsi-ld-camera-1m1_20211103110958836.png
 ```
-
-### Known issues
-
-- The `replayexecutor` has problems while writing to Kafka. This only happens when the `replayexecutor` is run from a docker container

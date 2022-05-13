@@ -10,7 +10,7 @@ services:
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
     depends_on:
-      - mongo-db-orion                     # Create the `mongo-db-orion` before this container
+      - mongo-db                     # Create the `mongo-db` before this container
     networks:
       - default                            # Name of the Docker network
     expose:
@@ -20,7 +20,7 @@ services:
     # Append this string to the final command that is executed by the container
     # Here, we are launching the OCB with: the possibility to perform "cors" requests, the name of the database, and the maximum payload parameter
     # You can also set the log level by adding `-logLevel DEBUG`
-    command: -corsOrigin __ALL -dbhost mongo-db-orion -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
+    command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
       test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
       interval: 5s
@@ -34,8 +34,9 @@ services:
     hostname: iot-agent
     container_name: iot-agent
     depends_on:
-      - mongo-db-orion
+      - mongo-db
       - mosquitto
+      - orion
     networks:
       - default
     expose:
@@ -57,13 +58,13 @@ services:
       - "IOTA_CB_HOST=${ORION_IP}"              # Name of the context broker to update context
       - "IOTA_CB_PORT=${ORION_PORT_EXT}"        # Port the context broker listens on to update context
       - "IOTA_NORTH_PORT=${IOTA_NORTH_PORT}"
-      - IOTA_REGISTRY_TYPE=mongo-db-orion       # Whether to hold IoT device info in memory or in a database
+      - IOTA_REGISTRY_TYPE=mongo-db       # Whether to hold IoT device info in memory or in a database
       - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
       - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
       - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
       - IOTA_AUTOCAST=true                      # Ensure Ultralight number values are read as numbers not strings
-      - IOTA_MONGO_HOST=mongo-db-orion                # The host name of MongoDB
-      - "IOTA_MONGO_PORT=${MONGO_DB_FIWARE_PORT_INT}" # The port mongoDB is listening on
+      - IOTA_MONGO_HOST=mongo-db                # The host name of MongoDB
+      - "IOTA_MONGO_PORT=${MONGO_DB_PERS_PORT_INT}" # The port mongoDB is listening on
       - IOTA_MONGO_DB=iotagentjs                      # The name of the database used in mongoDB
       - "IOTA_MQTT_HOST=${MOSQUITTO_IP}"        # The host name of the MQTT Broker
       - "IOTA_MQTT_PORT=${MOSQUITTO_PORT_EXT}"  # The port the MQTT Broker is listening on to receive topics
@@ -79,18 +80,18 @@ services:
       interval: 5s
 
   # Database (ORION)
-  mongo-db-orion:
+  mongo-db:
     image: mongo:5.0
-    hostname: mongo-db-orion
-    container_name: mongo-db-orion
+    hostname: mongo-db
+    container_name: mongo-db
     expose:
-      - "${MONGO_DB_FIWARE_PORT_INT}"
+      - "${MONGO_DB_PERS_PORT_INT}"
     ports:
-      - "${MONGO_DB_FIWARE_PORT_EXT}:${MONGO_DB_FIWARE_PORT_INT}" # 27017
+      - "${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}" # 27017
     networks:
       - default
-    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db-orion`
-      - mongo-db-orion:/data
+    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
+      - mongo-db:/data
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
@@ -127,28 +128,12 @@ services:
     volumes:
       - ./service-dashboard:/code
     depends_on:
-#      - mongo-db-web
-      - mongo-db-pers
+      - mongo-db
       - orion
       - iot-agent
       - etl
     env_file:
       - .env
-
-  mongo-db-pers:
-    image: mongo:5.0
-    hostname: mongo-db-pers
-    container_name: mongo-db-pers
-    command: mongod --port ${MONGO_DB_PERS_PORT_INT}
-    networks:
-      - default
-    ports:
-      - ${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}
-    healthcheck:
-      test: |
-        host=`hostname --ip-address || echo '127.0.0.1'`;
-        mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
-      interval: 5s
 
   # Draco
   # In this mode, draco builds from a local image where the configuration is copied into
@@ -233,7 +218,7 @@ services:
       - .env
 
 volumes:
-  mongo-db-orion: ~
+  mongo-db: ~
 
 networks:
   default_net:
