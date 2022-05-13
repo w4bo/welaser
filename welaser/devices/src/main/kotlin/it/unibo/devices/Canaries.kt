@@ -27,17 +27,19 @@ fun main(args: Array<String>) {
     val p7: IProtocol = ProtocolKafka()
     val p8: IProtocol = ProtocolKafka()
 
-    val executor = Executors.newFixedThreadPool(8)
+    val executor = Executors.newCachedThreadPool()
     listOf(
-        DeviceFIWARE(true, 1000, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
-        DeviceFIWARE(true, 1000, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p2),
-        DeviceMQTT(true, 1000, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p3),
-        DeviceMQTT(true, 1000, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p4),
-        DeviceSubscription(true, 1000, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p5),
-        DeviceSubscription(true, 1000, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p6),
-        DeviceKafka(true, 1000, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p7),
-        DeviceKafka(true, 1000, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p8)
+        DeviceFIWARE(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
+        DeviceFIWARE(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p2),
+        DeviceMQTT(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p3),
+        DeviceMQTT(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p4),
+        DeviceSubscription(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p5),
+        DeviceSubscription(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p6),
+        DeviceKafka(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p7),
+        DeviceKafka(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p8)
     ).forEach { d ->
-        executor.submit { d.run() }
+        executor.submit {
+            d.run()
+        }
     }
 }

@@ -5,24 +5,75 @@ import java.io.File
 import java.net.URL
 import java.util.concurrent.Executors
 
-class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
+object EntityFactory {
+    fun createByType(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
+        val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+        return when (initStatus.getString("type")) {
+            "AgriRobot" -> Robot(fileName, timeoutMs, times)
+            else -> EntityFIWARE(fileName, timeoutMs, times)
+        }
+    }
+}
+
+class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
+    EntityFIWARE(fileName, timeoutMs, times) {
+
+    var missionPlan: JSONObject = JSONObject()
+    var coords: MutableList<Any> = mutableListOf()
+
+    override fun getStatus(): String {
+        initStatus.put("speed", Math.random())
+        initStatus.put("bearing", Math.random())
+        initStatus.put("heading", Math.random())
+        return initStatus.toString()
+    }
+
+    fun reset() {
+        status = false
+        missionPlan = JSONObject()
+    }
+
+    override fun exec(commandName: String, payload: String) {
+        when (commandName) {
+            "running" -> {
+                status = true
+                missionPlan = JSONObject(httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues"))
+                println(missionPlan)
+                coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
+            }
+            "stop" -> reset()
+            "resume" -> status = false
+        }
+    }
+
+    override fun updatePosition() {
+        if (coords.isNotEmpty()) {
+            val c = coords.removeAt(0)
+            println("Moving to $c")
+            initStatus.getJSONObject("location").put("coordinates", c)
+        } else {
+            reset()
+        }
+    }
+}
+
+open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     Device(false, timeoutMs, false, -1.0, -1.0, "canary", "dummy", DummySensor(), ProtocolHTTP(), times) {
 
     val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+    val type: String = initStatus.getString("type")
 
-    override var status = when (initStatus.getString("type")) {
+    override var status = when (type) {
         "Device" -> true
-        "AgriRobot" -> true
         else -> false
     }
 
-    override var moving = when (initStatus.getString("type")) {
+    override var moving = when (type) {
         "Device" -> true
-        "AgriRobot" -> true
         else -> false
     }
 
-    override var s: ISensor = when (initStatus.getString("type")) {
+    override var s: ISensor = when (type) {
         "Device" -> {
             if (initStatus.getJSONArray("controlledProperty").contains("image")) {
                 Camera()
@@ -36,11 +87,6 @@ class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     override fun getStatus(): String {
         when (initStatus.getString("type")) {
             "Device" -> initStatus.put("value", s.sense())
-            "AgriRobot" -> {
-                initStatus.put("speed", Math.random())
-                initStatus.put("bearing", Math.random())
-                initStatus.put("heading", Math.random())
-            }
         }
         return initStatus.toString()
     }
@@ -56,20 +102,5 @@ class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
 
     override fun sense(): String {
         return """{"actionType": "update", "entities": [${getStatus()}]}"""
-    }
-}
-
-fun main() {
-    val loader = Thread.currentThread().contextClassLoader
-    val url: URL = loader.getResource("datamodels")!!
-    val path: String = url.getPath()
-    val executor = Executors.newCachedThreadPool()
-    File(path).listFiles().map {
-        println(it)
-        EntityFIWARE(it.path, 100)
-    }.forEach { d ->
-        executor.submit {
-            d.run()
-        }
     }
 }

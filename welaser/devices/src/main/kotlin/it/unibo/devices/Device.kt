@@ -1,7 +1,4 @@
 package it.unibo.devices
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.cdimascio.dotenv.Dotenv
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -11,20 +8,21 @@ import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.json.JSONObject
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
-import java.util.Map
 import kotlin.random.Random
 
-// Get some costants. NB: comments from the dotenv file will be loaded as strings as well! Be careful!
+// NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("../.env").load()
 val DRACO_IP = dotenv["DRACO_IP"]
 val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"]
 val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"]
+val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}"
 val IOTA_IP = dotenv["IOTA_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"]
 val FIWARE_SERVICE = dotenv["FIWARE_SERVICE"]
@@ -106,7 +104,7 @@ interface IActuator : IThing {
      * Execute a command
      * @param m given parameters
      */
-    fun exec(m: Map<String, String>)
+    fun exec(commandName: String, payload: String)
 }
 
 /**
@@ -131,7 +129,39 @@ interface IProtocol {
      * @param topic listen to the current topic, if any
      * @param f callback function
      */
-    fun listen(topic: String = "", f: (m: Map<String, String>) -> Unit = { })
+    fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> })
+}
+
+enum class REQUEST_TYPE {GET, POST, PUT, DELETE}
+
+fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET): String {
+    try {
+        val client = HttpClient.newBuilder().build()
+        var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
+        if (s != null) {
+            requestBuilder = if (requestType == REQUEST_TYPE.PUT) { requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(s)) } else { requestBuilder.POST(HttpRequest.BodyPublishers.ofString(s)) }
+        } else {
+            requestBuilder = if (requestType == REQUEST_TYPE.DELETE) { requestBuilder.DELETE() } else { requestBuilder.GET() }
+        }
+        headers.forEach {
+            requestBuilder = requestBuilder.header(it.first, it.second)
+        }
+        val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+        if (response.body().contains("error")) {
+            if (response.body().contains("Already Exists")) {
+                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), requestType = REQUEST_TYPE.DELETE)
+                httpRequest(url, s, headers, requestType)
+            } else {
+                throw IllegalArgumentException(response.body())
+            }
+        }
+        // println(url)
+        // println(response.body())
+        return response.body()!!
+    } catch(e: Exception) {
+        e.printStackTrace()
+        throw IllegalArgumentException(e.message)
+    }
 }
 
 class ProtocolMQTT : IProtocol {
@@ -144,17 +174,7 @@ class ProtocolMQTT : IProtocol {
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         client.connect(connOpts)
-        val client = HttpClient.newBuilder().build();
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices"))
-                .POST(HttpRequest.BodyPublishers.ofString(s))
-                .header("Content-Type", "application/json")
-                .header("fiware-service", FIWARE_SERVICE)
-                .header("fiware-servicepath", FIWARE_SERVICEPATH)
-                .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        // println(response.body())
+        httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
 
     override fun send(payload: String, topic: String) {
@@ -162,67 +182,40 @@ class ProtocolMQTT : IProtocol {
         client.publish(topic, payload.toByteArray(), 0, false)
     }
 
-    override fun listen(topic: String, f: (m: Map<String, String>) -> Unit) {
+    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
             val payload: ByteArray = message!!.payload
-            val mapper = ObjectMapper().registerKotlinModule()
-            f(mapper.readValue(payload))
+            // val mapper = ObjectMapper().registerKotlinModule()
+            // f(mapper.readValue(payload))
+            val o = JSONObject(payload)
+            val commandName = o.keys().next()!!
+            f(commandName, o.getJSONObject(commandName).toString())
             client.publish(topic + "exe", MqttMessage(payload))
         }
     }
 }
 
 class ProtocolSubscription : IProtocol {
-    val client = HttpClient.newBuilder().build()
-    val address = "http://${DRACO_IP}:${DRACO_PORT_EXT}/"
     override fun register(s: String) {}
 
     override fun send(payload: String, topic: String) {
-        // println(payload)
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create(address))
-                .POST(HttpRequest.BodyPublishers.ofString(payload))
-                .header("Content-Type", "application/json")
-                .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        // println(response.body())
+        httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 
-    override fun listen(topic: String, f: (m: Map<String, String>) -> Unit) {}
+    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolHTTP : IProtocol {
-    val client = HttpClient.newBuilder().build()
 
     override fun register(s: String) {
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues"))
-                .POST(HttpRequest.BodyPublishers.ofString(s))
-                .header("Content-Type", "application/json")
-                .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.body().contains("error") && !response.body().contains("Already Exists")) {
-            throw java.lang.IllegalArgumentException(response.body())
-        }
+        httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 
-    override fun send(payload: String, topic: String) {
-        // println(payload)
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/op/update?options=keyValues"))
-                .POST(HttpRequest.BodyPublishers.ofString(payload))
-                .header("Content-Type", "application/json")
-                .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.body().contains("error")) {
-            throw java.lang.IllegalArgumentException(response.body())
-        }
+    override fun send(s: String, topic: String) {
+        httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 
-    override fun listen(topic: String, f: (m: Map<String, String>) -> Unit) {}
+    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolKafka : IProtocol {
@@ -242,7 +235,7 @@ class ProtocolKafka : IProtocol {
         producer!!.send(ProducerRecord("data.canary.realtime", "foo", payload))
     }
 
-    override fun listen(topic: String, f: (m: Map<String, String>) -> Unit) {}
+    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 abstract class Device(
@@ -260,7 +253,7 @@ abstract class Device(
     open val id: String = "" + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
-    open val listenCallback: (m: Map<String, String>) -> Unit = {}
+    open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
     val r = Random(3)
     abstract fun getStatus(): String
     open fun getRegister(): String = getStatus()
@@ -276,8 +269,8 @@ abstract class Device(
     /**
      * Execute a command
      */
-    override fun exec(m: Map<String, String>) {
-        status = m.entrySet().first().key == "on"
+    override fun exec(commandName: String, payload: String) {
+        status = commandName == "on"
     }
 
     /**
@@ -297,10 +290,12 @@ abstract class Device(
         register(getRegister())
         listen(listenTopic, listenCallback)
         var i = 0
+        // println(status)
         while (i++ < times) {
             Thread.sleep(timeoutMs.toLong())
             if (status) {
                 val s = sense()
+                // println(s)
                 send(s, sendTopic)
                 updatePosition()
             }
@@ -349,16 +344,27 @@ open class DeviceFIWARE(
     p: IProtocol
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override fun getStatus(): String {
+//        return """{
+//                "id": "urn:ngsi-ld:$id",
+//                "type": "OCB-${getType()}",
+//                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": {"value": "${s.sense()}",                "type": "String"},
+//                "Status":                                                            {"value": $status,                       "type": "Boolean"},
+//                "Time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
+//                "Latitude":                                                          {"value": $latitude,                     "type": "Float"},
+//                "Longitude":                                                         {"value": $longitude,                    "type": "Float"},
+//                "Mission":                                                           {"value": "$mission",                    "type": "String"},
+//                "Domain":                                                            {"value": "$domain",                     "type": "String"}
+//            }""".replace("\\s+".toRegex(), " ")
         return """{
                 "id": "urn:ngsi-ld:$id",
                 "type": "OCB-${getType()}",
-                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}":    {"value": "${s.sense()}",                   "type": "String"},
-                "Status":                                                               {"value": $status,                          "type": "Boolean"},
-                "Time":                                                                 {"value": ${System.currentTimeMillis()},    "type": "Integer"},
-                "Latitude":                                                             {"value": $latitude,                        "type": "Float"},
-                "Longitude":                                                            {"value": $longitude,                       "type": "Float"},
-                "Mission":                                                              {"value": "$mission",                       "type": "String"},
-                "Domain":                                                               {"value": "$domain",                        "type": "String"}
+                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": "${s.sense()}",               
+                "Status":                                                            $status,                      
+                "Time":                                                              ${System.currentTimeMillis()},
+                "Latitude":                                                          $latitude,                    
+                "Longitude":                                                         $longitude,                   
+                "Mission":                                                           "$mission",                    
+                "Domain":                                                            "$domain"               
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -395,7 +401,7 @@ class DeviceMQTT(
     override val id = getType().toString() + getId()
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
-    override val listenCallback: (m: Map<String, String>) -> Unit = { m -> exec(m) }
+    override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
     override fun getRegister(): String {
         return """{
                 "devices": 
