@@ -18,6 +18,7 @@ jobs:
           # token: ${{ secrets.GITHUB_TOKEN }}
       - name: Submodule
         run:
+          cd welaser
           git submodule init
           git submodule update
       - name: Setup java
