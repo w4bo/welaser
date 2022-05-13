@@ -17,8 +17,18 @@ test {
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java { toolchain {languageVersion = JavaLanguageVersion.of(14) } }
+
+kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of(14)) } }
+
+compileJava {
+    sourceCompatibility = '14'
+    targetCompatibility = '14'
+}
+
+compileKotlin { kotlinOptions { jvmTarget = "14" } }
+
+compileTestKotlin { kotlinOptions { jvmTarget = "14" } }
 
 shadowJar { zip64 = true }
 
@@ -41,10 +51,12 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.json:json:20220320'
     implementation 'io.github.cdimascio:dotenv-kotlin:6.2.2'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     testCompileOnly 'org.slf4j:slf4j-simple:1.7.32'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'

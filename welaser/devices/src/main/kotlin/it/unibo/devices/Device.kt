@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.cdimascio.dotenv.Dotenv
-import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -12,7 +11,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-import java.io.File
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -40,7 +38,7 @@ val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"]
 /**
  * Some entity types
  */
-enum class EntityType { Camera, Thermometer }
+enum class EntityType { Camera, Thermometer, Dummy }
 
 /**
  * Any thing
@@ -78,6 +76,12 @@ class Camera : ISensor {
         // val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
         return Base64.getEncoder().encodeToString(fileContent)
     }
+}
+
+/** A dummy sensor */
+class DummySensor : ISensor {
+    override fun getType(): EntityType = EntityType.Dummy
+    override fun sense() = "foo"
 }
 
 /**
@@ -194,24 +198,28 @@ class ProtocolHTTP : IProtocol {
     override fun register(s: String) {
         val request =
             HttpRequest.newBuilder()
-                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities"))
+                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues"))
                 .POST(HttpRequest.BodyPublishers.ofString(s))
                 .header("Content-Type", "application/json")
                 .build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        // println(response.body())
+        if (response.body().contains("error") && !response.body().contains("Already Exists")) {
+            throw java.lang.IllegalArgumentException(response.body())
+        }
     }
 
     override fun send(payload: String, topic: String) {
         // println(payload)
         val request =
             HttpRequest.newBuilder()
-                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/op/update"))
+                .uri(URI.create("http://${ORION_IP}:${ORION_PORT_EXT}/v2/op/update?options=keyValues"))
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .header("Content-Type", "application/json")
                 .build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        // println(response.body())
+        if (response.body().contains("error")) {
+            throw java.lang.IllegalArgumentException(response.body())
+        }
     }
 
     override fun listen(topic: String, f: (m: Map<String, String>) -> Unit) {}
@@ -238,14 +246,14 @@ class ProtocolKafka : IProtocol {
 }
 
 abstract class Device(
-    var status: Boolean,
+    open var status: Boolean,
     val timeoutMs: Int,
-    val moving: Boolean,
+    open val moving: Boolean,
     var latitude: Double,
     var longitude: Double,
     val domain: String,
     val mission: String,
-    val s: ISensor,
+    open val s: ISensor,
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
@@ -265,10 +273,26 @@ abstract class Device(
         }
     }
 
+    /**
+     * Execute a command
+     */
     override fun exec(m: Map<String, String>) {
         status = m.entrySet().first().key == "on"
     }
 
+    /**
+     * Update the position of the device
+     */
+    open fun updatePosition() {
+        if (moving) {
+            latitude += (r.nextDouble() - 0.5) / 100000
+            longitude += (r.nextDouble() - 0.5) / 100000
+        }
+    }
+
+    /**
+     * Control loop
+     */
     fun run() {
         register(getRegister())
         listen(listenTopic, listenCallback)
@@ -277,12 +301,8 @@ abstract class Device(
             Thread.sleep(timeoutMs.toLong())
             if (status) {
                 val s = sense()
-                // println(s)
                 send(s, sendTopic)
-            }
-            if (moving) {
-                latitude += (r.nextDouble() - 0.5) / 100000
-                longitude += (r.nextDouble() - 0.5) / 100000
+                updatePosition()
             }
         }
     }
@@ -303,14 +323,14 @@ class DeviceSubscription(
         return """{"data": [{
                 "id": "urn:ngsi-ld:$id",
                 "type": "Sub-${getType()}",
-                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}":    {"value": "${s.sense()}",                   "type": "String"},
-                "Status":                                                               {"value": $status,                          "type": "Boolean"},
-                "Time":                                                                 {"value": ${System.currentTimeMillis()},    "type": "Integer"},
-                "Latitude":                                                             {"value": $latitude,                        "type": "Float"},
-                "Location":                                                             {"value": "foo",                            "type": "String"},
-                "Longitude":                                                            {"value": $longitude,                       "type": "Float"},
-                "Mission":                                                              {"value": "$mission",                       "type": "String"},
-                "Domain":                                                               {"value": "$domain",                        "type": "String"}
+                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": {"value": "${s.sense()}",                "type": "String"},
+                "Status":                                                            {"value": $status,                       "type": "Boolean"},
+                "Time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
+                "Latitude":                                                          {"value": $latitude,                     "type": "Float"},
+                "Location":                                                          {"value": "foo",                         "type": "String"},
+                "Longitude":                                                         {"value": $longitude,                    "type": "Float"},
+                "Mission":                                                           {"value": "$mission",                    "type": "String"},
+                "Domain":                                                            {"value": "$domain",                     "type": "String"}
             }]}""".replace("\\s+".toRegex(), " ")
     }
 
