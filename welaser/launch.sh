@@ -16,14 +16,6 @@ else
   exit 1
 fi
 
-if [ -f devices/build/libs/devices-all.jar ]; then
-  echo "devices-all.jar already exists"
-else
-  cd devices
-  ./gradlew
-  cd ..
-fi
-
 ./stop.sh
 ./scripts/setupAll.sh
 
@@ -54,6 +46,14 @@ curl -iX POST \
     "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" }
   }
 }'
+
+if [ -f devices/build/libs/devices-all.jar ]; then
+  echo "devices-all.jar already exists"
+else
+  cd devices
+  ./gradlew
+  cd ..
+fi
 
 cd devices
 java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>/dev/null &
