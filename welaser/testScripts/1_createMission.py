@@ -34,9 +34,11 @@ command = {
 }
 producer.send(conf["MISSION_MANAGER_TOPIC"], command)
 for msg in consumer:
-    print(msg)
-    if msg.value["type"] == "response" and msg.value["domain"] == domain and msg.value["mission"] == mission:
-        assert (msg.value["status"] == "created")
+    assert "type" in msg.value, "No type: " + str(msg)
+    # assert "domain" in msg.value, "No domain: " + str(msg)
+    assert "mission" in msg.value, "No mission: " + str(msg)
+
+    if msg.value["type"] == "response" and msg.value["status"] == "created" and msg.value["domain"] == domain and msg.value["mission"] == mission:
         assert (msg.value["domain_topic"] == "data.{}.realtime".format(domain))
         assert (msg.value["mission_topic"] == "data.{}.realtime.{}".format(domain, mission))
         break
@@ -55,6 +57,7 @@ while i < 10 and len(responseBody) == 0:
         sleep(10)
     response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
     assert (response.status_code == 200)
+    print(loads(response.text))
     responseBody = [x for x in loads(response.text) if "Thermometer" == x["type"] and x["Domain"] == domain and x["Mission"] == mission]
     i += 1
 assert (len(responseBody) > 0)

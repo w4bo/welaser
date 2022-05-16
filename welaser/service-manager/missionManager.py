@@ -58,7 +58,6 @@ def stop_mission(missionName):
 def start_replay(missionName):
   print("start replay", missionName)
   UUID = str(uuid.uuid4())[:8]
-  command = "scripts/launchReplay.sh {} {} {} {} {} {}".format(missionName, UUID, KAFKA_IP, KAFKA_PORT_EXT, MONGO_DB_PERS_IP, MONGO_DB_PERS_PORT_EXT)
   os.system(command)
   response = {}
   response["type"] = "response"

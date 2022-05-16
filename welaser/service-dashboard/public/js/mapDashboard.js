@@ -41,9 +41,11 @@ const mapDashboard = {
                                   <v-btn v-if="value.type=='commandResult'" v-on:click="execute(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
                               </template>
                               <!-- Commands from the AgriRobot -->
-                              <template v-if="device.data.commandList" v-for="cmd in device.data.commandList.value">
-                                  <v-btn v-on:click="execute(device.id, cmd)"> {{cmd}} </v-btn>
-                              </template>
+                              <div v-if="typeof device.data !== 'undefined' && typeof device.data.commandList !== 'undefined'">
+                                  <template v-for="cmd in device.data.commandList.value">
+                                      <v-btn v-on:click="execute(device.id, cmd)"> {{cmd}} </v-btn>
+                                  </template>
+                              </div>
                               <!-- Hard-coded commands from the old robot version -->
                               <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Stop')"> Stop </v-btn>
                               <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Running')"> Running </v-btn>
@@ -184,6 +186,7 @@ const mapDashboard = {
             data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
             if (!Object.keys(this.devices).includes(data.id)) {
                 // console.log(data.id, data)
+                console.log(this.devices);
                 this.$set(this.devices, data.id, {
                     'id': data.id,
                     'data': data,

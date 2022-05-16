@@ -17,18 +17,18 @@ test {
     }
 }
 
-java { toolchain {languageVersion = JavaLanguageVersion.of(14) } }
+java { toolchain {languageVersion = JavaLanguageVersion.of(11) } }
 
-kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of(14)) } }
+kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of(11)) } }
 
 compileJava {
-    sourceCompatibility = '14'
-    targetCompatibility = '14'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 }
 
-compileKotlin { kotlinOptions { jvmTarget = "14" } }
+compileKotlin { kotlinOptions { jvmTarget = "11" } }
 
-compileTestKotlin { kotlinOptions { jvmTarget = "14" } }
+compileTestKotlin { kotlinOptions { jvmTarget = "11" } }
 
 shadowJar { zip64 = true }
 

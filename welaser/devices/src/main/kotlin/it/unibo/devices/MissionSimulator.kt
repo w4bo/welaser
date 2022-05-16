@@ -4,6 +4,7 @@ package it.unibo.devices
 
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.cli.required
 import java.util.*
 import java.util.concurrent.Executors
@@ -16,8 +17,8 @@ fun timeStamp(): Int {
 
 fun main(args: Array<String>) {
     val parser = ArgParser("MissionSimulator")
-    val mission by parser.option(ArgType.String, shortName = "mission", description = "Mission name").required() // .default("canary")
-    val domain by parser.option(ArgType.String, shortName = "domain", description = "Domain name").required() // .default("dummy")
+    val mission by parser.option(ArgType.String, shortName = "mission", description = "Mission name").default("dummy")
+    val domain by parser.option(ArgType.String, shortName = "domain", description = "Domain name").default("canary")
     parser.parse(args)
 
     val s1: ISensor = Camera()
@@ -36,6 +37,8 @@ fun main(args: Array<String>) {
         DeviceMQTT(true, timeStamp(), false, 40.31285012589443, -3.4811514708229670, domain, mission, s3, p3),
         DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, domain, mission, s4, p4),
     ).forEach { d ->
-        executor.submit { d.run() }
+        executor.submit {
+            d.run()
+        }
     }
 }

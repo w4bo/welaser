@@ -18,7 +18,7 @@ producer = KafkaProducer(
     value_serializer=lambda x: dumps(x).encode('utf-8')
 )
 i = 0
-while i < 10:
+while i < 1:
     domain = "d" + str(random.randrange(1000000) + 10)
     with open("createdomain.txt", "w") as f:
         f.write(domain)

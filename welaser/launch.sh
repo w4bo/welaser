@@ -56,4 +56,4 @@ else
 fi
 
 cd devices
-java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>/dev/null &
+java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &
