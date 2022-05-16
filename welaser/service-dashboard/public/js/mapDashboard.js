@@ -1,78 +1,60 @@
 const mapDashboard = {
     template: `
       <div style="padding: 3%">
-      <v-row justify="center" align="center">
-        <div>
-          <v-switch
-            v-model="satelliteVisibility"
-            label='Show Satellite'
-            v-on:click="toggleSatellite"
-          ></v-switch>
-        </div>
-      </v-row>
-      <v-row>
-        <v-col cols=10>
-          <v-select
-            :items="topics"
-            item-text="id"
-            item-value="topic"
-            label="Topic"
-            v-model="selectedTopic"
-          ></v-select>
-        </v-col>
-        <v-col cols=2>
-          <v-btn
-            v-on:click="listenTopic"
-            elevation="2"
-          >Listen Topic</v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <div
-          id="map"
-          class="map"
-          style="width: 100%; height: 600px"
-        ></div>
-      </v-row>
-      <v-row>
-        <template v-for="device in Object.values(devices)">
-          <v-col cols=4 class="pa-3 d-flex flex-column">
-          <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
-            <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
-              <!--For some strange reasons i need to extract (value,key) instead of (key,value)-->
-              <v-card-text class="flex">
-                <table style="border: 1px solid black; margin-left: auto; margin-right: auto">
-                  <template v-for="(value, key) in device.data">
-                    <tr style="border: 1px solid black;" v-if="typeof(value) != 'object'">
-                      <th style="border: 1px solid black;">{{key}}</th>
-                      <td style="border: 1px solid black;">{{value}}</td>
-                    </tr>
-                      <tr style="border: 1px solid black;" v-else-if="key == 'Image'">
-                        <th style="border: 1px solid black;">{{key}}</th>
-                        <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>
-                      </tr>
-                    <tr style="border: 1px solid black;" v-else>
-                      <th style="border: 1px solid black;">{{key}}</th>
-                      <td v-html="renderJSON(value.value)"></td>
-                    </tr>
-                  </template>
-                </table>
-              </v-card-text>
-              <v-card-actions>
-                <template v-for="(value, key) in device.data">
-                  <v-btn v-if="value.type=='commandResult'" v-on:click="execute(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
-                </template>
-                <v-btn v-if="device.data.type=='ROBOT' "v-on:click="executeRobot(device.id, 'Stop')"> Stop </v-btn>
-                <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Running')"> Running </v-btn>
-                <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Resume')"> Resume </v-btn>
-              </v-card-actions>
-            </v-card-title>
-          </v-card>
-          </v-col>
-        </template>
-      </v-row>
-    </div>
-  `,
+          <!-- <v-row justify="center" align="center">-->
+          <!--   <div>-->
+          <!--     <v-switch v-model="satelliteVisibility" label='Show Satellite' v-on:click="toggleSatellite"></v-switch>-->
+          <!--   </div>-->
+          <!-- </v-row>-->
+          <v-row>
+              <v-col cols=10><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
+              <v-col cols=2><v-btn v-on:click="listenTopic" elevation="2">Listen Topic</v-btn></v-col>
+          </v-row>
+          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 80%; height: 400px"></div></v-col></v-row>
+          <v-row>
+              <template v-for="device in Object.values(devices)">
+                  <v-col cols=4 class="pa-3 d-flex flex-column">
+                  <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
+                      <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
+                          <!--For some strange reasons i need to extract (value,key) instead of (key,value)-->
+                          <v-card-text class="flex">
+                              <table style="border: 1px solid black; margin-left: auto; margin-right: auto">
+                                  <template v-for="(value, key) in device.data">
+                                      <tr style="border: 1px solid black;" v-if="typeof(value) != 'object'">
+                                            <th style="border: 1px solid black;">{{key}}</th>
+                                            <td style="border: 1px solid black;">{{value}}</td>
+                                      </tr>
+                                      <tr style="border: 1px solid black;" v-else-if="key == 'Image'">
+                                          <th style="border: 1px solid black;">{{key}}</th>
+                                          <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>
+                                      </tr>
+                                      <tr style="border: 1px solid black;" v-else>
+                                          <th style="border: 1px solid black;">{{key}}</th>
+                                          <td v-html="renderJSON(value.value)"></td>
+                                      </tr>
+                                  </template>
+                              </table>
+                          </v-card-text>
+                          <v-card-actions>
+                              <!-- Commands from IoT Agent -->
+                              <template v-for="(value, key) in device.data">
+                                  <v-btn v-if="value.type=='commandResult'" v-on:click="execute(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
+                              </template>
+                              <!-- Commands from the AgriRobot -->
+                              <template v-if="device.data.commandList" v-for="cmd in device.data.commandList.value">
+                                  <v-btn v-on:click="execute(device.id, cmd)"> {{cmd}} </v-btn>
+                              </template>
+                              <!-- Hard-coded commands from the old robot version -->
+                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Stop')"> Stop </v-btn>
+                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Running')"> Running </v-btn>
+                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Resume')"> Resume </v-btn>
+                          </v-card-actions>
+                      </v-card-title>
+                  </v-card>
+                  </v-col>
+              </template>
+          </v-row>
+      </div>`,
     data() {
         return {
             devices: {},
@@ -106,12 +88,7 @@ const mapDashboard = {
                     return `${data}`
                 }
             } else if (data) {
-                html = `
-              <table style="border: 1px solid black; width:100%">
-                ${this.renderRows(data)}
-              <table>
-            `
-                return html
+                return `<table style="border: 1px solid black; width:100%">${this.renderRows(data)}<table>`
             }
         },
         renderRows(data) {
@@ -120,19 +97,9 @@ const mapDashboard = {
                 key = key.trim()
                 if (key != "" && value != "") {
                     if (key == 'Image') {
-                        html += `
-                 <tr style="border: 1px solid black; width:100%">
-                    <thstyle="border: 1px solid black">${key}</th>
-                    <td><img :src="data:image/png;base64,${value}" style="height:20vh"></td>
-                </tr>
-              `
+                        html += `<tr style="border: 1px solid black; width:100%"><thstyle="border: 1px solid black">${key}</th><td><img :src="data:image/png;base64,${value}" style="height:20vh"></td></tr>`
                     } else if (value != undefined || value != "") {
-                        html += `
-                <tr style="border: 1px solid black; width:100%">
-                  <th style="border: 1px solid black;">${key}</th>
-                  <td>${this.renderJSON(value)}</td>
-                </tr>
-              `
+                        html += `<tr style="border: 1px solid black; width:100%"><th style="border: 1px solid black;">${key}</th><td>${this.renderJSON(value)}</td></tr>`
                     }
                 }
             }
@@ -144,30 +111,19 @@ const mapDashboard = {
                 'fiware-service': this.fiwareService,
                 'fiware-servicepath': this.fiwareServicePath
             }
-            var data = {}
-            data[command] = {
-                "type": "command",
-                "value": ""
-            }
-            axios.patch(`http://${this.fiwareIP}:${this.OCBPort}/v2/entities/${deviceId}/attrs`, data, {
-                headers: headers
-            }).then((response) = {})
+            const data = {}
+            data[command] = {"type": "command", "value": ""}
+            axios.patch(`http://${this.fiwareIP}:${this.OCBPort}/v2/entities/${deviceId}/attrs`, data, {headers: headers}).then((response) = {})
         },
-
         executeRobot(robotId, command) {
-            //console.log("execute robot ", command)
             var offsetTime = Math.round((Date.now() / 1000)) + 1000
             var data = JSON.stringify({
                 "cmd": {
                     "metadata": {},
                     "value": `{%27firosstamp%27: ${offsetTime}, %27data%27: %27${command}%27}`,
                     "type": "std_msgs.msg.String"
-                },
-                "COMMAND": {
-                    "type": "COMMAND",
-                    "value": [
-                        "cmd"
-                    ]
+                }, "COMMAND": {
+                    "type": "COMMAND", "value": ["cmd"]
                 }
             });
             const headers = {
@@ -179,7 +135,6 @@ const mapDashboard = {
                 headers: headers
             }).then((response) = {})
         },
-
         hashCode(s) {
             if (s) {
                 var h;
@@ -191,11 +146,9 @@ const mapDashboard = {
                 return 0
             }
         },
-
         getRandomColor(type) {
             return this.colors[this.hashCode(type) % this.colors.length]
         },
-
         listenTopic() {
             //console.log("listen to: ", this.selectedTopic)
             this.devices = {}
@@ -213,11 +166,10 @@ const mapDashboard = {
                         this.handleRemoteSocketData(JSON.parse(data))
                     })
                 }).catch(err => {
-                    console.log(`http://${this.proxyIP}:${this.proxyPort}/api/register/${this.selectedTopic}`);
-                    console.log(err)
-                });
+                console.log(`http://${this.proxyIP}:${this.proxyPort}/api/register/${this.selectedTopic}`);
+                console.log(err)
+            });
         },
-
         handleRemoteSocketData(data) {
             switch (data.type) {
                 case 'Analytics:Collision':
@@ -228,7 +180,6 @@ const mapDashboard = {
                     break;
             }
         },
-
         handleDeviceData(data) {
             data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
             if (!Object.keys(this.devices).includes(data.id)) {
@@ -262,14 +213,12 @@ const mapDashboard = {
             this.updateDevicePoints()
             //console.log(this.devices)
         },
-
         handleCollisionData(data) {
             //console.log(data)
             this.$set(this.collisions, data.id, data)
             this.collisionLocationMap[data.id] = [data.Device1_longitude.value, data.Device1_latitude.value]
             this.updateCollisionPoints()
         },
-
         updateDevicePoints() {
             this.devicePoints = []
             var i = 0
@@ -287,7 +236,6 @@ const mapDashboard = {
             this.deviceLayer.setSource(new ol.source.Vector({features: this.devicePoints}))
             this.deviceLayer.changed()
         },
-
         updateCollisionPoints() {
             this.collisionPoints = []
             var i = 0
@@ -304,7 +252,6 @@ const mapDashboard = {
             this.collisionLayer.setSource(new ol.source.Vector({features: this.collisionPoints}))
             this.collisionLayer.changed()
         },
-
         loadMap() {
             this.deviceLayer = new ol.layer.Vector({
                 features: this.devicePoints,
