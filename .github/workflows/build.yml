@@ -11,17 +11,10 @@ jobs:
       matrix:
         java: ['11', '14']
     steps:
-      - uses: actions/checkout@v3.0.2
+      - name: Checkout
+        uses: danysk/action-checkout@0.2.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
-      - name: Checkout submodules using a PAT
-        run: |
-          git config --file .gitmodules --get-regexp url | while read url; do
-            git config --file=.gitmodules $(echo "$url" | sed -E "s/git@github.com:|https:\/\/github.com\//https:\/\/${{ secrets.GITHUB_TOKEN }}:${{ secrets.GITHUB_TOKEN }}@github.com\//")
-          done
-          git submodule sync
-          git submodule update --init --recursive
       - name: Setup java
         uses: actions/setup-java@v3
         with:
