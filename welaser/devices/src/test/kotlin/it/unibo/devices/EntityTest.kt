@@ -1,10 +1,13 @@
 package it.unibo.devices
 
 import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import java.io.File
 import java.net.URL
 
+@TestMethodOrder(MethodOrderer.MethodName::class)
 class EntityTest {
     val FOLDER = "datamodels"
     val loader = Thread.currentThread().contextClassLoader
