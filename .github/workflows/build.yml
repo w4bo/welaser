@@ -11,10 +11,9 @@ jobs:
       matrix:
         java: ['11', '14']
     steps:
-      - name: Checkout
-        uses: danysk/action-checkout@0.2.1
+      - uses: actions/checkout@v3.0.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
       - name: Setup java
         uses: actions/setup-java@v3
         with:
