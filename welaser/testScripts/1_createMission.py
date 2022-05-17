@@ -52,10 +52,9 @@ headers = {
 responseBody = []
 robots = []
 i = 0
-while i < 10 and len(responseBody) == 0:
+while i < 50 and len(responseBody) == 0:
     if i > 0:
-        print("Retry...")
-        sleep(10)
+        sleep(2)
     response = requests.request("GET", "http://{}:{}/v2/entities?type=Thermometer&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
     assert (response.status_code == 200)
     responseBody = [x for x in loads(response.text) if x["Domain"] == domain and x["Mission"] == mission]
@@ -72,16 +71,14 @@ assert(int(responseBody["Temperature"]) >= 0)
 
 received = False  # global variable for message reception
 
-
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("connected to broker")
+        print("OK: Connected to the MQTT broker")
     else:
-        print("Connection failed")
+        print("FAIL: Connection to the MQTT broker failed")
 
 
 def on_message(client, userdata, message):
-    print("Message received: " + str(message.payload))
     global received
     received = True
 
@@ -97,21 +94,21 @@ client.subscribe("/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id.split(":")[
 while not received:
     time.sleep(1)
 
+print("OK: MQTT message received.")
+
 client.disconnect()
 client.loop_stop()
 
 i = 0
-while i < 30 and len(robots) == 0:
+while i < 50 and len(robots) == 0:
     if i > 0:
-        print("Retry...")
-        sleep(10)
-    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
+        sleep(2)
+    response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
     assert (response.status_code == 200)
-    print([x for x in loads(response.text) if "ROBOT" == x["type"]])
-    robots = [x for x in loads(response.text) if "ROBOT" == x["type"] and "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
+    robots = [x for x in loads(response.text) if "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
     i += 1
 assert (len(robots) > 0)
-
+print("OK: Robot found")
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={})
 responseBody = loads(response.text)[0]
 assert (response.status_code == 200)
