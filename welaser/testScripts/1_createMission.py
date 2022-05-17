@@ -64,6 +64,8 @@ print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
+if "Latitude" not in responseBody:
+    print(responseBody)
 assert(responseBody["Latitude"] >= -90)
 assert(responseBody["Longitude"] >= -180)
 assert(responseBody["Status"])
