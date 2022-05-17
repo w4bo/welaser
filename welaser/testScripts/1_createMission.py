@@ -99,8 +99,9 @@ print("OK: MQTT message received.")
 client.disconnect()
 client.loop_stop()
 
+print("Looking for robot at: http://{}:{}/v2/entities?type=ROBOT&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
 i = 0
-while i < 50 and len(robots) == 0:
+while i < 300 and len(robots) == 0:
     if i > 0:
         sleep(2)
     response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
@@ -109,12 +110,14 @@ while i < 50 and len(robots) == 0:
     i += 1
 assert (len(robots) > 0)
 print("OK: Robot found")
+
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={})
 responseBody = loads(response.text)[0]
 assert (response.status_code == 200)
 assert (responseBody["status"] == "active")
 assert (responseBody["notification"]["timesSent"] > 0)
 assert (responseBody["notification"]["lastSuccessCode"] == 200)
+print("OK: Subscription found")
 
 # test domain stream
 domainStreamTopic = "data.{}.realtime".format(domain)

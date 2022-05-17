@@ -161,7 +161,7 @@ fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String,
             e.printStackTrace()
             throw IllegalArgumentException(e.message)
         } else {
-            Thread.sleep(100)
+            Thread.sleep(100 * retry)
             return httpRequest(url, s, headers, requestType, retry - 1)
         }
     }
