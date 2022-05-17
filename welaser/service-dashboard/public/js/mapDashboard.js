@@ -128,14 +128,7 @@ const mapDashboard = {
                     "type": "COMMAND", "value": ["cmd"]
                 }
             });
-            const headers = {
-                'Content-Type': 'application/json'
-            }
-            url = `http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`
-
-            axios.put(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`, data, {
-                headers: headers
-            }).then((response) = {})
+            axios.put(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`, data, { headers: { 'Content-Type': 'application/json' } }).then((response) = {})
         },
         hashCode(s) {
             if (s) {
@@ -184,37 +177,23 @@ const mapDashboard = {
         },
         handleDeviceData(data) {
             data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
-            if (!Object.keys(this.devices).includes(data.id)) {
-                // console.log(data.id, data)
-                console.log(this.devices);
+            if (!Object.keys(this.devices).includes(data.id)) { // if the device is unkown
                 this.$set(this.devices, data.id, {
                     'id': data.id,
                     'data': data,
                     'color': this.getRandomColor(data.type)
                 })
-                //if is a robot -> gestione dedicata
-                if (data.type == "ROBOT") {
-                    //console.log(data)
-                    this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, this.devices[data.id].color]
-                } else {
-                    if (data.Longitude && data.Latitude) {
-                        this.deviceLocationMap[data.id] = [data.Longitude.value, data.Latitude.value, this.devices[data.id].color]
-                    }
-                }
-            } else {
-                this.devices[data.id].data = data
-                // console.log("update", data.id, data)
-                //if is a robot -> gestione dedicata
-                if (data.type == "ROBOT") {
-                    this.deviceLocationMap[data.id][0] = data.gnss.value.data.longitude
-                    this.deviceLocationMap[data.id][1] = data.gnss.value.data.latitude
-                } else if (data.Longitude && data.Latitude) {
-                    this.deviceLocationMap[data.id][0] = data.Longitude.value
-                    this.deviceLocationMap[data.id][1] = data.Latitude.value
-                }
+            }
+            console.log(data);
+            const device = this.devices[data.id]
+            if (data.type === "ROBOT" && data.gnss) {
+                this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
+            } else if (data.Longitude && data.Latitude) {
+                this.deviceLocationMap[data.id] = [data.Longitude.value, data.Latitude.value, device.color]
+            } else if (data.location && data.location.value && data.location.value.coordinates) {
+                this.deviceLocationMap[data.id] = [data.location.value.coordinates[0], data.location.value.coordinates[1], device.color]
             }
             this.updateDevicePoints()
-            //console.log(this.devices)
         },
         handleCollisionData(data) {
             //console.log(data)
@@ -226,13 +205,7 @@ const mapDashboard = {
             this.devicePoints = []
             var i = 0
             for (const [key, value] of Object.entries(this.deviceLocationMap)) {
-                this.devicePoints[i] = new ol.Feature({
-                    geometry: new ol.geom.Point(new ol.proj.transform(
-                        [
-                            value[0],
-                            value[1]
-                        ], 'EPSG:4326', 'EPSG:3857'))
-                })
+                this.devicePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
                 this.devicePoints[i].set('color', value[2])
                 i++
             }
@@ -243,13 +216,7 @@ const mapDashboard = {
             this.collisionPoints = []
             var i = 0
             for (const [key, value] of Object.entries(this.collisionLocationMap)) {
-                this.collisionPoints[i] = new ol.Feature({
-                    geometry: new ol.geom.Point(new ol.proj.transform(
-                        [
-                            value[0],
-                            value[1]
-                        ], 'EPSG:4326', 'EPSG:3857'))
-                })
+                this.collisionPoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
                 i++
             }
             this.collisionLayer.setSource(new ol.source.Vector({features: this.collisionPoints}))
