@@ -135,7 +135,7 @@ interface IProtocol {
 enum class REQUEST_TYPE {GET, POST, PUT, DELETE}
 
 val client = HttpClient.newBuilder().build()
-fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET): String {
+fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
     try {
         var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
         if (s != null) {
@@ -149,18 +149,21 @@ fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String,
         val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
         if (response.body().contains("error")) {
             if (response.body().contains("Already Exists")) {
-                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), requestType = REQUEST_TYPE.DELETE)
-                httpRequest(url, s, headers, requestType)
+                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), s, headers, REQUEST_TYPE.DELETE, retry)
+                httpRequest(url, s, headers, requestType, retry)
             } else {
                 throw IllegalArgumentException(response.body())
             }
         }
-        // println(url)
-        // println(response.body())
         return response.body()!!
-    } catch(e: Exception) {
-        e.printStackTrace()
-        throw IllegalArgumentException(e.message)
+    } catch (e: Exception) {
+        if (retry <= 0) {
+            e.printStackTrace()
+            throw IllegalArgumentException(e.message)
+        } else {
+            Thread.sleep(100)
+            return httpRequest(url, s, headers, requestType, retry - 1)
+        }
     }
 }
 
