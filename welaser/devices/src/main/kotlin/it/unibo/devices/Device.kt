@@ -149,7 +149,7 @@ fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String,
         val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
         if (response.body().contains("error")) {
             if (response.body().contains("Already Exists")) {
-                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), s, headers, REQUEST_TYPE.DELETE, retry)
+                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
                 httpRequest(url, s, headers, requestType, retry)
             } else {
                 throw IllegalArgumentException(response.body())
