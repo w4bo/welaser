@@ -86,7 +86,6 @@ const mapDashboard = {
                     data = data.trim()
                 }
                 if (data != undefined && data != "" && data != "\n" && data != "UNKNOWN") {
-                    //console.log(data)
                     return `${data}`
                 }
             } else if (data) {
@@ -97,10 +96,10 @@ const mapDashboard = {
             var html = ``
             for (var [key, value] of Object.entries(data)) {
                 key = key.trim()
-                if (key != "" && value != "") {
-                    if (key == 'Image') {
-                        html += `<tr style="border: 1px solid black; width:100%"><thstyle="border: 1px solid black">${key}</th><td><img :src="data:image/png;base64,${value}" style="height:20vh"></td></tr>`
-                    } else if (value != undefined || value != "") {
+                if (key !== "" && value !== "") {
+                    if (key === 'Image') {
+                        html += `<tr style="border: 1px solid black; width:100%"><thstyle="border: 1px solid black">${key}</th><td><img src="data:image/png;base64,${value}" style="height:20vh" alt="an image"></td></tr>`
+                    } else if (value && value !== "") {
                         html += `<tr style="border: 1px solid black; width:100%"><th style="border: 1px solid black;">${key}</th><td>${this.renderJSON(value)}</td></tr>`
                     }
                 }
@@ -145,7 +144,6 @@ const mapDashboard = {
             return this.colors[this.hashCode(type) % this.colors.length]
         },
         listenTopic() {
-            //console.log("listen to: ", this.selectedTopic)
             this.devices = {}
             this.deviceLocationMap = {}
             this.collisionLocationMap = {}
@@ -154,7 +152,6 @@ const mapDashboard = {
             axios
                 .get(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`)
                 .then(response => {
-                    //console.log(response.data.socket)
                     this.remoteSocket.removeAllListeners(this.socketName)
                     this.socketName = response.data.socket
                     this.remoteSocket.on(this.socketName, data => {
@@ -185,9 +182,10 @@ const mapDashboard = {
                 })
             }
             const device = this.devices[data.id]
+            device.data = data
             if (data.type === "ROBOT" && data.gnss) {
                 this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
-            } else if (data.Longitude && data.Latitude) {
+            } else if (data.Longitude && data.Latitude && data.Latitude.value && data.Longitude.value) {
                 this.deviceLocationMap[data.id] = [data.Longitude.value, data.Latitude.value, device.color]
             } else if (data.location && data.location.value && data.location.value.coordinates) {
                 this.deviceLocationMap[data.id] = [data.location.value.coordinates[0], data.location.value.coordinates[1], device.color]
@@ -282,12 +280,10 @@ const mapDashboard = {
             this.worldImagery.setVisible(this.satelliteVisibility)
             this.worldImagery.changed()
         },
-
         loadTopics() {
             axios
                 .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`)
                 .then(response => {
-                    //console.log(response)
                     this.topics = response.data.map(e => {
                         return {id: `${e.kind}: ${e.id}`, topic: `${e.topic}`}
                     })
