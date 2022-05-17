@@ -51,7 +51,6 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
             "running" -> {
                 status = true
                 missionPlan = JSONObject(httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues"))
-                println(missionPlan)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
             }
             "stop" -> reset()
@@ -62,7 +61,6 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     override fun updatePosition() {
         if (coords.isNotEmpty()) {
             val c = coords.removeAt(0)
-            println("Moving to $c")
             initStatus.getJSONObject("location").put("coordinates", c)
         } else {
             reset()

@@ -190,6 +190,7 @@ class ProtocolMQTT : IProtocol {
             Thread.sleep(100)
         }
         httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
+        httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getJSONArray("devices").getJSONObject(0).getString("entity_name"), null, listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
 
     override fun send(payload: String, topic: String) {
@@ -220,6 +221,7 @@ class ProtocolHTTP : IProtocol {
 
     override fun register(s: String) {
         httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
+        httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"), null, listOf())
     }
 
     override fun send(s: String, topic: String) {
@@ -272,7 +274,7 @@ abstract class Device(
 
     companion object {
         @JvmName("getId1")
-        fun getId(): Int {
+        @Synchronized fun getId(): Int {
             return (Math.random() * 1000000).toInt()
         }
     }
@@ -302,17 +304,21 @@ abstract class Device(
         register(getRegister())
         // println("Listening to... $listenTopic")
         listen(listenTopic, listenCallback)
-        var i = 0
-        // println(status)
-        while (i++ < times) {
-            // print("Iterating...")
-            Thread.sleep(timeoutMs.toLong())
-            if (status) {
-                val s = sense()
-                // println(id + " " + s)
-                send(s, sendTopic)
-                updatePosition()
+        try {
+            var i = 0
+            // println(status)
+            while (i++ < times) {
+                // print("Iterating...")
+                Thread.sleep(timeoutMs.toLong())
+                if (status) {
+                    val s = sense()
+                    // println(id + " " + s)
+                    send(s, sendTopic)
+                    updatePosition()
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
@@ -410,8 +416,9 @@ class DeviceMQTT(
     domain: String,
     mission: String,
     s: ISensor,
-    p: IProtocol
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
+    p: IProtocol,
+    times: Int = 1000
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p, times = times) {
     override val id = getType().toString() + getId()
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"

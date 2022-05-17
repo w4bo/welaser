@@ -47,13 +47,6 @@ curl -iX POST \
   }
 }'
 
-if [ -f devices/build/libs/devices-all.jar ]; then
-  echo "devices-all.jar already exists"
-else
-  cd devices
-  ./gradlew
-  cd ..
-fi
-
 cd devices
+./gradlew clean shadowJar
 java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &

@@ -37,60 +37,76 @@ class EntityTest {
         }
     }
 
-    fun init(): Pair<Device, ExecutorService> {
+    fun init(): Device {
         val s4: ISensor = Thermometer()
         val p4: IProtocol = ProtocolMQTT()
-        val executor = Executors.newCachedThreadPool()
-        val d = DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", s4, p4)
-        executor.submit {d.run()}
-        return Pair(d, executor)
+        val d = DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", s4, p4, times = 2)
+        d.run()
+        return d
     }
 
     fun waitDevice(d: Device): String {
         var s = "[]"
         var i = 0
-        while (s.contains("[]") && i++ <= 10) {
+        while (s.contains("[]") && i++ <= 20) {
             if (i > 1) {
                 Thread.sleep(1000)
             }
             s = httpRequest(
-                "http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities/?id=urn:ngsi-ld:${d.id}",
+                "${ORION_URL}/v2/entities/?id=urn:ngsi-ld:${d.id}",
                 null,
                 listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
                 REQUEST_TYPE.GET
             )
-            println(s)
         }
         return s
     }
 
     @Test
     fun waitMqttDevice() {
-        val p = init()
-        val d = p.first
-        val s = waitDevice(d)
-        assertTrue(s.contains(d.id))
+        try {
+            val d = init()
+            val s = waitDevice(d)
+            print(d.id)
+            assertTrue(s.contains(d.id))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail(e.message)
+        }
     }
 
     @Test
     fun testMqttCommand() {
-        val d = init().first
-        waitDevice(d)
-        assertTrue(d.status)
-        httpRequest(
-            "http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities/urn:ngsi-ld:${d.id}/attrs",
-            """{"off": {"type": "command","value": ""}}""",
-            listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            REQUEST_TYPE.PATCH
-        )
-        Thread.sleep(2000)
-        assertFalse(d.status)
-        httpRequest(
-            "http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities/urn:ngsi-ld:${d.id}/attrs",
-            """{"on": {"type": "command","value": ""}}""",
-            listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            REQUEST_TYPE.PATCH
-        )
-        assertTrue(d.status)
+        try {
+            val d = init()
+            waitDevice(d)
+            assertTrue(d.status)
+            httpRequest(
+                "http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities/urn:ngsi-ld:${d.id}/attrs",
+                """{"off": {"type": "command","value": ""}}""",
+                listOf(
+                    Pair("Content-Type", "application/json"),
+                    Pair("fiware-service", FIWARE_SERVICE),
+                    Pair("fiware-servicepath", FIWARE_SERVICEPATH)
+                ),
+                REQUEST_TYPE.PATCH
+            )
+            Thread.sleep(2000)
+            assertFalse(d.status)
+            httpRequest(
+                "http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities/urn:ngsi-ld:${d.id}/attrs",
+                """{"on": {"type": "command","value": ""}}""",
+                listOf(
+                    Pair("Content-Type", "application/json"),
+                    Pair("fiware-service", FIWARE_SERVICE),
+                    Pair("fiware-servicepath", FIWARE_SERVICEPATH)
+                ),
+                REQUEST_TYPE.PATCH
+            )
+            assertTrue(d.status)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail(e.message)
+        }
     }
 }
