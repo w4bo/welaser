@@ -26,7 +26,7 @@ const statistics = {
         },
         init() {
             //function, interval, [args]
-            setInterval(this.performGet, 1000, this.webServerIP, this.webServerPort)
+            setInterval(this.performGet, 1000, this.IP, this.WEB_SERVER_PORT_EXT)
         }
     },
     mounted() { // called by Vue.js when the component is shown

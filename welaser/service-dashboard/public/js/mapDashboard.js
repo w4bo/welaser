@@ -1,17 +1,17 @@
 const mapDashboard = {
     template: `
-      <div style="padding: 3%">
+      <div style="padding: 2%">
           <!-- <v-row justify="center" align="center">-->
           <!--   <div>-->
           <!--     <v-switch v-model="satelliteVisibility" label='Show Satellite' v-on:click="toggleSatellite"></v-switch>-->
           <!--   </div>-->
           <!-- </v-row>-->
-          <v-row>
-              <v-col cols=10><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
-              <v-col cols=2><v-btn v-on:click="listenTopic" elevation="2">Listen Topic</v-btn></v-col>
+          <v-row align="center" justify="center">
+              <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
+              <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
           </v-row>
-          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 80%; height: 400px"></div></v-col></v-row>
-          <v-row>
+          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 100%; height: 400px"></div></v-col></v-row>
+          <v-row align="center" justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=4 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
@@ -110,12 +110,12 @@ const mapDashboard = {
         execute(deviceId, command) {
             const headers = {
                 'Content-Type': 'application/json',
-                'fiware-service': this.fiwareService,
-                'fiware-servicepath': this.fiwareServicePath
+                'fiware-service': this.FIWARE_SERVICE,
+                'fiware-servicepath': this.FIWARE_SERVICEPATH
             }
             const data = {}
             data[command] = {"type": "command", "value": ""}
-            axios.patch(`http://${this.fiwareIP}:${this.OCBPort}/v2/entities/${deviceId}/attrs`, data, {headers: headers}).then((response) = {})
+            axios.patch(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`, data, {headers: headers}).then((response) = {})
         },
         executeRobot(robotId, command) {
             var offsetTime = Math.round((Date.now() / 1000)) + 1000
@@ -131,9 +131,9 @@ const mapDashboard = {
             const headers = {
                 'Content-Type': 'application/json'
             }
-            url = `http://${this.fiwareIP}:${this.OCBPort}/v2/entities/${robotId}/attrs`
+            url = `http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`
 
-            axios.put(`http://${this.fiwareIP}:${this.OCBPort}/v2/entities/${robotId}/attrs`, data, {
+            axios.put(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`, data, {
                 headers: headers
             }).then((response) = {})
         },
@@ -159,7 +159,7 @@ const mapDashboard = {
             this.updateDevicePoints()
             this.updateCollisionPoints()
             axios
-                .get(`http://${this.proxyIP}:${this.proxyPort}/api/register/${this.selectedTopic}`)
+                .get(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`)
                 .then(response => {
                     //console.log(response.data.socket)
                     this.remoteSocket.removeAllListeners(this.socketName)
@@ -168,7 +168,7 @@ const mapDashboard = {
                         this.handleRemoteSocketData(JSON.parse(data))
                     })
                 }).catch(err => {
-                console.log(`http://${this.proxyIP}:${this.proxyPort}/api/register/${this.selectedTopic}`);
+                console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
                 console.log(err)
             });
         },
@@ -320,7 +320,7 @@ const mapDashboard = {
 
         loadTopics() {
             axios
-                .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic`)
+                .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`)
                 .then(response => {
                     //console.log(response)
                     this.topics = response.data.map(e => {
@@ -330,14 +330,14 @@ const mapDashboard = {
                     this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
                 })
                 .catch(err => {
-                    console.log(`http://${this.webServerIP}:${this.webServerPort}/api/topic`);
+                    console.log(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`);
                     console.log(err)
                 });
         },
 
         init() {
-            this.remoteSocket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
-            this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
+            this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+            this.localSocket = io.connect(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}`)
             this.loadMap()
             this.loadTopics()
             this.localSocket.on("updateTopic", data => this.loadTopics())
