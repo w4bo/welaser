@@ -132,16 +132,25 @@ interface IProtocol {
     fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> })
 }
 
-enum class REQUEST_TYPE {GET, POST, PUT, DELETE}
+enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
 
-fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
+fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
     try {
         val client = HttpClient.newBuilder().build()
         var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
-        if (s != null) {
-            requestBuilder = if (requestType == REQUEST_TYPE.PUT) { requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(s)) } else { requestBuilder.POST(HttpRequest.BodyPublishers.ofString(s)) }
+        if (payload != null) {
+            requestBuilder =
+                when(requestType) {
+                    REQUEST_TYPE.PUT -> requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(payload))
+                    REQUEST_TYPE.PATCH -> requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(payload))
+                    else -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload))
+                }
         } else {
-            requestBuilder = if (requestType == REQUEST_TYPE.DELETE) { requestBuilder.DELETE() } else { requestBuilder.GET() }
+            requestBuilder =
+                when(requestType) {
+                    REQUEST_TYPE.DELETE -> requestBuilder.DELETE()
+                    else -> requestBuilder.GET()
+                }
         }
         headers.forEach {
             requestBuilder = requestBuilder.header(it.first, it.second)
@@ -149,8 +158,8 @@ fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String,
         val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
         if (response.body().contains("error")) {
             if (response.body().contains("Already Exists")) {
-                httpRequest(url.replace("entities", "entities/" + JSONObject(s!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
-                httpRequest(url, s, headers, requestType, retry)
+                httpRequest(url.replace("entities", "entities/" + JSONObject(payload!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
+                httpRequest(url, payload, headers, requestType, retry)
             } else {
                 throw IllegalArgumentException(response.body())
             }
@@ -162,14 +171,13 @@ fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String,
             throw IllegalArgumentException(e.message)
         } else {
             Thread.sleep(100L * retry)
-            return httpRequest(url, s, headers, requestType, retry - 1)
+            return httpRequest(url, payload, headers, requestType, retry - 1)
         }
     }
 }
 
 class ProtocolMQTT : IProtocol {
-    val publisherId = UUID.randomUUID().toString()
-    var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", publisherId, MemoryPersistence())
+    var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
 
     override fun register(s: String) {
@@ -177,6 +185,10 @@ class ProtocolMQTT : IProtocol {
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         client.connect(connOpts)
+        while (!client.isConnected) {
+            println("Waiting for client connection")
+            Thread.sleep(100)
+        }
         httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
 
@@ -186,13 +198,10 @@ class ProtocolMQTT : IProtocol {
 
     override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
-            val payload: ByteArray = message!!.payload
-            // val mapper = ObjectMapper().registerKotlinModule()
-            // f(mapper.readValue(payload))
-            val o = JSONObject(payload)
+            val o = JSONObject(String(message!!.payload))
             val commandName = o.keys().next()!!
-            f(commandName, o.getJSONObject(commandName).toString())
-            client.publish(topic + "exe", MqttMessage(payload))
+            f(commandName, o.getString(commandName))
+            client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
         }
     }
 }
@@ -272,6 +281,7 @@ abstract class Device(
      * Execute a command
      */
     override fun exec(commandName: String, payload: String) {
+        // println(commandName)
         status = commandName == "on"
     }
 
@@ -290,14 +300,16 @@ abstract class Device(
      */
     fun run() {
         register(getRegister())
+        // println("Listening to... $listenTopic")
         listen(listenTopic, listenCallback)
         var i = 0
         // println(status)
         while (i++ < times) {
+            // print("Iterating...")
             Thread.sleep(timeoutMs.toLong())
             if (status) {
                 val s = sense()
-                // println(s)
+                // println(id + " " + s)
                 send(s, sendTopic)
                 updatePosition()
             }
@@ -403,7 +415,9 @@ class DeviceMQTT(
     override val id = getType().toString() + getId()
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
-    override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
+    override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p ->
+        exec(c, p)
+    }
     override fun getRegister(): String {
         return """{
                 "devices": 

@@ -3,15 +3,28 @@ package it.unibo.devices
 import org.json.JSONObject
 import java.io.File
 import java.net.URL
-import java.util.concurrent.Executors
 
 object EntityFactory {
-    fun createByType(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
+    fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
         val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
         return when (initStatus.getString("type")) {
             "AgriRobot" -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
         }
+    }
+
+    fun createAll(folder: String): List<EntityFIWARE> {
+        val loader = Thread.currentThread().contextClassLoader
+        val url: URL = loader.getResource(folder)!!
+        val path: String = url.getPath()
+
+        return File(path)
+            .listFiles()
+            .filter { it.extension == "json" }
+            .sorted()
+            .map {
+                createFromFile(it.path, 1, times = 1)
+            }
     }
 }
 

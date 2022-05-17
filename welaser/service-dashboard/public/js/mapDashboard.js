@@ -113,8 +113,14 @@ const mapDashboard = {
                 'fiware-servicepath': this.FIWARE_SERVICEPATH
             }
             const data = {}
-            data[command] = {"type": "command", "value": ""}
-            axios.patch(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`, data, {headers: headers}).then((response) = {})
+            const inner = {}
+            inner[command] = { "foo": "bar" }
+            data[command] = {"type": "command", "value": inner}
+            // console.log(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`);
+            axios
+                .patch(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`, data, {headers: headers})
+                .then(response => { console.log("response"); console.log(response) })
+                .catch(err => { console.log("error"); console.log(err) });
         },
         executeRobot(robotId, command) {
             var offsetTime = Math.round((Date.now() / 1000)) + 1000
@@ -123,9 +129,7 @@ const mapDashboard = {
                     "metadata": {},
                     "value": `{%27firosstamp%27: ${offsetTime}, %27data%27: %27${command}%27}`,
                     "type": "std_msgs.msg.String"
-                }, "COMMAND": {
-                    "type": "COMMAND", "value": ["cmd"]
-                }
+                }, "COMMAND": { "type": "COMMAND", "value": ["cmd"] }
             });
             axios.put(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`, data, { headers: { 'Content-Type': 'application/json' } }).then((response) = {})
         },
@@ -158,9 +162,9 @@ const mapDashboard = {
                         this.handleRemoteSocketData(JSON.parse(data))
                     })
                 }).catch(err => {
-                console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
-                console.log(err)
-            });
+                    console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
+                    console.log(err)
+                });
         },
         handleRemoteSocketData(data) {
             switch (data.type) {
@@ -168,6 +172,7 @@ const mapDashboard = {
                     this.handleCollisionData(data)
                     break;
                 default:
+                    console.log(data);
                     this.handleDeviceData(data)
                     break;
             }
