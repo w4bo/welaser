@@ -46,9 +46,9 @@ class EntityTest {
     }
 
     fun waitDevice(d: Device): String {
-        var s = "[]"
+        var s = "foo"
         var i = 0
-        while (s.contains("[]") && i++ <= 20) {
+        while (!s.contains(d.id) && i++ <= 20) {
             if (i > 1) {
                 Thread.sleep(1000)
             }
