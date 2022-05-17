@@ -58,6 +58,7 @@ def stop_mission(missionName):
 def start_replay(missionName):
   print("start replay", missionName)
   UUID = str(uuid.uuid4())[:8]
+  command = "scripts/launchReplay.sh {} {} {} {} {} {}".format(missionName, UUID, KAFKA_IP, KAFKA_PORT_EXT, MONGO_DB_PERS_IP, MONGO_DB_PERS_PORT_EXT)
   os.system(command)
   response = {}
   response["type"] = "response"
@@ -77,25 +78,30 @@ def stop_replay(replayName):
   producer.send(TOPIC_RM, response).get(timeout=30)
 
 for message in consumer:
-  print(message)
-  if message.topic == TOPIC_MM:
-    if message.value["type"] == "request":
-      if message.value["command"] == "start":
-        start_mission(message.value["mission"], message.value["domain"])
-      elif message.value["command"] == "stop":
-        stop_mission(message.value["mission"])
-  elif message.topic == TOPIC_DM:
-    if message.value["type"] == "request":
-      print("create domain: " + message.value["domain"])
-      response = {}
-      response["type"] = "response"
-      response["status"] = "created"
-      response["domain"] = message.value["domain"]
-      response["topic"] = "data." + message.value["domain"] + ".realtime"
-      producer.send(TOPIC_DM, response).get(timeout=30)
-  else:
-    if message.value["type"] == "request":
-      if message.value["command"] == "start":
-        start_replay(message.value["mission"])
-      elif message.value["command"] == "stop":
-        stop_replay(message.value["replay"])
+  try:
+    if message.topic == TOPIC_MM:
+      if message.value["type"] == "request":
+        if message.value["command"] == "start":
+          start_mission(message.value["mission"], message.value["domain"])
+        elif message.value["command"] == "stop":
+          stop_mission(message.value["mission"])
+    elif message.topic == TOPIC_DM:
+      if message.value["type"] == "request":
+        print("create domain: " + message.value["domain"])
+        response = {}
+        response["type"] = "response"
+        response["status"] = "created"
+        response["domain"] = message.value["domain"]
+        response["topic"] = "data." + message.value["domain"] + ".realtime"
+        producer.send(TOPIC_DM, response).get(timeout=30)
+    elif message.topic == TOPIC_RM:
+      if message.value["type"] == "request":
+        if message.value["command"] == "start":
+          start_replay(message.value["mission"])
+        elif message.value["command"] == "stop":
+          stop_replay(message.value["replay"])
+    else:
+      raise ValueError('Unknown message topic: ' + message.topic)
+  except Exception as e:
+    print(message)
+    print(e)

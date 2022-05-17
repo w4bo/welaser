@@ -184,7 +184,6 @@ const mapDashboard = {
                     'color': this.getRandomColor(data.type)
                 })
             }
-            console.log(data);
             const device = this.devices[data.id]
             if (data.type === "ROBOT" && data.gnss) {
                 this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
@@ -196,7 +195,6 @@ const mapDashboard = {
             this.updateDevicePoints()
         },
         handleCollisionData(data) {
-            //console.log(data)
             this.$set(this.collisions, data.id, data)
             this.collisionLocationMap[data.id] = [data.Device1_longitude.value, data.Device1_latitude.value]
             this.updateCollisionPoints()

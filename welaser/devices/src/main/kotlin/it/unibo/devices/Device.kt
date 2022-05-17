@@ -134,9 +134,9 @@ interface IProtocol {
 
 enum class REQUEST_TYPE {GET, POST, PUT, DELETE}
 
-val client = HttpClient.newBuilder().build()
 fun httpRequest(url: String, s: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
     try {
+        val client = HttpClient.newBuilder().build()
         var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
         if (s != null) {
             requestBuilder = if (requestType == REQUEST_TYPE.PUT) { requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(s)) } else { requestBuilder.POST(HttpRequest.BodyPublishers.ofString(s)) }
@@ -181,7 +181,6 @@ class ProtocolMQTT : IProtocol {
     }
 
     override fun send(payload: String, topic: String) {
-        // println(payload)
         client.publish(topic, payload.toByteArray(), 0, false)
     }
 

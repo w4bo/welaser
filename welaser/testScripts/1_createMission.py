@@ -41,6 +41,7 @@ for msg in consumer:
     if msg.value["type"] == "response" and msg.value["status"] == "created" and msg.value["domain"] == domain and msg.value["mission"] == mission:
         assert (msg.value["domain_topic"] == "data.{}.realtime".format(domain))
         assert (msg.value["mission_topic"] == "data.{}.realtime.{}".format(domain, mission))
+        print("OK: Mission created.")
         break
 
 headers = {
@@ -55,13 +56,12 @@ while i < 10 and len(responseBody) == 0:
     if i > 0:
         print("Retry...")
         sleep(10)
-    response = requests.request("GET", "http://{}:{}/v2/entities?options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
+    response = requests.request("GET", "http://{}:{}/v2/entities?type=Thermometer&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
     assert (response.status_code == 200)
-    print(loads(response.text))
-    responseBody = [x for x in loads(response.text) if "Thermometer" == x["type"] and x["Domain"] == domain and x["Mission"] == mission]
+    responseBody = [x for x in loads(response.text) if x["Domain"] == domain and x["Mission"] == mission]
     i += 1
 assert (len(responseBody) > 0)
-print(responseBody)
+print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
