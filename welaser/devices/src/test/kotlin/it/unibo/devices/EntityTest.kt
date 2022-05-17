@@ -23,7 +23,7 @@ class EntityTest {
                 .sorted()
                 .forEach {
                     println(it)
-                    EntityFIWARE(it.path, 1, times = 2).run()
+                    EntityFIWARE(it.path, 10, times = 2).run()
                 }
         } catch (e: Exception) {
             e.printStackTrace()
