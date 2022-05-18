@@ -134,7 +134,7 @@ interface IProtocol {
 
 enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
 
-fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
+@Synchronized fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
     try {
         val client = HttpClient.newBuilder().build()
         var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
