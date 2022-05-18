@@ -35,6 +35,7 @@ jobs:
           cd welaser/testScripts
           pip install -r requirements.txt
           for FILE in *.py; do echo $FILE; python $FILE; done
+          docker logs missionmanager
       - name: Stop
         run: |
           cd welaser
