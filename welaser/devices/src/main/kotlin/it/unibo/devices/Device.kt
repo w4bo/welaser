@@ -17,7 +17,7 @@ import java.util.*
 import kotlin.random.Random
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
-val dotenv: Dotenv = Dotenv.configure().directory("../.env").load()
+val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
 val DRACO_IP = dotenv["DRACO_IP"]
 val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"].toInt()
 val ORION_IP = dotenv["ORION_IP"]
@@ -186,7 +186,7 @@ class ProtocolMQTT : IProtocol {
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         client.connect(connOpts)
         while (!client.isConnected) {
-            println("Waiting for client connection")
+            // println("Waiting for client connection")
             Thread.sleep(100)
         }
         httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
@@ -201,10 +201,17 @@ class ProtocolMQTT : IProtocol {
 
     @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
-            val o = JSONObject(String(message!!.payload)).getJSONObject("cmd")
-            val commandName = o.keys().next()!!
-            f(commandName, o.getString(commandName))
-            client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
+            val s = String(message!!.payload)
+            // val o = JSONObject(s).getJSONObject("cmd")
+            JSONObject(s).getJSONArray("data").forEach {
+                var o = JSONObject(it.toString())
+                if (o.has("cmd") && o.get("cmd").toString().isNotEmpty()) {
+                    o = o.getJSONObject("cmd")
+                    val commandName = o.keys().next()!!
+                    f(commandName, o.getJSONObject(commandName).toString())
+                }
+            }
+            // client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
         }
     }
 }
@@ -227,7 +234,21 @@ class ProtocolHTTP : IProtocol {
     }
 
     @Synchronized override fun send(s: String, topic: String) {
-        httpRequest("$ORION_URL/v2/entities/${JSONObject(s).get("id")}/attrs?options=keyValues", s, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
+        val payload = JSONObject(s)
+        val id = payload.get("id")
+        payload.remove("id")
+        if (payload.has("type")) {
+            payload.remove("type")
+        }
+        if (payload.has("cmd")) {
+            payload.remove("cmd")
+        }
+        httpRequest(
+            "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
+            payload.toString(),
+            listOf(Pair("Content-Type", "application/json")),
+            REQUEST_TYPE.PATCH
+        )
         // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 
@@ -286,7 +307,7 @@ abstract class Device(
      * Execute a command
      */
     override fun exec(commandName: String, payload: String) {
-        println(commandName + " " + payload)
+        // println("$commandName $payload")
         status = commandName == "on"
     }
 
@@ -388,15 +409,11 @@ open class DeviceFIWARE(
                 "mission":                                                           "$mission",                    
                 "domain":                                                            "$domain",
                 "commandList":                                                       ["on", "off"],
-                "cmd":                                                               "dummy"               
+                "cmd":                                                               ""               
             }""".replace("\\s+".toRegex(), " ")
     }
 
-    override fun sense(): String {
-        val s = JSONObject(getStatus())
-        s.remove("cmd")
-        return """{"actionType": "update", "entities": [$s]}""".replace("\\s+".toRegex(), " ")
-    }
+    override fun sense() = getStatus()
 }
 
 class DeviceKafka(
@@ -442,7 +459,7 @@ class DeviceMQTT(
                 "mission":                                                           "$mission",                    
                 "domain":                                                            "$domain",
                 "commandList":                                                       ["on", "off"],
-                "cmd":                                                               "dummy"
+                "cmd":                                                               ""
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -485,7 +502,5 @@ class DeviceMQTT(
             }""".replace("\\s+".toRegex(), " ")
     }
 
-    override fun sense(): String {
-        return getStatus()
-    }
+    override fun sense(): String = getStatus()
 }

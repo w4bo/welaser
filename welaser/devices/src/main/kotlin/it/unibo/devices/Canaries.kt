@@ -31,8 +31,8 @@ fun main(args: Array<String>) {
     (
         EntityFactory.createAll("/datamodels") +
         listOf(
-            DeviceFIWARE(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
             DeviceFIWARE(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p2),
+            DeviceFIWARE(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
             DeviceMQTT(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p3),
             DeviceMQTT(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p4),
             DeviceSubscription(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p5),
@@ -40,5 +40,5 @@ fun main(args: Array<String>) {
             // DeviceKafka(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p7),
             DeviceKafka(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p8)
         )
-    ).forEach { d -> executor.submit { d.run() } }
+    ).forEach { d -> executor.submit { d.run() } } // .forEach { d -> d.run() }//
 }

@@ -51,7 +51,7 @@ class IOTA {
                         val payload = JSONObject(call.receive<String>())
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
-                            println("Subscription: $o")
+                            println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd $o")
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
                         }
                         call.respondText("")
@@ -65,22 +65,25 @@ class IOTA {
         connOpts.isCleanSession = true
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
+        connOpts.connectionTimeout = 0
+        connOpts.keepAliveInterval = 5
+        connOpts.setAutomaticReconnect(true)
 
         // wait for connection
         client.connect(connOpts)
         while (!client.isConnected) {
-            println("Waiting for client connection")
+            // println("Waiting for client connection")
             Thread.sleep(100)
         }
 
         // subscribe to all mqtt messages
         client.subscribe("#") { topic, message ->
             synchronized(this) {
+                // println("Sending: $topic ${message!!.payload}")
                 if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
                     try {
                         val deviceid = topic.split("/")[2]
                         val payload = JSONObject(String(message!!.payload)).toString() // check that this is a valid JSON object
-                        println("Sending: $payload")
                         httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                     } catch (e: Exception) {
                         e.printStackTrace()

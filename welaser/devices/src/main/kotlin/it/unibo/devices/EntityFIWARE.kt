@@ -110,7 +110,5 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
         }
     }
 
-    override fun sense(): String {
-        return """{"actionType": "update", "entities": [${getStatus()}]}"""
-    }
+    override fun sense() = getStatus()
 }

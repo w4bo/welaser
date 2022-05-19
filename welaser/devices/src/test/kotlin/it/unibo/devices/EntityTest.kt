@@ -49,9 +49,7 @@ class EntityTest {
             }
             s = httpRequest(
                 "${ORION_URL}/v2/entities/?id=${d.id}",
-                null,
-                listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-                REQUEST_TYPE.GET
+                // listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
             )
         }
         return s
@@ -75,26 +73,32 @@ class EntityTest {
         try {
             val d = init()
             waitDevice(d)
-
             assertTrue(d.status)
             httpRequest(
                 "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-                // """{"off": {"type": "command","value": ""}}""",
                 """{"cmd": {"off" : {}}}""",
                 listOf(Pair("Content-Type", "application/json")),
                 // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
                 REQUEST_TYPE.PATCH
             )
-            Thread.sleep(2000)
+            var retry = 100
+            while(retry-- > 0 && d.status) {
+                Thread.sleep(500)
+            }
+            assertTrue(retry > 0, "Timeout")
             assertFalse(d.status)
             httpRequest(
                 "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-                // """{"on": {"type": "command","value": ""}}""",
-                """{"cmd": "{on : {}}"}""",
+                """{"cmd": {"on" : {}}}""",
                 listOf(Pair("Content-Type", "application/json")),
                 // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
                 REQUEST_TYPE.PATCH
             )
+            retry = 100
+            while(retry-- > 0 && !d.status) {
+                Thread.sleep(500)
+            }
+            assertTrue(retry > 0, "Timeout")
             assertTrue(d.status)
         } catch (e: Exception) {
             e.printStackTrace()

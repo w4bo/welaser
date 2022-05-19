@@ -2,7 +2,7 @@
 # for FIWARE Components in order to scale up to a proper architecture:
 #
 # see: https://github.com/FIWARE/helm-charts/
-version: "3.5"
+version: "3.9"
 services:
   # Orion is the context broker
   orion:
@@ -24,6 +24,8 @@ services:
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
       test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
       interval: 5s
+      timeout: 10s
+      retries: 20
 
   # Iot Agent
   # Useful sources:
@@ -34,9 +36,7 @@ services:
     hostname: iot-agent
     container_name: iot-agent
     depends_on:
-      - mongo-db
       - mosquitto
-      - orion
     networks:
       - default
     expose:
@@ -44,6 +44,11 @@ services:
     ports:
       - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}"
       - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
+    healthcheck:
+      test: curl --fail -s http://localhost:4041/ || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
     #  iot-agent:
     #    image: fiware/iotagent-json:1.17.0-distroless
     #    hostname: iot-agent
@@ -113,6 +118,8 @@ services:
         host=`hostname --ip-address || echo '127.0.0.1'`;
         mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
+      timeout: 10s
+      retries: 20
 
   # MQTT Broker
   mosquitto:
@@ -144,12 +151,21 @@ services:
     volumes:
       - ./service-dashboard:/code
     depends_on:
-      - mongo-db
-      - orion
-      - iot-agent
-      - etl
+      mongo-db:
+        condition: service_healthy
+      orion:
+        condition: service_healthy
+      iot-agent:
+        condition: service_healthy
+      etl:
+        condition: service_healthy
     env_file:
       - .env
+    healthcheck:
+      test: curl --fail -s http://localhost:${ORION_PORT_INT} || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
 
   # Draco
   # In this mode, draco builds from a local image where the configuration is copied into
@@ -189,6 +205,11 @@ services:
       - default
     env_file:
       - .env
+    healthcheck:
+      test: curl --fail -s http://localhost:${DRACO_PORT_EXT}/iot/about || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 20
 
   kafkaproxy:
     restart: always
@@ -204,9 +225,12 @@ services:
     env_file:
       - .env
     depends_on:
-      - orion
-      - iot-agent
-      - etl
+      orion:
+        condition: service_healthy
+      iot-agent:
+        condition: service_healthy
+      etl:
+        condition: service_healthy
 
   writetomongo:
     hostname: writetomongo
@@ -217,8 +241,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - orion
-      - etl
+      orion:
+        condition: service_healthy
+      etl:
+        condition: service_healthy
 
   missionmanager:
     hostname: missionmanager

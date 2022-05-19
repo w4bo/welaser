@@ -44,8 +44,7 @@ curl -iX POST \
   -H 'Content-Type: application/json' \
   -d '{
   "description": "Notify IoTAgent when Things receive a cmd update i.e. a command",
-  "condition": { "attrs": [ "cmd" ], "expression": {"q": "cmd!=dummy"} },
-  "subject": { "entities": [{ "idPattern": ".*" }]},
+  "subject": { "entities": [{ "idPattern": ".*" }], "condition": { "attrs": [ "cmd" ] }},
   "notification": { "http": { "url": "http://'${IOTA_IP}':'${IOTA_NORTH_PORT}'/" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
 }'
 cd devices

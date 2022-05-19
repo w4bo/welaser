@@ -45,29 +45,30 @@ for msg in consumer:
         break
 
 headers = {
-    'fiware-service': conf["FIWARE_SERVICE"],
-    'fiware-servicepath': conf["FIWARE_SERVICEPATH"]
+#    'fiware-service': conf["FIWARE_SERVICE"],
+#    'fiware-servicepath': conf["FIWARE_SERVICEPATH"]
 }
 
 responseBody = []
 robots = []
 i = 0
+print("Looking for thermometer at: http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
 while i < 50 and len(responseBody) == 0:
     if i > 0:
         sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=Thermometer&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
+    response = requests.request("GET", "http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) #, headers=headers, data={}
     assert (response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["Domain"] == domain and x["Mission"] == mission and x["Latitude"] is not None]
+    responseBody = [x for x in loads(response.text) if x["domain"] == domain and x["mission"] == mission and x["latitude"] is not None]
     i += 1
 assert (len(responseBody) > 0)
 print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
-assert(responseBody["Latitude"] >= -90)
-assert(responseBody["Longitude"] >= -180)
-assert(responseBody["Status"])
-assert(int(responseBody["Temperature"]) >= 0)
+assert(responseBody["latitude"] >= -90)
+assert(responseBody["longitude"] >= -180)
+assert(responseBody["status"])
+assert(int(responseBody["temperature"]) >= 0)
 
 received = False  # global variable for message reception
 
@@ -99,19 +100,19 @@ print("OK: MQTT message received.")
 client.disconnect()
 client.loop_stop()
 
-print("Looking for robot at: http://{}:{}/v2/entities?type=ROBOT&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
+print("Looking for robot at: http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
 i = 0
 while i < 300 and len(robots) == 0:
     if i > 0:
         sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
+    response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
     assert (response.status_code == 200)
     robots = [x for x in loads(response.text) if "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
     i += 1
 assert (len(robots) > 0)
 print("OK: Robot found")
 
-response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={})
+response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
 responseBody = loads(response.text)[0]
 assert (response.status_code == 200)
 assert (responseBody["status"] == "active")

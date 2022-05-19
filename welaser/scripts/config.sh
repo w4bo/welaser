@@ -10,6 +10,7 @@ ls devices/src/main/resources/datamodels/ > devices/src/main/resources/datamodel
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
+ln .env devices/.env
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
 cp mosquitto/pwfile.example mosquitto/pwfile
