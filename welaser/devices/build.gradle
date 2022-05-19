@@ -37,7 +37,6 @@ javadoc { failOnError true }
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
-    maven { url "https://repository.cloudera.com/artifactory/cloudera-repos/" }
 }
 
 idea {
@@ -48,6 +47,8 @@ idea {
 }
 
 dependencies {
+    implementation 'io.ktor:ktor-server-core:2.0.1'
+    implementation 'io.ktor:ktor-server-netty:2.0.1'
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.slf4j:slf4j-api:1.7.32'
@@ -65,7 +66,6 @@ dependencies {
 }
 
 test {
-    // useJUnit()
     useJUnitPlatform()
     maxHeapSize = '1G'
 }
@@ -80,6 +80,12 @@ task runMission(type: JavaExec) {
     description = "Run a mission"
     classpath = sourceSets.main.runtimeClasspath
     main = 'it.unibo.devices.MissionSimulator'
+}
+
+task runIotAgent(type: JavaExec) {
+    description = "Run the IotAgent"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.iotagent.IotAgent'
 }
 
 defaultTasks 'clean', 'build', 'check', 'shadowJar'

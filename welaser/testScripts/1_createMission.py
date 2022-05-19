@@ -57,15 +57,13 @@ while i < 50 and len(responseBody) == 0:
         sleep(2)
     response = requests.request("GET", "http://{}:{}/v2/entities?type=Thermometer&options=keyValues".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), headers=headers, data={})
     assert (response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["Domain"] == domain and x["Mission"] == mission]
+    responseBody = [x for x in loads(response.text) if x["Domain"] == domain and x["Mission"] == mission and x["Latitude"] is not None]
     i += 1
 assert (len(responseBody) > 0)
 print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
-if "Latitude" not in responseBody:
-    print(responseBody)
 assert(responseBody["Latitude"] >= -90)
 assert(responseBody["Longitude"] >= -180)
 assert(responseBody["Status"])

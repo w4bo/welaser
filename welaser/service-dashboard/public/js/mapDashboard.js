@@ -188,7 +188,7 @@ const mapDashboard = {
             }
             const device = this.devices[data.id]
             device.data = data
-            if (data.type === "ROBOT" && data.gnss) {
+            if (data.type === "ROBOT" && data.gnss && data.gnss.value) {
                 this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
             } else if (data.Longitude && data.Latitude && data.Latitude.value && data.Longitude.value) {
                 this.deviceLocationMap[data.id] = [data.Longitude.value, data.Latitude.value, device.color]

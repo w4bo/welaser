@@ -1,12 +1,13 @@
 package it.unibo.devices
 
 import org.json.JSONObject
-import java.io.File
-import java.net.URL
+
 
 object EntityFactory {
     fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
-        val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+        // println(fileName)
+        val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
+        val initStatus = JSONObject(lines)
         return when (initStatus.getString("type")) {
             "AgriRobot" -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
@@ -14,16 +15,13 @@ object EntityFactory {
     }
 
     fun createAll(folder: String): List<EntityFIWARE> {
-        val loader = Thread.currentThread().contextClassLoader
-        val url: URL = loader.getResource(folder)!!
-        val path: String = url.getPath()
-
-        return File(path)
-            .listFiles()
-            .filter { it.extension == "json" }
+        return this::class.java.getResourceAsStream("$folder/filelist.txt")!!
+            .bufferedReader()
+            .readLines()
+            .filter { it.endsWith("json") }
             .sorted()
             .map {
-                createFromFile(it.path, 1, times = 1)
+                createFromFile("$folder/$it", 1, times = 1)
             }
     }
 }
@@ -71,7 +69,8 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     Device(false, timeoutMs, false, -1.0, -1.0, "canary", "dummy", DummySensor(), ProtocolHTTP(), times) {
 
-    val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+    val initStatus = JSONObject(this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b })
+    // val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
     val type: String = initStatus.getString("type")
 
     override var status = when (type) {

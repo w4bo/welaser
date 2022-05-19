@@ -19,19 +19,19 @@ import kotlin.random.Random
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("../.env").load()
 val DRACO_IP = dotenv["DRACO_IP"]
-val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"]
+val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"].toInt()
 val ORION_IP = dotenv["ORION_IP"]
-val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"]
+val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
 val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}"
 val IOTA_IP = dotenv["IOTA_IP"]
-val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"]
+val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"].toInt()
 val FIWARE_SERVICE = dotenv["FIWARE_SERVICE"]
 val FIWARE_SERVICEPATH = dotenv["FIWARE_SERVICEPATH"]
 val FIWARE_API_KEY = dotenv["FIWARE_API_KEY"]
 val MOSQUITTO_USER = dotenv["MOSQUITTO_USER"]
 val MOSQUITTO_PWD = dotenv["MOSQUITTO_PWD"]
 val MOSQUITTO_IP = dotenv["MOSQUITTO_IP"]
-val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"]
+val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"].toInt()
 
 /**
  * Some entity types
@@ -161,7 +161,7 @@ enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
                 httpRequest(url.replace("entities", "entities/" + JSONObject(payload!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
                 httpRequest(url, payload, headers, requestType, retry)
             } else {
-                throw IllegalArgumentException(response.body())
+                throw IllegalArgumentException(url + "\n" + payload + "\n" + response.body())
             }
         }
         return response.body()!!
@@ -180,7 +180,7 @@ class ProtocolMQTT : IProtocol {
     var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
 
-    override fun register(s: String) {
+    @Synchronized override fun register(s: String) {
         connOpts.isCleanSession = true
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
@@ -189,17 +189,19 @@ class ProtocolMQTT : IProtocol {
             println("Waiting for client connection")
             Thread.sleep(100)
         }
-        httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
-        httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getJSONArray("devices").getJSONObject(0).getString("entity_name"), null, listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
+        httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
+        httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"), null)
+        // httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
+        // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getJSONArray("devices").getJSONObject(0) .getString("entity_name"), null, listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
 
-    override fun send(payload: String, topic: String) {
+    @Synchronized override fun send(payload: String, topic: String) {
         client.publish(topic, payload.toByteArray(), 0, false)
     }
 
-    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
+    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
-            val o = JSONObject(String(message!!.payload))
+            val o = JSONObject(String(message!!.payload)).getJSONObject("cmd")
             val commandName = o.keys().next()!!
             f(commandName, o.getString(commandName))
             client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
@@ -208,33 +210,34 @@ class ProtocolMQTT : IProtocol {
 }
 
 class ProtocolSubscription : IProtocol {
-    override fun register(s: String) {}
+    @Synchronized override fun register(s: String) {}
 
-    override fun send(payload: String, topic: String) {
+    @Synchronized override fun send(payload: String, topic: String) {
         httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 
-    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
+    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolHTTP : IProtocol {
 
-    override fun register(s: String) {
+    @Synchronized override fun register(s: String) {
         httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"), null, listOf())
     }
 
-    override fun send(s: String, topic: String) {
-        httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
+    @Synchronized override fun send(s: String, topic: String) {
+        httpRequest("$ORION_URL/v2/entities/${JSONObject(s).get("id")}/attrs?options=keyValues", s, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
+        // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 
-    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
+    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolKafka : IProtocol {
     val props = Properties()
     var producer: KafkaProducer<String, String>? = null
-    override fun register(s: String) {
+    @Synchronized override fun register(s: String) {
         props["bootstrap.servers"] = "localhost:9092"
         props["acks"] = "all"
         props["retries"] = 0
@@ -244,11 +247,11 @@ class ProtocolKafka : IProtocol {
         producer = KafkaProducer(props)
     }
 
-    override fun send(payload: String, topic: String) {
+    @Synchronized override fun send(payload: String, topic: String) {
         producer!!.send(ProducerRecord("data.canary.realtime", "foo", payload))
     }
 
-    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
+    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 abstract class Device(
@@ -270,7 +273,7 @@ abstract class Device(
     val r = Random(3)
     abstract fun getStatus(): String
     open fun getRegister(): String = getStatus()
-    override fun getType(): EntityType = s.getType()
+    final override fun getType(): EntityType = s.getType()
 
     companion object {
         @JvmName("getId1")
@@ -283,7 +286,7 @@ abstract class Device(
      * Execute a command
      */
     override fun exec(commandName: String, payload: String) {
-        // println(commandName)
+        println(commandName + " " + payload)
         status = commandName == "on"
     }
 
@@ -304,21 +307,18 @@ abstract class Device(
         register(getRegister())
         // println("Listening to... $listenTopic")
         listen(listenTopic, listenCallback)
-        try {
-            var i = 0
-            // println(status)
-            while (i++ < times) {
-                // print("Iterating...")
-                Thread.sleep(timeoutMs.toLong())
-                if (status) {
-                    val s = sense()
-                    // println(id + " " + s)
-                    send(s, sendTopic)
-                    updatePosition()
-                }
+        var i = 0
+        // println(status)
+        while (i++ < times) {
+            // print("Iterating...")
+            Thread.sleep(timeoutMs.toLong())
+            if (status) {
+                val s = sense()
+                // println("$id $s")
+                if (i % 100 == 1) println(s)
+                send(s, sendTopic)
+                updatePosition()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }
@@ -336,16 +336,16 @@ class DeviceSubscription(
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
     override fun getStatus(): String {
         return """{"data": [{
-                "id": "urn:ngsi-ld:$id",
+                "id": "$id",
                 "type": "Sub-${getType()}",
                 "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": {"value": "${s.sense()}",                "type": "String"},
-                "Status":                                                            {"value": $status,                       "type": "Boolean"},
-                "Time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
-                "Latitude":                                                          {"value": $latitude,                     "type": "Float"},
-                "Location":                                                          {"value": "foo",                         "type": "String"},
-                "Longitude":                                                         {"value": $longitude,                    "type": "Float"},
-                "Mission":                                                           {"value": "$mission",                    "type": "String"},
-                "Domain":                                                            {"value": "$domain",                     "type": "String"}
+                "status":                                                            {"value": $status,                       "type": "Boolean"},
+                "time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
+                "latitude":                                                          {"value": $latitude,                     "type": "Float"},
+                "location":                                                          {"value": "foo",                         "type": "String"},
+                "longitude":                                                         {"value": $longitude,                    "type": "Float"},
+                "mission":                                                           {"value": "$mission",                    "type": "String"},
+                "domain":                                                            {"value": "$domain",                     "type": "String"}
             }]}""".replace("\\s+".toRegex(), " ")
     }
 
@@ -363,33 +363,39 @@ open class DeviceFIWARE(
     s: ISensor,
     p: IProtocol
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
+    override val id = getType().toString() + getId()
+
     override fun getStatus(): String {
-//        return """{
-//                "id": "urn:ngsi-ld:$id",
-//                "type": "OCB-${getType()}",
-//                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": {"value": "${s.sense()}",                "type": "String"},
-//                "Status":                                                            {"value": $status,                       "type": "Boolean"},
-//                "Time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
-//                "Latitude":                                                          {"value": $latitude,                     "type": "Float"},
-//                "Longitude":                                                         {"value": $longitude,                    "type": "Float"},
-//                "Mission":                                                           {"value": "$mission",                    "type": "String"},
-//                "Domain":                                                            {"value": "$domain",                     "type": "String"}
-//            }""".replace("\\s+".toRegex(), " ")
+        // return """{
+        //         "id": "$id",
+        //         "type": "OCB-${getType()}",
+        //         "${if (getType() == EntityType.Camera) "image" else "temperature"}": {"value": "${s.sense()}",                "type": "String"},
+        //         "status":                                                            {"value": $status,                       "type": "Boolean"},
+        //         "time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
+        //         "latitude":                                                          {"value": $latitude,                     "type": "Float"},
+        //         "longitude":                                                         {"value": $longitude,                    "type": "Float"},
+        //         "mission":                                                           {"value": "$mission",                    "type": "String"},
+        //         "domain":                                                            {"value": "$domain",                     "type": "String"}
+        //     }""".replace("\\s+".toRegex(), " ")
         return """{
-                "id": "urn:ngsi-ld:$id",
+                "id": "$id",
                 "type": "OCB-${getType()}",
-                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": "${s.sense()}",               
-                "Status":                                                            $status,                      
-                "Time":                                                              ${System.currentTimeMillis()},
-                "Latitude":                                                          $latitude,                    
-                "Longitude":                                                         $longitude,                   
-                "Mission":                                                           "$mission",                    
-                "Domain":                                                            "$domain"               
+                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",               
+                "status":                                                            $status,                      
+                "time":                                                              ${System.currentTimeMillis()},
+                "latitude":                                                          $latitude,                    
+                "longitude":                                                         $longitude,                   
+                "mission":                                                           "$mission",                    
+                "domain":                                                            "$domain",
+                "commandList":                                                       ["on", "off"],
+                "cmd":                                                               "dummy"               
             }""".replace("\\s+".toRegex(), " ")
     }
 
     override fun sense(): String {
-        return """{"actionType": "update", "entities": [${getStatus()}]}""".replace("\\s+".toRegex(), " ")
+        val s = JSONObject(getStatus())
+        s.remove("cmd")
+        return """{"actionType": "update", "entities": [$s]}""".replace("\\s+".toRegex(), " ")
     }
 }
 
@@ -422,44 +428,60 @@ class DeviceMQTT(
     override val id = getType().toString() + getId()
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
-    override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p ->
-        exec(c, p)
-    }
+    override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
+
     override fun getRegister(): String {
         return """{
-                "devices": 
-                    [{
-                        "device_id": "$id",
-                        "entity_name": "urn:ngsi-ld:$id",
-                        "entity_type": "${getType()}",
-                        "transport": "MQTT",
-                        "commands": [
-                            {"name": "on", "type": "command"},
-                            {"name": "off", "type": "command"}
-                        ],
-                        "attributes": [
-                            {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "Image" else "Temperature"}", "type": "String"},
-                            {"object_id": "stat",  "name": "Status",       "type": "Boolean"},
-                            {"object_id": "time",  "name": "Time",         "type": "Integer"},
-                            {"object_id": "lat",   "name": "Latitude",     "type": "Float"},
-                            {"object_id": "lon",   "name": "Longitude",    "type": "Float"},
-                            {"object_id": "where", "name": "Location",     "type": "String"}
-                        ],
-                        "static_attributes": [
-                            {"name": "Mission", "type": "String", "value": "$mission"},
-                            {"name": "Domain", "type": "String", "value": "$domain"}
-                        ]
-                    }]
-                }""".replace("\\s+".toRegex(), " ")
+                "id":                                                               "$id",
+                "type":                                                             "MQTT-${getType()}",
+                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",               
+                "status":                                                            $status,                      
+                "time":                                                              ${System.currentTimeMillis()},
+                "latitude":                                                          $latitude,                    
+                "longitude":                                                         $longitude,                   
+                "mission":                                                           "$mission",                    
+                "domain":                                                            "$domain",
+                "commandList":                                                       ["on", "off"],
+                "cmd":                                                               "dummy"
+            }""".replace("\\s+".toRegex(), " ")
     }
+
+    // override fun getRegister(): String {
+    //     return """{
+    //             "devices":
+    //                 [{
+    //                     "device_id": "$id",
+    //                     "entity_name": "$id",
+    //                     "entity_type": "Thing",
+    //                     "transport": "MQTT",
+    //                     "commands": [
+    //                         {"name": "on", "type": "command"},
+    //                         {"name": "off", "type": "command"}
+    //                     ],
+    //                     "attributes": [
+    //                         {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "Image" else "Temperature"}", "type": "String"},
+    //                         {"object_id": "stat",  "name": "status",       "type": "Boolean"},
+    //                         {"object_id": "time",  "name": "time",         "type": "Integer"},
+    //                         {"object_id": "lat",   "name": "latitude",     "type": "Float"},
+    //                         {"object_id": "lon",   "name": "longitude",    "type": "Float"},
+    //                         {"object_id": "where", "name": "location",     "type": "String"}
+    //                     ],
+    //                     "static_attributes": [
+    //                         {"name": "mission", "type": "String", "value": "$mission"},
+    //                         {"name": "domain", "type": "String", "value": "$domain"}
+    //                     ]
+    //                 }]
+    //             }""".replace("\\s+".toRegex(), " ")
+    // }
+
 
     override fun getStatus(): String {
         return """{
-                "${if (getType() == EntityType.Camera) "img" else "temp"}": "${s.sense()}",
-                "stat": $status,
+                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",
+                "status": $status,
                 "time": ${System.currentTimeMillis()},
-                "lat": ${latitude},
-                "lon": ${longitude}
+                "latitude": ${latitude},
+                "longitude": ${longitude}
             }""".replace("\\s+".toRegex(), " ")
     }
 

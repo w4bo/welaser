@@ -19,34 +19,35 @@ fi
 ./stop.sh
 ./scripts/setupAll.sh
 
+# curl -iX POST \
+#   "http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions" \
+#   -H 'Content-Type: application/json' \
+#   -H "fiware-service: ${FIWARE_SERVICE}" \
+#   -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" \
+#   -d '{
+#   "description": "Notify Draco of all Device changes",
+#   "subject": { "entities": [{ "idPattern": ".*" } ] },
+#   "notification": { "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" } }
+# }'
+
 curl -iX POST \
   "http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions" \
   -H 'Content-Type: application/json' \
-  -H "fiware-service: ${FIWARE_SERVICE}" \
-  -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" \
   -d '{
-  "description": "Notify Draco of all device changes",
-  "subject": {
-    "entities": [{ "idPattern": ".*" } ]
-  },
-  "notification": {
-    "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" }
-  }
+  "description": "Notify Draco of all Entity changes",
+  "subject": { "entities": [{ "idPattern": ".*" } ] },
+  "notification": { "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" } }
 }'
 
 curl -iX POST \
   "http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions" \
   -H 'Content-Type: application/json' \
   -d '{
-  "description": "Notify Draco of all device changes",
-  "subject": {
-    "entities": [{ "idPattern": ".*" } ]
-  },
-  "notification": {
-    "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" }
-  }
+  "description": "Notify IoTAgent when Things receive a cmd update i.e. a command",
+  "condition": { "attrs": [ "cmd" ], "expression": {"q": "cmd!=dummy"} },
+  "subject": { "entities": [{ "idPattern": ".*" }]},
+  "notification": { "http": { "url": "http://'${IOTA_IP}':'${IOTA_NORTH_PORT}'/" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
 }'
-
 cd devices
 ./gradlew clean shadowJar
-java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &
+java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>../logs/devices-canaries-$(date +%s).txt &

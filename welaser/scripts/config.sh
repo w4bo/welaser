@@ -6,6 +6,7 @@ DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
 find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/resources/datamodels/ \;
 ls -las devices/src/main/resources/datamodels/
+ls devices/src/main/resources/datamodels/ > devices/src/main/resources/datamodels/filelist.txt
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
