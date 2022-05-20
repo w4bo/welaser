@@ -28,5 +28,5 @@ fun main(args: Array<String>) {
                 DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, domain, mission, Thermometer()),
                 DeviceMQTT(true, timeStamp(), true, 40.31231176524012, -3.4810422377848910, domain, mission, Camera()),
             )
-    ).forEach { d -> d.run() } //.forEach { d -> executor.submit { d.run() } } //
+    ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
 }

@@ -51,7 +51,8 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
         when (commandName) {
             ROBOT_CMD_START -> {
                 status = true
-                val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
+                // TODO should be val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
+                val mission: String = khttp.get("$ORION_URL/v2/entities/mission-123/?options=keyValues").jsonObject.toString()
                 // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
