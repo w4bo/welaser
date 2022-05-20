@@ -126,10 +126,10 @@ interface IProtocol {
      * @param topic listen to the current topic, if any
      * @param f callback function
      */
-    fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> })
+    fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> }) {}
 }
 
-enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
+// enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
 
 //@Synchronized fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
 //    try {
@@ -216,47 +216,52 @@ class ProtocolMQTT : IProtocol {
 }
 
 class ProtocolSubscription : IProtocol {
-    @Synchronized override fun register(s: String) {}
+    @Synchronized
+    override fun register(s: String) {
+    }
 
-    @Synchronized override fun send(payload: String, topic: String) {
+    @Synchronized
+    override fun send(payload: String, topic: String) {
         khttp.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf("Content-Type" to "application/json"), data = payload)
         // httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
-
-    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolHTTP : IProtocol {
-
-    @Synchronized override fun register(s: String) {
+    @Synchronized
+    override fun register(s: String) {
         khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
         khttp.get("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
     }
 
-    @Synchronized override fun send(s: String, topic: String) {
-        val payload = JSONObject(s)
-        val id = payload.get("id")
-        payload.remove("id")
-        if (payload.has("type")) {
-            payload.remove("type")
+    @Synchronized
+    override fun send(payload: String, topic: String) {
+        val payloadJSON = JSONObject(payload)
+        val id = payloadJSON.get("id")
+        payloadJSON.remove("id")
+        if (payloadJSON.has("type")) {
+            payloadJSON.remove("type")
         }
-        if (payload.has("cmd")) {
-            payload.remove("cmd")
+        if (payloadJSON.has("cmd")) {
+            payloadJSON.remove("cmd")
         }
-        khttp.patch("$ORION_URL/v2/entities/$id/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload.toString())
+        khttp.patch(
+            "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
+            mapOf("Content-Type" to "application/json"),
+            data = payloadJSON.toString()
+        )
         // httpRequest("$ORION_URL/v2/entities/$id/attrs?options=keyValues",payload.toString(),listOf(Pair("Content-Type", "application/json")),REQUEST_TYPE.PATCH )
         // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
-
-    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 class ProtocolKafka : IProtocol {
     val props = Properties()
     var producer: KafkaProducer<String, String>? = null
-    @Synchronized override fun register(s: String) {
+    @Synchronized
+    override fun register(s: String) {
         props["bootstrap.servers"] = "$KAFKA_IP:$KAFKA_PORT_EXT"
         props["acks"] = "all"
         props["retries"] = 0
@@ -266,11 +271,10 @@ class ProtocolKafka : IProtocol {
         producer = KafkaProducer(props)
     }
 
-    @Synchronized override fun send(payload: String, topic: String) {
+    @Synchronized
+    override fun send(payload: String, topic: String) {
         producer!!.send(ProducerRecord("data.canary.realtime", "foo", payload))
     }
-
-    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
 }
 
 abstract class Device(
@@ -285,7 +289,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    open val id: String = "" + getId()
+    val id: String = getType().toString() + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -296,7 +300,8 @@ abstract class Device(
 
     companion object {
         @JvmName("getId1")
-        @Synchronized fun getId(): Int {
+        @Synchronized
+        fun getId(): Int {
             return (Math.random() * 1000000).toInt()
         }
     }
@@ -332,10 +337,10 @@ abstract class Device(
             // print("Iterating...")
             Thread.sleep(timeoutMs.toLong())
             if (status) {
-                val s = sense()
+                val payload = sense()
                 // println("$id $s")
-                if (i % 100 == 1) println(s)
-                send(s, sendTopic)
+                if (i % 100 == 1) println(payload)
+                send(payload, sendTopic)
                 updatePosition()
             }
         }
@@ -350,9 +355,8 @@ class DeviceSubscription(
     longitude: Double,
     domain: String,
     mission: String,
-    s: ISensor,
-    p: IProtocol
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
+    s: ISensor
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolSubscription()) {
     override fun getStatus(): String {
         return """{"data": [{
                 "id": "$id",
@@ -371,7 +375,7 @@ class DeviceSubscription(
     override fun sense(): String = getStatus()
 }
 
-open class DeviceFIWARE(
+open class DeviceHTTP(
     status: Boolean,
     timeoutMs: Int,
     moving: Boolean,
@@ -380,10 +384,8 @@ open class DeviceFIWARE(
     domain: String,
     mission: String,
     s: ISensor,
-    p: IProtocol
+    p: IProtocol = ProtocolHTTP()
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
-    override val id = getType().toString() + getId()
-
     override fun getStatus(): String {
         // return """{
         //         "id": "$id",
@@ -422,9 +424,8 @@ class DeviceKafka(
     longitude: Double,
     domain: String,
     mission: String,
-    s: ISensor,
-    p: IProtocol
-) : DeviceFIWARE(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
+    s: ISensor
+) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolKafka()) {
     override fun sense(): String = getStatus().replace("OCB", "KAFKA")
 }
 
@@ -437,10 +438,8 @@ class DeviceMQTT(
     domain: String,
     mission: String,
     s: ISensor,
-    p: IProtocol,
     times: Int = 1000
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p, times = times) {
-    override val id = getType().toString() + getId()
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolMQTT(), times = times) {
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
     override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
@@ -489,14 +488,13 @@ class DeviceMQTT(
     //             }""".replace("\\s+".toRegex(), " ")
     // }
 
-
     override fun getStatus(): String {
         return """{
                 "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",
-                "status": $status,
-                "time": ${System.currentTimeMillis()},
-                "latitude": ${latitude},
-                "longitude": ${longitude}
+                "status":                                                             $status,
+                "time":                                                               ${System.currentTimeMillis()},
+                "latitude":                                                           ${latitude},
+                "longitude":                                                          ${longitude}
             }""".replace("\\s+".toRegex(), " ")
     }
 

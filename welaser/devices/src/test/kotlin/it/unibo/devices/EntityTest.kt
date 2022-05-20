@@ -42,9 +42,7 @@ class EntityTest {
     }
 
     fun init(): Device {
-        val s4: ISensor = Thermometer()
-        val p4: IProtocol = ProtocolMQTT()
-        val d = DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", s4, p4, times = 2)
+        val d = DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", Thermometer(), times = 2)
         d.run()
         return d
     }
@@ -53,9 +51,9 @@ class EntityTest {
         var s = "foo"
         var i = 0
         println("Waiting for ${d.id}")
-        while (!s.contains(d.id) && i++ <= 20) {
+        while (!s.contains(d.id) && i++ <= 50) {
             if (i > 1) {
-                Thread.sleep(1000)
+                Thread.sleep(100)
             }
             s = khttp.get("${ORION_URL}/v2/entities/?id=${d.id}").text
             // s = httpRequest(
