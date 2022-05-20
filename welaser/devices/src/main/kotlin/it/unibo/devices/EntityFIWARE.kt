@@ -48,6 +48,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     }
 
     override fun exec(commandName: String, payload: String) {
+        // println(commandName)
         when (commandName) {
             ROBOT_CMD_START -> {
                 status = true

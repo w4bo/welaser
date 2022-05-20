@@ -33,7 +33,7 @@ class EntityTest {
 
     fun waitFor(d: Device, goal: Boolean) {
         var retry = 100
-        while(retry-- > 0 && (goal && !d.status || !goal && d.status)) {
+        while (retry-- > 0 && goal != d.status) {
             Thread.sleep(500)
         }
         assertTrue(retry > 0, "Timeout")

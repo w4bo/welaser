@@ -238,8 +238,20 @@ class ProtocolHTTP : IProtocol {
     @Synchronized
     override fun register(s: String) {
         val status = JSONObject(s)
-        khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
-        khttp.get("${ORION_URL}/v2/entities/" + status.getString("id"))
+        var retry = 3
+        while (retry-- >= 0) {
+            try {
+                khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
+                khttp.get("${ORION_URL}/v2/entities/" + status.getString("id"))
+            } catch (e: Exception) {
+                if (retry == 0) {
+                    e.printStackTrace()
+                    throw e
+                } else {
+                    Thread.sleep(1000)
+                }
+            }
+        }
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
     }
