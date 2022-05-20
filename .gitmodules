@@ -1,4 +1,4 @@
 [submodule "welaser/welaser-datamodels"]
 	path = welaser/welaser-datamodels
-	url = https://github.com/w4bo/welaser-datamodels.git
+	url = git@github.com:w4bo/welaser-datamodels.git
 

@@ -24,13 +24,13 @@ const domainManager = {
     },
     methods: {
         init() {
-            this.socket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
-            console.log(this.domainManagerTopic)
+            this.socket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+            console.log(this.DOMAIN_MANAGER_TOPIC)
         },
         createDomain() {
             console.log("create domain", this.domainName)
             data = {
-                topic: this.domainManagerTopic,
+                topic: this.DOMAIN_MANAGER_TOPIC,
                 data: {
                     type: "request",
                     domain: this.domainName,

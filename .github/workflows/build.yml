@@ -9,33 +9,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['11', '14']
+        java: ['11'] # , '14'
     steps:
       - uses: actions/checkout@v3.0.2
         with:
-          submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          submodules: recursive
       - name: Setup java
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java }}
+      - name: Build java
+        run: |
+          cd welaser/devices
+          ./gradlew shadowJar
       - uses: actions/setup-python@v3
         with:
           python-version: '3.8.10'
           architecture: 'x64'
-      - name: Launch
+      - name: Launch and test
         run: |
           cd welaser
           scripts/config.sh
           ./launch.sh
-      - name: Tests
-        run: |
-          cd welaser/testScripts
-          pip install -r requirements.txt
-          for FILE in *.py; do echo $FILE; python $FILE; done
-          docker logs missionmanager
+          pip install -r testScripts/requirements.txt
+          scripts/runTests.sh
       - name: Stop
         run: |
           cd welaser

@@ -17,18 +17,18 @@ test {
     }
 }
 
-java { toolchain {languageVersion = JavaLanguageVersion.of(14) } }
+java { toolchain {languageVersion = JavaLanguageVersion.of(11) } }
 
-kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of(14)) } }
+kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of(11)) } }
 
 compileJava {
-    sourceCompatibility = '14'
-    targetCompatibility = '14'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 }
 
-compileKotlin { kotlinOptions { jvmTarget = "14" } }
+compileKotlin { kotlinOptions { jvmTarget = '11' } }
 
-compileTestKotlin { kotlinOptions { jvmTarget = "14" } }
+compileTestKotlin { kotlinOptions { jvmTarget = '11' } }
 
 shadowJar { zip64 = true }
 
@@ -36,8 +36,8 @@ javadoc { failOnError true }
 
 // In this section you declare where to find the dependencies of your project
 repositories {
+    maven { url "https://jcenter.bintray.com" }
     mavenCentral()
-    maven { url "https://repository.cloudera.com/artifactory/cloudera-repos/" }
 }
 
 idea {
@@ -48,12 +48,15 @@ idea {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'khttp:khttp:1.0.0'
+    implementation 'io.ktor:ktor-server-core:2.0.1'
+    implementation 'io.ktor:ktor-server-netty:2.0.1'
+    // implementation 'com.google.guava:guava:31.1-jre'
+    // implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'org.json:json:20220320'
     implementation 'io.github.cdimascio:dotenv-kotlin:6.2.2'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
+    // implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
@@ -65,7 +68,6 @@ dependencies {
 }
 
 test {
-    // useJUnit()
     useJUnitPlatform()
     maxHeapSize = '1G'
 }
@@ -80,6 +82,19 @@ task runMission(type: JavaExec) {
     description = "Run a mission"
     classpath = sourceSets.main.runtimeClasspath
     main = 'it.unibo.devices.MissionSimulator'
+}
+
+task runIotAgent(type: JavaExec) {
+    description = "Run the IotAgent"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.iotagent.IotAgent'
+}
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
 }
 
 defaultTasks 'clean', 'build', 'check', 'shadowJar'

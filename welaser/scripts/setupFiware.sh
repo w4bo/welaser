@@ -16,27 +16,28 @@ else
   exit 1
 fi
 
-docker-compose up --build &>/dev/null &
+docker-compose up --build &>logs/docker-compose-$(date +%s).txt &
 
 ./wait-for-it.sh ${ORION_IP}:${ORION_PORT_EXT} --timeout=480 -- echo "OCB is up"
 ./wait-for-it.sh ${MOSQUITTO_IP}:${MOSQUITTO_PORT_EXT} --timeout=480 -- echo "Mosquitto is up"
 ./wait-for-it.sh ${IOTA_IP}:${IOTA_NORTH_PORT} --timeout=480 -- echo "IoTA is up"
+./wait-for-it.sh ${IP}:${WEB_SERVER_PORT_EXT} --timeout=480 -- echo "NodeJS is up"
 
 sleep 5
 
 # Setup the service group
-curl -ivX POST \
-  "http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/services" \
-  -H "Content-Type: application/json" \
-  -H "fiware-service: ${FIWARE_SERVICE}" \
-  -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" \
-  -d '{
- "services": [
-   {
-     "apikey":      "'${FIWARE_API_KEY}'",
-     "cbroker":     "http://'${ORION_IP}':'${ORION_PORT_EXT}'",
-     "entity_type": "Thing",
-     "resource":    ""
-   }
- ]
-}'
+#curl -ivX POST \
+#  "http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/services" \
+#  -H "Content-Type: application/json" \
+#  -H "fiware-service: ${FIWARE_SERVICE}" \
+#  -H "fiware-servicepath: ${FIWARE_SERVICEPATH}" \
+#  -d '{
+# "services": [
+#   {
+#     "apikey":      "'${FIWARE_API_KEY}'",
+#     "cbroker":     "http://'${ORION_IP}':'${ORION_PORT_EXT}'",
+#     "entity_type": "Thing",
+#     "resource":    ""
+#   }
+# ]
+#}'

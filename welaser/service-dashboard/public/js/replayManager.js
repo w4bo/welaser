@@ -55,7 +55,7 @@ const replayManager = {
 
     startReplay() {
       data = {
-        topic: this.replayManagerTopic,
+        topic: this.REPLAY_MANAGER_TOPIC,
         data: {
           type: "request",
           command: "start",
@@ -67,7 +67,7 @@ const replayManager = {
 
    stopReplay() {
       data = {
-        topic: this.replayManagerTopic,
+        topic: this.REPLAY_MANAGER_TOPIC,
         data: {
           type: "request",
           command: "stop",
@@ -79,7 +79,7 @@ const replayManager = {
 
     loadMissionsData() {
       axios
-        .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/mission`)
+        .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic/mission`)
         .then(response => {
           console.log(response)
           this.missions = response.data.map(e => {
@@ -90,7 +90,7 @@ const replayManager = {
 
     loadReplaysData() {
       axios
-        .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/replay`)
+        .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic/replay`)
         .then(response => {
           console.log(response)
           this.replays = response.data.map(e => {
@@ -100,8 +100,8 @@ const replayManager = {
     },
 
     init() {
-      this.remoteSocket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
-      this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
+      this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+      this.localSocket = io.connect(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}`)
       this.loadMissionsData()
       this.loadReplaysData()
 

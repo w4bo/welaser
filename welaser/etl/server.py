@@ -10,6 +10,7 @@ import json
 import time
 import os
 from kafka import KafkaProducer
+from datetime import datetime
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
@@ -35,6 +36,11 @@ class S(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length) # Get the data itself
         # logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n", str(self.path), str(self.headers), post_data.decode('utf-8'))
         subscription = json.loads(post_data.decode('utf-8')) # get the subscription
+        now = datetime.now()
+        if "heartbit" in subscription:
+            print("Alive at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+            return
+        print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
         data = subscription["data"] # get the data from the subscription
         for d in data: # data can be more than one item, do some preprocessing
             # d["id"] = d["id"].replace(":", "-")
@@ -61,7 +67,8 @@ class S(BaseHTTPRequestHandler):
             producer.send('data.' + domain + ".realtime", value=d)
             producer.send('data.' + domain + ".realtime." + mission, value=d)
             producer.send(DRACO_RAW_TOPIC, value=d)
-            print(d)
+        now = datetime.now()
+        print("Done at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
 
 def run(server_class=HTTPServer, handler_class=S, port=DRACO_PORT):
     # logging.basicConfig(level=logging.INFO)

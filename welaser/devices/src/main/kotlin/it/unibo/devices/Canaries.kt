@@ -11,6 +11,10 @@ val MISSION = "dummy"
 val latitude = 40.3123117652
 val longitude = -3.481042237784
 
+fun timeStamp(): Int {
+    return Math.max(300.0, r.nextDouble() * 1000).toInt()
+}
+
 fun rnd(d: Double, p: Int): Double {
     return d + (r.nextDouble() - 0.5) / pow(10.0, p * 1.0)
 }
@@ -18,28 +22,19 @@ fun rnd(d: Double, p: Int): Double {
 fun main(args: Array<String>) {
     val s1: ISensor = Camera()
     val s2: ISensor = Thermometer()
-    val p1: IProtocol = ProtocolHTTP()
-    val p2: IProtocol = ProtocolHTTP()
-    val p3: IProtocol = ProtocolMQTT()
-    val p4: IProtocol = ProtocolMQTT()
-    val p5: IProtocol = ProtocolSubscription()
-    val p6: IProtocol = ProtocolSubscription()
-    val p7: IProtocol = ProtocolKafka()
-    val p8: IProtocol = ProtocolKafka()
 
     val executor = Executors.newCachedThreadPool()
-    listOf(
-        DeviceFIWARE(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p1),
-        DeviceFIWARE(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p2),
-        DeviceMQTT(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p3),
-        DeviceMQTT(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p4),
-        DeviceSubscription(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p5),
-        DeviceSubscription(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p6),
-        DeviceKafka(true, 500, true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1, p7),
-        DeviceKafka(true, 500, false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2, p8)
-    ).forEach { d ->
-        executor.submit {
-            d.run()
-        }
-    }
+    (
+        EntityFactory.createAll("/datamodels") +
+        listOf(
+            DeviceHTTP(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceHTTP(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            DeviceMQTT(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceMQTT(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            DeviceSubscription(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceSubscription(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            // DeviceKafka(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceKafka(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2)
+        )
+    ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
 }

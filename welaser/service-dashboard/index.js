@@ -34,15 +34,14 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use('/static', express.static(__dirname + '/public'));
 
+const ip = "mongodb://" + process.env.MONGO_DB_PERS_IP + ":" + process.env.MONGO_DB_PERS_PORT_EXT + "/docker-node-mongo"
+
 // Connect to MongoDB
 mongoose
-    .connect(
-        process.env.MONGO_DB_PERS,
-        {useNewUrlParser: true}
-    )
+    .connect(ip, {useNewUrlParser: true})
     .then(() => console.log('MongoDB connected'))
     .catch(err => {
-        console.log(process.env.MONGO_DB_PERS);
+        console.log(ip);
         console.log(err)
     });
 

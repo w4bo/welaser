@@ -1,17 +1,31 @@
 package it.unibo.devices
 
+import it.unibo.ROBOT_CMD_PAUSE
+import it.unibo.ROBOT_CMD_RESUME
+import it.unibo.ROBOT_CMD_START
+import it.unibo.ROBOT_CMD_STOP
 import org.json.JSONObject
-import java.io.File
-import java.net.URL
-import java.util.concurrent.Executors
+
 
 object EntityFactory {
-    fun createByType(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
-        val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+    fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
+        val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
+        val initStatus = JSONObject(lines)
         return when (initStatus.getString("type")) {
             "AgriRobot" -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
         }
+    }
+
+    fun createAll(folder: String): List<EntityFIWARE> {
+        return this::class.java.getResourceAsStream("$folder/filelist.txt")!!
+            .bufferedReader()
+            .readLines()
+            .filter { it.endsWith("json") }
+            .sorted()
+            .map {
+                createFromFile("$folder/$it", 1, times = 1)
+            }
     }
 }
 
@@ -21,6 +35,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     var missionPlan: JSONObject = JSONObject()
     var coords: MutableList<Any> = mutableListOf()
 
+    @Synchronized
     override fun getStatus(): String {
         initStatus.put("speed", Math.random())
         initStatus.put("bearing", Math.random())
@@ -28,28 +43,34 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
         return initStatus.toString()
     }
 
+    @Synchronized
     fun reset() {
         status = false
         missionPlan = JSONObject()
     }
 
+    @Synchronized
     override fun exec(commandName: String, payload: String) {
+        // println(commandName)
         when (commandName) {
-            "running" -> {
+            ROBOT_CMD_START -> {
                 status = true
-                missionPlan = JSONObject(httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues"))
-                println(missionPlan)
+                // TODO should be val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
+                val mission: String = khttp.get("$ORION_URL/v2/entities/mission-123/?options=keyValues").jsonObject.toString()
+                // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
+                missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
             }
-            "stop" -> reset()
-            "resume" -> status = false
+            ROBOT_CMD_STOP -> reset()
+            ROBOT_CMD_RESUME -> status = true
+            ROBOT_CMD_PAUSE -> status = false
         }
     }
 
+    @Synchronized
     override fun updatePosition() {
         if (coords.isNotEmpty()) {
             val c = coords.removeAt(0)
-            println("Moving to $c")
             initStatus.getJSONObject("location").put("coordinates", c)
         } else {
             reset()
@@ -58,10 +79,11 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 }
 
 open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
-    Device(false, timeoutMs, false, -1.0, -1.0, "canary", "dummy", DummySensor(), ProtocolHTTP(), times) {
+    DeviceHTTP(false, timeoutMs, false, -1.0, -1.0, DOMAIN, MISSION, DummySensor(), times = times) {
 
-    val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
+    val initStatus = JSONObject(this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b })
     val type: String = initStatus.getString("type")
+    override val id = initStatus.getString("id")
 
     override var status = when (type) {
         "Device" -> true
@@ -100,7 +122,5 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
         }
     }
 
-    override fun sense(): String {
-        return """{"actionType": "update", "entities": [${getStatus()}]}"""
-    }
+    override fun sense() = getStatus()
 }

@@ -56,8 +56,8 @@ const missionManager = {
     },
     methods: {
         init() {
-            this.remoteSocket = io.connect(`http://${this.proxyIP}:${this.proxyPort}`)
-            this.localSocket = io.connect(`http://${this.webServerIP}:${this.webServerPort}`)
+            this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+            this.localSocket = io.connect(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}`)
             this.loadMissionsData()
             this.loadDomainsData()
 
@@ -69,7 +69,7 @@ const missionManager = {
 
         startMission() {
             data = {
-                topic: this.missionManagerTopic,
+                topic: this.MISSION_MANAGER_TOPIC,
                 data: {
                     type: "request",
                     command: "start",
@@ -82,7 +82,7 @@ const missionManager = {
 
         stopMission() {
             data = {
-                topic: this.missionManagerTopic,
+                topic: this.MISSION_MANAGER_TOPIC,
                 data: {
                     type: "request",
                     command: "stop",
@@ -95,7 +95,7 @@ const missionManager = {
 
         loadMissionsData() {
             axios
-                .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/mission`)
+                .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic/mission`)
                 .then(response => {
                     this.missions = response.data.map(e => {
                         return {id: `${e.topic.split(".")[1]} - ${e.id}`, mission: `${e.topic.split(".")[3]}`}
@@ -105,7 +105,7 @@ const missionManager = {
 
         loadDomainsData() {
             axios
-                .get(`http://${this.webServerIP}:${this.webServerPort}/api/topic/domain`)
+                .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic/domain`)
                 .then(response => {
                     this.domains = response.data.map(e => {
                         return {id: `${e.id}`, domain: `${e.id}`}
