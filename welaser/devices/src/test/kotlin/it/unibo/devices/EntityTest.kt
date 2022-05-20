@@ -46,10 +46,12 @@ class EntityTest {
             val r = EntityFactory.createFromFile("$folder/carob-123.json", 1, times = 1000)
             r.exec("running", "mission-123")
             r.run()
-            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""")
-            waitFor(r, false)
-            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""")
-            waitFor(r, true)
+            khttp.async.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
+                waitFor(r, false)
+                khttp.async.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
+                    waitFor(r, true)
+                })
+            })
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
@@ -84,7 +86,6 @@ class EntityTest {
         try {
             val d = init()
             val s = waitDevice(d)
-            print(d.id)
             assertTrue(s.contains(d.id))
         } catch (e: Exception) {
             e.printStackTrace()
@@ -98,7 +99,12 @@ class EntityTest {
             val d = init()
             waitDevice(d)
             assertTrue(d.status)
-            khttp.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"off" : {}}}""")
+            khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"off" : {}}}""", onResponse = {
+                waitFor(d, false)
+                khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""", onResponse = {
+                    waitFor(d, true)
+                })
+            })
             // httpRequest(
             //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
             //     """{"cmd": {"off" : {}}}""",
@@ -106,8 +112,7 @@ class EntityTest {
             //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
             //     REQUEST_TYPE.PATCH
             // )
-            waitFor(d, false)
-            khttp.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""")
+
             // httpRequest(
             //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
             //     """{"cmd": {"on" : {}}}""",
@@ -115,7 +120,7 @@ class EntityTest {
             //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
             //     REQUEST_TYPE.PATCH
             // )
-            waitFor(d, true)
+
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)

@@ -35,6 +35,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     var missionPlan: JSONObject = JSONObject()
     var coords: MutableList<Any> = mutableListOf()
 
+    @Synchronized
     override fun getStatus(): String {
         initStatus.put("speed", Math.random())
         initStatus.put("bearing", Math.random())
@@ -42,11 +43,13 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
         return initStatus.toString()
     }
 
+    @Synchronized
     fun reset() {
         status = false
         missionPlan = JSONObject()
     }
 
+    @Synchronized
     override fun exec(commandName: String, payload: String) {
         // println(commandName)
         when (commandName) {
@@ -64,6 +67,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
         }
     }
 
+    @Synchronized
     override fun updatePosition() {
         if (coords.isNotEmpty()) {
             val c = coords.removeAt(0)

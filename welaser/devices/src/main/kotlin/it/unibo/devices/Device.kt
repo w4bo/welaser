@@ -194,8 +194,9 @@ class ProtocolMQTT : IProtocol {
             // println("Waiting for client connection")
             Thread.sleep(100)
         }
-        khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
-        khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
+        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
+            khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
+        })
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
         // httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
@@ -241,8 +242,9 @@ class ProtocolHTTP : IProtocol {
         var retry = 3
         while (retry-- >= 0) {
             try {
-                khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
-                khttp.get("${ORION_URL}/v2/entities/" + status.getString("id"))
+                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
+                    khttp.async.get("${ORION_URL}/v2/entities/" + status.getString("id"))
+                })
             } catch (e: Exception) {
                 if (retry == 0) {
                     e.printStackTrace()

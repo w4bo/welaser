@@ -23,16 +23,12 @@ jobs:
         with:
           python-version: '3.8.10'
           architecture: 'x64'
-      - name: Launch
+      - name: Launch and test
         run: |
           cd welaser
           scripts/config.sh
           ./launch.sh
-      - name: Tests
-        run: |
-          cd welaser/testScripts
-          pip install -r requirements.txt
-          cd ..
+          pip install -r welaser/testScripts/requirements.txt
           scripts/runTests.sh
       - name: Stop
         run: |
