@@ -48,5 +48,5 @@ curl -iX POST \
   "notification": { "http": { "url": "http://'${IOTA_IP}':'${IOTA_NORTH_PORT}'/" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
 }'
 cd devices
-./gradlew clean shadowJar runMission &>../logs/missionmanager-$(date +%s)-${DOMAIN_NAME}-${MISSION_NAME}-devices.txt &
+./gradlew clean runMission &>../logs/missionmanager-$(date +%s)-${DOMAIN_NAME}-${MISSION_NAME}-devices.txt &
 #java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>../logs/devices-canaries-$(date +%s).txt &

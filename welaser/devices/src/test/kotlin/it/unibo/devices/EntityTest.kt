@@ -1,5 +1,7 @@
 package it.unibo.devices
 
+import it.unibo.ROBOT_CMD_PAUSE
+import it.unibo.ROBOT_CMD_RESUME
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
@@ -44,9 +46,9 @@ class EntityTest {
             val r = EntityFactory.createFromFile("$folder/carob-123.json", 1, times = 1000)
             r.exec("running", "mission-123")
             r.run()
-            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"pause" : {}}}""")
+            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""")
             waitFor(r, false)
-            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"resume" : {}}}""")
+            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""")
             waitFor(r, true)
         } catch (e: Exception) {
             e.printStackTrace()

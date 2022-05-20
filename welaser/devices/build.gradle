@@ -90,4 +90,11 @@ task runIotAgent(type: JavaExec) {
     main = 'it.unibo.iotagent.IotAgent'
 }
 
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
 defaultTasks 'clean', 'build', 'check', 'shadowJar'
