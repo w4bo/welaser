@@ -19,6 +19,10 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java }}
+      - name: Build java
+        run: |
+          cd welaser/devices
+          ./gradlew shadowJar
       - uses: actions/setup-python@v3
         with:
           python-version: '3.8.10'
