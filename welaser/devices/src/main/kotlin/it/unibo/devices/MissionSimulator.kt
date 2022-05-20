@@ -5,7 +5,6 @@ package it.unibo.devices
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
-import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -28,7 +27,7 @@ fun main(args: Array<String>) {
     val executor = Executors.newCachedThreadPool()
     (
             listOf(
-                // robot,
+                robot,
                 DeviceMQTT(true, timeStamp(), false, 40.31308266787424, -3.4804348644627585, domain, mission, Thermometer(), ProtocolMQTT()),
                 DeviceMQTT(true, timeStamp(), false, 40.31285012589443, -3.4811514708229670, domain, mission, Thermometer(), ProtocolMQTT()),
                 DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, domain, mission, Thermometer(), ProtocolMQTT()),

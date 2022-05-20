@@ -31,7 +31,8 @@ class IOTA {
         }
     }
 
-    var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
+    val client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
+    // val client2: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
     val mutex = Mutex()
     var server: NettyApplicationEngine? = null
@@ -52,7 +53,9 @@ class IOTA {
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
                             println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd $o")
+                            // client2.connect(connOpts)
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
+                            // client2.disconnect()
                         }
                         call.respondText("")
                     }
@@ -66,7 +69,7 @@ class IOTA {
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         connOpts.connectionTimeout = 0
-        connOpts.keepAliveInterval = 5
+        connOpts.keepAliveInterval = 0
         connOpts.setAutomaticReconnect(true)
 
         // wait for connection
@@ -77,19 +80,22 @@ class IOTA {
         }
 
         // subscribe to all mqtt messages
-        client.subscribe("#") { topic, message ->
-            synchronized(this) {
-                // println("Sending: $topic ${message!!.payload}")
+        client.subscribe("#", 0) { topic, message ->
+            // synchronized(this) {
                 if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
                     try {
                         val deviceid = topic.split("/")[2]
                         val payload = JSONObject(String(message!!.payload)).toString() // check that this is a valid JSON object
-                        httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
+                        println("Sending: $payload")
+                        khttp.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload)
+                        // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
+                        // println("Done")
                     } catch (e: Exception) {
+                        println(e.message)
                         e.printStackTrace()
                     }
                 }
-            }
+            // }
         }
     }
 }

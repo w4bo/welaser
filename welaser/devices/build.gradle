@@ -36,6 +36,7 @@ javadoc { failOnError true }
 
 // In this section you declare where to find the dependencies of your project
 repositories {
+    maven { url "https://jcenter.bintray.com" }
     mavenCentral()
 }
 
@@ -47,6 +48,7 @@ idea {
 }
 
 dependencies {
+    implementation 'khttp:khttp:1.0.0'
     implementation 'io.ktor:ktor-server-core:2.0.1'
     implementation 'io.ktor:ktor-server-netty:2.0.1'
     implementation 'com.google.guava:guava:31.1-jre'

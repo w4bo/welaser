@@ -24,7 +24,7 @@ const mapDashboard = {
                                             <th style="border: 1px solid black;">{{key}}</th>
                                             <td style="border: 1px solid black;">{{value}}</td>
                                       </tr>
-                                      <tr style="border: 1px solid black;" v-else-if="key == 'Image'">
+                                      <tr style="border: 1px solid black;" v-else-if="key == 'image'">
                                           <th style="border: 1px solid black;">{{key}}</th>
                                           <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>
                                       </tr>
@@ -97,7 +97,7 @@ const mapDashboard = {
             for (var [key, value] of Object.entries(data)) {
                 key = key.trim()
                 if (key !== "" && value !== "") {
-                    if (key === 'Image') {
+                    if (key === 'image') {
                         html += `<tr style="border: 1px solid black; width:100%"><thstyle="border: 1px solid black">${key}</th><td><img src="data:image/png;base64,${value}" style="height:20vh" alt="an image"></td></tr>`
                     } else if (value && value !== "") {
                         html += `<tr style="border: 1px solid black; width:100%"><th style="border: 1px solid black;">${key}</th><td>${this.renderJSON(value)}</td></tr>`
@@ -107,20 +107,22 @@ const mapDashboard = {
             return html
         },
         execute(deviceId, command) {
-            const headers = {
-                'Content-Type': 'application/json',
-                'fiware-service': this.FIWARE_SERVICE,
-                'fiware-servicepath': this.FIWARE_SERVICEPATH
-            }
-            const data = {}
             const inner = {}
-            inner[command] = { "foo": "bar" }
-            data[command] = {"type": "command", "value": inner}
-            // console.log(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`);
+            inner[command] = {}
             axios
-                .patch(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs`, data, {headers: headers})
-                .then(response => { console.log("response"); console.log(response) })
-                .catch(err => { console.log("error"); console.log(err) });
+                .patch(
+                    `http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs?options=keyValues`,
+                    {"cmd": inner},
+                    {headers: {'Content-Type': 'application/json'}}
+                )
+                .then(response => {
+                    console.log("response");
+                    console.log(response)
+                })
+                .catch(err => {
+                    console.log("error");
+                    console.log(err)
+                });
         },
         executeRobot(robotId, command) {
             var offsetTime = Math.round((Date.now() / 1000)) + 1000
@@ -172,7 +174,7 @@ const mapDashboard = {
                     this.handleCollisionData(data)
                     break;
                 default:
-                    console.log(data);
+                    // console.log(data);
                     this.handleDeviceData(data)
                     break;
             }
@@ -190,8 +192,8 @@ const mapDashboard = {
             device.data = data
             if (data.type === "ROBOT" && data.gnss && data.gnss.value) {
                 this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
-            } else if (data.Longitude && data.Latitude && data.Latitude.value && data.Longitude.value) {
-                this.deviceLocationMap[data.id] = [data.Longitude.value, data.Latitude.value, device.color]
+            } else if (data.longitude && data.latitude && data.latitude.value && data.longitude.value) {
+                this.deviceLocationMap[data.id] = [data.longitude.value, data.latitude.value, device.color]
             } else if (data.location && data.location.value && data.location.value.coordinates) {
                 this.deviceLocationMap[data.id] = [data.location.value.coordinates[0], data.location.value.coordinates[1], device.color]
             }

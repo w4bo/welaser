@@ -47,10 +47,11 @@ class EntityTest {
             if (i > 1) {
                 Thread.sleep(1000)
             }
-            s = httpRequest(
-                "${ORION_URL}/v2/entities/?id=${d.id}",
-                // listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            )
+            s = khttp.get("${ORION_URL}/v2/entities/?id=${d.id}").text
+            // s = httpRequest(
+            //     "${ORION_URL}/v2/entities/?id=${d.id}",
+            //     // listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
+            // )
         }
         return s
     }
@@ -74,26 +75,28 @@ class EntityTest {
             val d = init()
             waitDevice(d)
             assertTrue(d.status)
-            httpRequest(
-                "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-                """{"cmd": {"off" : {}}}""",
-                listOf(Pair("Content-Type", "application/json")),
-                // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-                REQUEST_TYPE.PATCH
-            )
+            khttp.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"off" : {}}}""")
+            // httpRequest(
+            //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
+            //     """{"cmd": {"off" : {}}}""",
+            //     listOf(Pair("Content-Type", "application/json")),
+            //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
+            //     REQUEST_TYPE.PATCH
+            // )
             var retry = 100
             while(retry-- > 0 && d.status) {
                 Thread.sleep(500)
             }
             assertTrue(retry > 0, "Timeout")
             assertFalse(d.status)
-            httpRequest(
-                "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-                """{"cmd": {"on" : {}}}""",
-                listOf(Pair("Content-Type", "application/json")),
-                // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-                REQUEST_TYPE.PATCH
-            )
+            khttp.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""")
+            // httpRequest(
+            //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
+            //     """{"cmd": {"on" : {}}}""",
+            //     listOf(Pair("Content-Type", "application/json")),
+            //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
+            //     REQUEST_TYPE.PATCH
+            // )
             retry = 100
             while(retry-- > 0 && !d.status) {
                 Thread.sleep(500)

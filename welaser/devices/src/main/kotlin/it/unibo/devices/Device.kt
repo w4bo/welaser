@@ -6,13 +6,8 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.eclipse.paho.client.mqttv3.IMqttClient
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import java.util.*
 import kotlin.random.Random
 
@@ -67,7 +62,7 @@ class Camera : ISensor {
     /**
      * @return get an image from src/main/resources, the image is encoded in Base64
      */
-    override fun sense(): String {
+    @Synchronized override fun sense(): String {
         val inputstream = Camera::class.java.getResourceAsStream("/img0" + Random.nextInt(1, 4) + ".png")
         val fileContent: ByteArray = IOUtils.toByteArray(inputstream)
         // val inputFile = File(javaClass.classLoader.getResource("img0" + Random.nextInt(1, 4) + ".png").file)
@@ -134,47 +129,47 @@ interface IProtocol {
 
 enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
 
-@Synchronized fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
-    try {
-        val client = HttpClient.newBuilder().build()
-        var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
-        if (payload != null) {
-            requestBuilder =
-                when(requestType) {
-                    REQUEST_TYPE.PUT -> requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(payload))
-                    REQUEST_TYPE.PATCH -> requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(payload))
-                    else -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload))
-                }
-        } else {
-            requestBuilder =
-                when(requestType) {
-                    REQUEST_TYPE.DELETE -> requestBuilder.DELETE()
-                    else -> requestBuilder.GET()
-                }
-        }
-        headers.forEach {
-            requestBuilder = requestBuilder.header(it.first, it.second)
-        }
-        val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
-        if (response.body().contains("error")) {
-            if (response.body().contains("Already Exists")) {
-                httpRequest(url.replace("entities", "entities/" + JSONObject(payload!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
-                httpRequest(url, payload, headers, requestType, retry)
-            } else {
-                throw IllegalArgumentException(url + "\n" + payload + "\n" + response.body())
-            }
-        }
-        return response.body()!!
-    } catch (e: Exception) {
-        if (retry <= 0) {
-            e.printStackTrace()
-            throw IllegalArgumentException(e.message)
-        } else {
-            Thread.sleep(100L * retry)
-            return httpRequest(url, payload, headers, requestType, retry - 1)
-        }
-    }
-}
+//@Synchronized fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
+//    try {
+//        val client: HttpClient = HttpClient.newBuilder().build()
+//        var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
+//        if (payload != null) {
+//            requestBuilder =
+//                when(requestType) {
+//                    REQUEST_TYPE.PUT -> requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(payload))
+//                    REQUEST_TYPE.PATCH -> requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(payload))
+//                    else -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload))
+//                }
+//        } else {
+//            requestBuilder =
+//                when(requestType) {
+//                    REQUEST_TYPE.DELETE -> requestBuilder.DELETE()
+//                    else -> requestBuilder.GET()
+//                }
+//        }
+//        headers.forEach {
+//            requestBuilder = requestBuilder.header(it.first, it.second)
+//        }
+//        val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+//        if (response.body().contains("error")) {
+//            if (response.body().contains("Already Exists")) {
+//                httpRequest(url.replace("entities", "entities/" + JSONObject(payload!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
+//                httpRequest(url, payload, headers, requestType, retry)
+//            } else {
+//                throw IllegalArgumentException(url + "\n" + payload + "\n" + response.body())
+//            }
+//        }
+//        return response.body()!!
+//    } catch (e: Exception) {
+//        if (retry <= 0) {
+//            e.printStackTrace()
+//            throw IllegalArgumentException(e.message)
+//        } else {
+//            Thread.sleep(100L * retry)
+//            return httpRequest(url, payload, headers, requestType, retry - 1)
+//        }
+//    }
+//}
 
 class ProtocolMQTT : IProtocol {
     var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
@@ -189,8 +184,10 @@ class ProtocolMQTT : IProtocol {
             // println("Waiting for client connection")
             Thread.sleep(100)
         }
-        httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
-        httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"), null)
+        khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
+        khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
+        // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
+        // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
         // httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
         // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getJSONArray("devices").getJSONObject(0) .getString("entity_name"), null, listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
@@ -220,7 +217,8 @@ class ProtocolSubscription : IProtocol {
     @Synchronized override fun register(s: String) {}
 
     @Synchronized override fun send(payload: String, topic: String) {
-        httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
+        khttp.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf("Content-Type" to "application/json"), data = payload)
+        // httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 
     @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {}
@@ -229,8 +227,10 @@ class ProtocolSubscription : IProtocol {
 class ProtocolHTTP : IProtocol {
 
     @Synchronized override fun register(s: String) {
-        httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
-        httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"), null, listOf())
+        khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
+        khttp.get("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
+        // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
+        // httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
     }
 
     @Synchronized override fun send(s: String, topic: String) {
@@ -243,12 +243,8 @@ class ProtocolHTTP : IProtocol {
         if (payload.has("cmd")) {
             payload.remove("cmd")
         }
-        httpRequest(
-            "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
-            payload.toString(),
-            listOf(Pair("Content-Type", "application/json")),
-            REQUEST_TYPE.PATCH
-        )
+        khttp.patch("$ORION_URL/v2/entities/$id/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload.toString())
+        // httpRequest("$ORION_URL/v2/entities/$id/attrs?options=keyValues",payload.toString(),listOf(Pair("Content-Type", "application/json")),REQUEST_TYPE.PATCH )
         // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 
