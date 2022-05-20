@@ -1,5 +1,9 @@
 package it.unibo.devices
 
+import it.unibo.ROBOT_CMD_PAUSE
+import it.unibo.ROBOT_CMD_RESUME
+import it.unibo.ROBOT_CMD_START
+import it.unibo.ROBOT_CMD_STOP
 import org.json.JSONObject
 
 
@@ -45,16 +49,16 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 
     override fun exec(commandName: String, payload: String) {
         when (commandName) {
-            "start" -> {
+            ROBOT_CMD_START -> {
                 status = true
                 val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
                 // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
             }
-            "stop" -> reset()
-            "resume" -> status = true
-            "pause" -> status = false
+            ROBOT_CMD_STOP -> reset()
+            ROBOT_CMD_RESUME -> status = true
+            ROBOT_CMD_PAUSE -> status = false
         }
     }
 

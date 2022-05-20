@@ -41,8 +41,8 @@ const mapDashboard = {
                                   <v-btn v-if="value.type=='commandResult'" v-on:click="execute(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
                               </template>
                               <!-- Commands from the AgriRobot -->
-                              <div v-if="typeof device.data !== 'undefined' && typeof device.data.commandList !== 'undefined'">
-                                  <template v-for="cmd in device.data.commandList.value">
+                              <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
+                                  <template v-for="cmd in device.data.cmdList.value">
                                       <v-btn v-on:click="execute(device.id, cmd)"> {{cmd}} </v-btn>
                                   </template>
                               </div>

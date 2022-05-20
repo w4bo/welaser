@@ -337,16 +337,16 @@ abstract class Device(
      */
     fun run() {
         register(getRegister())
-        // println("Listening to... $listenTopic")
+        // println("$id - registering")
         listen(listenTopic, listenCallback)
+        // println("$id - listening to $listenTopic")
         var i = 0
-        // println(status)
         while (i++ < times) {
-            // print("Iterating...")
+            // println("$id - iterating")
             Thread.sleep(timeoutMs.toLong())
             if (status) {
                 val payload = sense()
-                // println("$id $s")
+                // println("$id - $payload")
                 if (i % 100 == 1) println(payload)
                 send(payload, sendTopic)
                 updatePosition()
