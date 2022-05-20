@@ -5,14 +5,7 @@ package it.unibo.devices
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
-import java.util.*
 import java.util.concurrent.Executors
-
-val R = Random(3)
-
-fun timeStamp(): Int {
-    return Math.max(500.0, R.nextDouble() * 1000).toInt()
-}
 
 fun main(args: Array<String>) {
     val parser = ArgParser("MissionSimulator")

@@ -174,7 +174,7 @@ const mapDashboard = {
                     this.handleCollisionData(data)
                     break;
                 default:
-                    // console.log(data);
+                    console.log(data);
                     this.handleDeviceData(data)
                     break;
             }

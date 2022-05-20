@@ -20,6 +20,8 @@ val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
 val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}"
 val IOTA_IP = dotenv["IOTA_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"].toInt()
+val KAFKA_IP = dotenv["KAFKA_IP"]
+val KAFKA_PORT_EXT = dotenv["KAFKA_PORT_EXT"].toInt()
 val FIWARE_SERVICE = dotenv["FIWARE_SERVICE"]
 val FIWARE_SERVICEPATH = dotenv["FIWARE_SERVICEPATH"]
 val FIWARE_API_KEY = dotenv["FIWARE_API_KEY"]
@@ -255,7 +257,7 @@ class ProtocolKafka : IProtocol {
     val props = Properties()
     var producer: KafkaProducer<String, String>? = null
     @Synchronized override fun register(s: String) {
-        props["bootstrap.servers"] = "localhost:9092"
+        props["bootstrap.servers"] = "$KAFKA_IP:$KAFKA_PORT_EXT"
         props["acks"] = "all"
         props["retries"] = 0
         props["linger.ms"] = 1
@@ -355,7 +357,7 @@ class DeviceSubscription(
         return """{"data": [{
                 "id": "$id",
                 "type": "Sub-${getType()}",
-                "${if (getType() == EntityType.Camera) "Image" else "Temperature"}": {"value": "${s.sense()}",                "type": "String"},
+                "${if (getType() == EntityType.Camera) "image" else "temperature"}": {"value": "${s.sense()}",                "type": "String"},
                 "status":                                                            {"value": $status,                       "type": "Boolean"},
                 "time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
                 "latitude":                                                          {"value": $latitude,                     "type": "Float"},
@@ -472,7 +474,7 @@ class DeviceMQTT(
     //                         {"name": "off", "type": "command"}
     //                     ],
     //                     "attributes": [
-    //                         {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "Image" else "Temperature"}", "type": "String"},
+    //                         {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "image" else "temperature"}", "type": "String"},
     //                         {"object_id": "stat",  "name": "status",       "type": "Boolean"},
     //                         {"object_id": "time",  "name": "time",         "type": "Integer"},
     //                         {"object_id": "lat",   "name": "latitude",     "type": "Float"},
