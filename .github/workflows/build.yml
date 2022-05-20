@@ -28,7 +28,7 @@ jobs:
           cd welaser
           scripts/config.sh
           ./launch.sh
-          pip install -r welaser/testScripts/requirements.txt
+          pip install -r testScripts/requirements.txt
           scripts/runTests.sh
       - name: Stop
         run: |
