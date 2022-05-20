@@ -34,7 +34,6 @@ jobs:
           pip install -r requirements.txt
           cd ..
           scripts/runTests.sh
-          docker logs missionmanager
       - name: Stop
         run: |
           cd welaser
