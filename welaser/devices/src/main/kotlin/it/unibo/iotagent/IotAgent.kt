@@ -87,7 +87,7 @@ class IOTA {
                         val deviceid = topic.split("/")[2]
                         val payload = JSONObject(String(message!!.payload)).toString() // check that this is a valid JSON object
                         println("Sending from $topic")
-                        khttp.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload)
+                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload)
                         // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                         // println("Done")
                     } catch (e: Exception) {
