@@ -206,7 +206,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: curl --fail -s http://localhost:${DRACO_PORT_EXT}/iot/about || exit 1
+      test: curl --fail -s http://${DRACO_IP}:${DRACO_PORT_EXT} || exit 1
       interval: 5s
       timeout: 10s
       retries: 20

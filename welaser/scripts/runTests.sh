@@ -2,7 +2,7 @@
 set -e
 
 cd devices
-./gradlew
+./gradlew --stacktrace --debug
 cd ..
 
 cd testScripts
