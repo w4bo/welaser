@@ -29,12 +29,25 @@ class EntityTest {
         }
     }
 
+    fun waitFor(d: Device, goal: Boolean) {
+        var retry = 100
+        while(retry-- > 0 && (goal && !d.status || !goal && d.status)) {
+            Thread.sleep(500)
+        }
+        assertTrue(retry > 0, "Timeout")
+        assertTrue(d.status == goal)
+    }
+
     @Test
     fun testRobot() {
         try {
             val r = EntityFactory.createFromFile("$folder/carob-123.json", 1, times = 1000)
             r.exec("running", "mission-123")
             r.run()
+            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"pause" : {}}}""")
+            waitFor(r, false)
+            khttp.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"resume" : {}}}""")
+            waitFor(r, true)
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
@@ -91,12 +104,7 @@ class EntityTest {
             //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
             //     REQUEST_TYPE.PATCH
             // )
-            var retry = 100
-            while(retry-- > 0 && d.status) {
-                Thread.sleep(500)
-            }
-            assertTrue(retry > 0, "Timeout")
-            assertFalse(d.status)
+            waitFor(d, false)
             khttp.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""")
             // httpRequest(
             //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
@@ -105,12 +113,7 @@ class EntityTest {
             //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
             //     REQUEST_TYPE.PATCH
             // )
-            retry = 100
-            while(retry-- > 0 && !d.status) {
-                Thread.sleep(500)
-            }
-            assertTrue(retry > 0, "Timeout")
-            assertTrue(d.status)
+            waitFor(d, true)
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)

@@ -61,7 +61,6 @@ class S(BaseHTTPRequestHandler):
             producer.send('data.' + domain + ".realtime", value=d)
             producer.send('data.' + domain + ".realtime." + mission, value=d)
             producer.send(DRACO_RAW_TOPIC, value=d)
-            print(d)
 
 def run(server_class=HTTPServer, handler_class=S, port=DRACO_PORT):
     # logging.basicConfig(level=logging.INFO)

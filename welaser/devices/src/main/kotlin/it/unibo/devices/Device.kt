@@ -1,15 +1,25 @@
 package it.unibo.devices
 import io.github.cdimascio.dotenv.Dotenv
+import io.ktor.network.sockets.*
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.coroutines.sync.withLock
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.eclipse.paho.client.mqttv3.IMqttClient
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
 import java.util.*
 import kotlin.random.Random
+import java.net.ServerSocket
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
@@ -66,10 +76,7 @@ class Camera : ISensor {
      */
     @Synchronized override fun sense(): String {
         val inputstream = Camera::class.java.getResourceAsStream("/img0" + Random.nextInt(1, 4) + ".png")
-        val fileContent: ByteArray = IOUtils.toByteArray(inputstream)
-        // val inputFile = File(javaClass.classLoader.getResource("img0" + Random.nextInt(1, 4) + ".png").file)
-        // val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
-        return Base64.getEncoder().encodeToString(fileContent)
+        return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream))
     }
 }
 
@@ -99,7 +106,8 @@ class Thermometer : ISensor {
 interface IActuator : IThing {
     /**
      * Execute a command
-     * @param m given parameters
+     * @param commandName name of the command
+     * @param payload payload of the command
      */
     fun exec(commandName: String, payload: String)
 }
@@ -201,7 +209,6 @@ class ProtocolMQTT : IProtocol {
     @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
             val s = String(message!!.payload)
-            // val o = JSONObject(s).getJSONObject("cmd")
             JSONObject(s).getJSONArray("data").forEach {
                 var o = JSONObject(it.toString())
                 if (o.has("cmd") && o.get("cmd").toString().isNotEmpty()) {
@@ -209,8 +216,8 @@ class ProtocolMQTT : IProtocol {
                     val commandName = o.keys().next()!!
                     f(commandName, o.getJSONObject(commandName).toString())
                 }
+                // client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
             }
-            // client.publish(topic + "exe", MqttMessage("OK".toByteArray()))
         }
     }
 }
@@ -230,8 +237,9 @@ class ProtocolSubscription : IProtocol {
 class ProtocolHTTP : IProtocol {
     @Synchronized
     override fun register(s: String) {
+        val status = JSONObject(s)
         khttp.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s)
-        khttp.get("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
+        khttp.get("${ORION_URL}/v2/entities/" + status.getString("id"))
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
     }
@@ -289,7 +297,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    val id: String = getType().toString() + getId()
+    open val id: String = if (s == null) { "" } else { getType().toString() } + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -384,8 +392,50 @@ open class DeviceHTTP(
     domain: String,
     mission: String,
     s: ISensor,
-    p: IProtocol = ProtocolHTTP()
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p) {
+    p: IProtocol = ProtocolHTTP(),
+    times: Int = 1000
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p, times) {
+    var server: NettyApplicationEngine? = null
+
+    fun getIpPort(): Pair<String, Int> {
+        val socket = ServerSocket(0)
+        val port = socket.localPort
+        socket.close()
+        return Pair(socket.inetAddress.toString(), port)
+    }
+
+    override fun register(s: String) {
+        super.register(s)
+        if (JSONObject(s).has("cmdList")) {
+            val socket = getIpPort()
+            server = embeddedServer(Netty, port = socket.second, host = "0.0.0.0") {
+                routing {
+                    get("/") {
+                        call.respondText("")
+                    }
+                    post("/") {
+                        JSONObject(call.receive<String>()).getJSONArray("data").forEach {
+                            var o = JSONObject(it.toString())
+                            if (o.has("cmd") && o.get("cmd").toString().isNotEmpty()) {
+                                o = o.getJSONObject("cmd")
+                                val commandName = o.keys().next()!!
+                                exec(commandName, o.getJSONObject(commandName).toString())
+                            }
+                        }
+                        call.respondText("")
+                    }
+                }
+            }.start(wait = false)
+            khttp.post("http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions", mapOf("Content-Type" to "application/json"), data = """
+                {
+                    "description": "Notify the entity when it receives a command",
+                    "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},
+                    "notification": { "http": { "url": "http://${IOTA_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
+                }
+            """.trimIndent())
+        }
+    }
+
     override fun getStatus(): String {
         // return """{
         //         "id": "$id",
@@ -408,7 +458,7 @@ open class DeviceHTTP(
                 "longitude":                                                         $longitude,                   
                 "mission":                                                           "$mission",                    
                 "domain":                                                            "$domain",
-                "commandList":                                                       ["on", "off"],
+                "cmdList":                                                           ["on", "off"],
                 "cmd":                                                               ""               
             }""".replace("\\s+".toRegex(), " ")
     }
@@ -455,7 +505,7 @@ class DeviceMQTT(
                 "longitude":                                                         $longitude,                   
                 "mission":                                                           "$mission",                    
                 "domain":                                                            "$domain",
-                "commandList":                                                       ["on", "off"],
+                "cmdList":                                                           ["on", "off"],
                 "cmd":                                                               ""
             }""".replace("\\s+".toRegex(), " ")
     }

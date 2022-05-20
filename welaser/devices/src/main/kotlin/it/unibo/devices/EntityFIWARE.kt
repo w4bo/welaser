@@ -45,7 +45,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 
     override fun exec(commandName: String, payload: String) {
         when (commandName) {
-            "running" -> {
+            "start" -> {
                 status = true
                 val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
                 // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
@@ -53,7 +53,8 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
             }
             "stop" -> reset()
-            "resume" -> status = false
+            "resume" -> status = true
+            "pause" -> status = false
         }
     }
 
@@ -68,11 +69,11 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 }
 
 open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
-    Device(false, timeoutMs, false, -1.0, -1.0, "canary", "dummy", DummySensor(), ProtocolHTTP(), times) {
+    DeviceHTTP(false, timeoutMs, false, -1.0, -1.0, DOMAIN, MISSION, DummySensor(), times = times) {
 
     val initStatus = JSONObject(this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b })
-    // val initStatus = JSONObject(File(fileName).readLines().reduce { a, b -> a + "\n" + b })
     val type: String = initStatus.getString("type")
+    override val id = initStatus.getString("id")
 
     override var status = when (type) {
         "Device" -> true
