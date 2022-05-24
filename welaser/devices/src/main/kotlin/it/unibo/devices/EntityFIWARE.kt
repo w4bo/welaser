@@ -1,9 +1,6 @@
 package it.unibo.devices
 
-import it.unibo.ROBOT_CMD_PAUSE
-import it.unibo.ROBOT_CMD_RESUME
-import it.unibo.ROBOT_CMD_START
-import it.unibo.ROBOT_CMD_STOP
+import it.unibo.*
 import org.json.JSONObject
 
 
@@ -37,9 +34,14 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
 
     @Synchronized
     override fun getStatus(): String {
-        initStatus.put("speed", Math.random())
-        initStatus.put("bearing", Math.random())
-        initStatus.put("heading", Math.random())
+        if (status) {
+            initStatus.put("speed", Math.random())
+            initStatus.put("bearing", Math.random())
+            initStatus.put("heading", Math.random())
+            updatePosition()
+        }
+        val idx = initStatus.getJSONArray("serviceProvided").indexOfFirst { it.toString() == HEARTBEAT }
+        initStatus.put("status", initStatus.getJSONArray("status").put(idx, System.currentTimeMillis()))
         return initStatus.toString()
     }
 
@@ -60,6 +62,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
                 // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
+                // println("Update coords")
             }
             ROBOT_CMD_STOP -> reset()
             ROBOT_CMD_RESUME -> status = true
@@ -70,6 +73,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     @Synchronized
     override fun updatePosition() {
         if (coords.isNotEmpty()) {
+            // println("Update")
             val c = coords.removeAt(0)
             initStatus.getJSONObject("location").put("coordinates", c)
         } else {

@@ -346,6 +346,20 @@ abstract class Device(
         }
     }
 
+    var sensedValue: String = "foo"
+
+    /**
+     * Update sensor value
+     */
+    open fun updateSensor(): String {
+        return if (status) {
+            sensedValue = if (getType() == EntityType.Camera) { """"image"""" } else { """"temperature"""" } + """: "${s.sense()}""""
+            sensedValue
+        } else {
+            sensedValue
+        }
+    }
+
     /**
      * Control loop
      */
@@ -358,13 +372,9 @@ abstract class Device(
         while (i++ < times) {
             // println("$id - iterating")
             Thread.sleep(timeoutMs.toLong())
-            if (status) {
-                val payload = sense()
-                // println("$id - $payload")
-                if (i % 100 == 1) println(payload)
-                send(payload, sendTopic)
-                updatePosition()
-            }
+            val payload = sense()
+            if (i % 100 == 1) println("$id - $payload")
+            send(payload, sendTopic)
         }
     }
 }
@@ -380,17 +390,18 @@ class DeviceSubscription(
     s: ISensor
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolSubscription()) {
     override fun getStatus(): String {
+        updatePosition()
         return """{"data": [{
-                "id": "$id",
-                "type": "Sub-${getType()}",
-                "${if (getType() == EntityType.Camera) "image" else "temperature"}": {"value": "${s.sense()}",                "type": "String"},
-                "status":                                                            {"value": $status,                       "type": "Boolean"},
-                "time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
-                "latitude":                                                          {"value": $latitude,                     "type": "Float"},
-                "location":                                                          {"value": "foo",                         "type": "String"},
-                "longitude":                                                         {"value": $longitude,                    "type": "Float"},
-                "mission":                                                           {"value": "$mission",                    "type": "String"},
-                "domain":                                                            {"value": "$domain",                     "type": "String"}
+                "id":              "$id",
+                "type":            "Sub-${getType()}",
+                ${updateSensor()},
+                "status":          $status,                      
+                "time":            ${System.currentTimeMillis()},
+                "latitude":        $latitude,                    
+                "location":        "foo",                        
+                "longitude":       $longitude,                   
+                "mission":         "$mission",                   
+                "domain":          "$domain",                    
             }]}""".replace("\\s+".toRegex(), " ")
     }
 
@@ -462,18 +473,19 @@ open class DeviceHTTP(
         //         "mission":                                                           {"value": "$mission",                    "type": "String"},
         //         "domain":                                                            {"value": "$domain",                     "type": "String"}
         //     }""".replace("\\s+".toRegex(), " ")
+        updatePosition()
         return """{
-                "id": "$id",
-                "type": "OCB-${getType()}",
-                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",               
-                "status":                                                            $status,                      
-                "time":                                                              ${System.currentTimeMillis()},
-                "latitude":                                                          $latitude,                    
-                "longitude":                                                         $longitude,                   
-                "mission":                                                           "$mission",                    
-                "domain":                                                            "$domain",
-                "cmdList":                                                           ["on", "off"],
-                "cmd":                                                               ""               
+                "id":              "$id",
+                "type":            "OCB-${getType()}",
+                ${updateSensor()}, 
+                "status":          $status,                      
+                "time":            ${System.currentTimeMillis()},
+                "latitude":        $latitude,                    
+                "longitude":       $longitude,                   
+                "mission":         "$mission",                    
+                "domain":          "$domain",
+                "cmdList":         ["on", "off"],
+                "cmd":             ""               
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -510,17 +522,17 @@ class DeviceMQTT(
 
     override fun getRegister(): String {
         return """{
-                "id":                                                               "$id",
-                "type":                                                             "MQTT-${getType()}",
-                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",               
-                "status":                                                            $status,                      
-                "time":                                                              ${System.currentTimeMillis()},
-                "latitude":                                                          $latitude,                    
-                "longitude":                                                         $longitude,                   
-                "mission":                                                           "$mission",                    
-                "domain":                                                            "$domain",
-                "cmdList":                                                           ["on", "off"],
-                "cmd":                                                               ""
+                "id":              "$id",
+                "type":            "MQTT-${getType()}",
+                ${updateSensor()}, 
+                "status":           $status,                      
+                "time":             ${System.currentTimeMillis()},
+                "latitude":         $latitude,                    
+                "longitude":        $longitude,                   
+                "mission":          "$mission",                    
+                "domain":           "$domain",
+                "cmdList":          ["on", "off"],
+                "cmd":              ""
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -553,12 +565,13 @@ class DeviceMQTT(
     // }
 
     override fun getStatus(): String {
+        updatePosition()
         return """{
-                "${if (getType() == EntityType.Camera) "image" else "temperature"}": "${s.sense()}",
-                "status":                                                             $status,
-                "time":                                                               ${System.currentTimeMillis()},
-                "latitude":                                                           ${latitude},
-                "longitude":                                                          ${longitude}
+                ${updateSensor()},
+                "status":          $status,
+                "time":            ${System.currentTimeMillis()},
+                "latitude":        ${latitude},
+                "longitude":       ${longitude}
             }""".replace("\\s+".toRegex(), " ")
     }
 
