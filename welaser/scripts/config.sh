@@ -13,14 +13,14 @@ sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
 # Devices
-rm devices/src/main/resources/datamodels/*.json
+rm devices/src/main/resources/datamodels/*.json || true
 find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/resources/datamodels/ \;
 ls devices/src/main/resources/datamodels/ > devices/src/main/resources/datamodels/filelist.txt
-rm devices/.env
+rm devices/.env || true
 ln .env devices/.env
 
 # Mission planner
-rm service-missionplanner/mission-123.json
+rm service-missionplanner/mission-123. || true
 ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/mission-123.json
 
 # Visual dashboard
