@@ -25,7 +25,7 @@ class S(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(bytes("Hello, world", "utf-8"))
+        self.wfile.write(bytes("", "utf-8"))
 
     def do_GET(self):
         self._set_response()
@@ -37,7 +37,7 @@ class S(BaseHTTPRequestHandler):
         # logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n", str(self.path), str(self.headers), post_data.decode('utf-8'))
         subscription = json.loads(post_data.decode('utf-8')) # get the subscription
         now = datetime.now()
-        if "heartbit" in subscription:
+        if "heartbeat" in subscription:
             print("Alive at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
             return
         print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
