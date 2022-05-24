@@ -13,7 +13,7 @@ const mapDashboard = {
           <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 100%; height: 400px"></div></v-col></v-row>
           <v-row align="center" justify="center">
               <template v-for="device in Object.values(devices)">
-                  <v-col cols=4 class="pa-3 d-flex flex-column">
+                  <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
                           <!--For some strange reasons i need to extract (value,key) instead of (key,value)-->
@@ -268,7 +268,7 @@ const mapDashboard = {
                 target: 'map',
                 view: new ol.View({
                     center: ol.proj.fromLonLat([-3.4808443373094113, 40.31275148286198]),
-                    zoom: 18
+                    zoom: 17
                 }),
                 layers: [
                     // Basemap
