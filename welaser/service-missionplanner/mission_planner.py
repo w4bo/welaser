@@ -48,6 +48,7 @@ class S(BaseHTTPRequestHandler):
         # this is the heartbeat necessary to test the health of the server
         if "heartbeat" in data:
             print("Alive at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+            self._set_response()
         else:
             print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
             # create and return the plan (the plan must be both a valid JSON object and fiware entity)
