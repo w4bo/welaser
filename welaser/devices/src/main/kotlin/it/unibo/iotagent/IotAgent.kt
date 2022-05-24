@@ -51,16 +51,14 @@ class IOTA {
                     call.respondText("")
                 }
                 post("/") {
+                    call.respondText("")
                     mutex.withLock {
                         val payload = JSONObject(call.receive<String>())
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
                             println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
-                            // client2.connect(connOpts)
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
-                            // client2.disconnect()
                         }
-                        call.respondText("")
                     }
                 }
             }
@@ -74,14 +72,7 @@ class IOTA {
         connOpts.connectionTimeout = 0
         connOpts.keepAliveInterval = 0
         connOpts.setAutomaticReconnect(true)
-
-        // wait for connection
         client.connect(connOpts)
-        while (!client.isConnected) {
-            // println("Waiting for client connection")
-            Thread.sleep(100)
-        }
-
         // subscribe to all mqtt messages
         client.subscribe("#", 0) { topic, message ->
             // synchronized(this) {

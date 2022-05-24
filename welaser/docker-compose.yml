@@ -6,7 +6,7 @@ version: "3.9"
 services:
   # Orion is the context broker
   orion:
-    restart: on-failure
+    restart: always
     image: fiware/orion:3.6.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
@@ -23,17 +23,17 @@ services:
     # You can also set the log level by adding `-logLevel DEBUG`
     command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
-      # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
-      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 || exit 1
+      # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
       interval: 5s
       timeout: 10s
-      retries: 20
 
   # Iot Agent
   # Useful sources:
   # - https://hub.docker.com/r/fiware/iotagent-json/
   # - https://fiware-iotagent-json.readthedocs.io/en/latest/installationguide/index.html#configuration
   iot-agent:
+    restart: always
     build: ./devices
     hostname: iot-agent
     container_name: iot-agent
@@ -47,10 +47,10 @@ services:
       - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}"
       - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
     healthcheck:
-      test: curl --fail -s http://localhost:4041/ || exit 1
-      interval: 5s
+      test: curl --fail -s http://localhost:4041/ || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+      interval: 60s
       timeout: 10s
-      retries: 20
+      
     #  iot-agent:
     #    image: fiware/iotagent-json:1.17.0-distroless
     #    hostname: iot-agent
@@ -99,11 +99,12 @@ services:
     #      - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
     #      - IOTA_MULTI_CORE=True
     #    healthcheck:
-    #      test: curl --fail -s 'http://localhost:4041/iot/about' || exit 1
+    #      test: curl --fail -s 'http://localhost:4041/iot/about' || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
     #      interval: 5s
 
   # Database (ORION)
   mongo-db:
+    restart: always
     image: mongo:5.0
     hostname: mongo-db
     container_name: mongo-db
@@ -121,7 +122,7 @@ services:
         mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
       timeout: 10s
-      retries: 20
+      
 
   # MQTT Broker
   mosquitto:
@@ -166,12 +167,13 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_EXT} || exit 1
+      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_INT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
       interval: 5s
       timeout: 10s
-      retries: 20
+      
 
   etl:
+    restart: always
     hostname: etl
     build: ./etl
     container_name: etl
@@ -185,10 +187,10 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT} || exit 1
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
       interval: 5s
       timeout: 10s
-      retries: 20
+      
 
   missionplanner:
     hostname: missionplanner
@@ -204,10 +206,10 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT} || exit 1
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
       interval: 5s
       timeout: 10s
-      retries: 20
+      
 
   kafkaproxy:
     restart: always

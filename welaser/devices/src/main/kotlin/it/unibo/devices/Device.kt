@@ -136,6 +136,11 @@ interface IProtocol {
      * @param f callback function
      */
     fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> }) {}
+
+    /**
+     * Close the connection, if any
+     */
+    fun close() {}
 }
 
 // enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
@@ -195,9 +200,10 @@ class ProtocolMQTT : IProtocol {
             // println("Waiting for client connection")
             Thread.sleep(100)
         }
-        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
-            khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
-        })
+        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = { /* connection.disconnect() */ })
+        // khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
+        //     khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
+        // })
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
         // httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
@@ -222,6 +228,11 @@ class ProtocolMQTT : IProtocol {
             }
         }
     }
+
+    @Synchronized override fun close() {
+        client.disconnectForcibly()
+        client.close()
+    }
 }
 
 class ProtocolSubscription : IProtocol {
@@ -231,7 +242,7 @@ class ProtocolSubscription : IProtocol {
 
     @Synchronized
     override fun send(payload: String, topic: String) {
-        khttp.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf("Content-Type" to "application/json"), data = payload)
+        khttp.async.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf("Content-Type" to "application/json"), data = payload, onResponse = { /* connection.disconnect() */ })
         // httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 }
@@ -243,9 +254,7 @@ class ProtocolHTTP : IProtocol {
         var retry = 3
         while (retry-- >= 0) {
             try {
-                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
-                    khttp.async.get("${ORION_URL}/v2/entities/" + status.getString("id"))
-                })
+                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = { /* connection.disconnect() */ })
             } catch (e: Exception) {
                 if (retry == 0) {
                     e.printStackTrace()
@@ -270,11 +279,12 @@ class ProtocolHTTP : IProtocol {
         if (payloadJSON.has("cmd")) {
             payloadJSON.remove("cmd")
         }
-        khttp.patch(
+        khttp.async.patch(
             "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
             mapOf("Content-Type" to "application/json"),
-            data = payloadJSON.toString()
-        ).connection.disconnect()
+            data = payloadJSON.toString(),
+            onResponse = { /* connection.disconnect() */ }
+        )
         // httpRequest("$ORION_URL/v2/entities/$id/attrs?options=keyValues",payload.toString(),listOf(Pair("Content-Type", "application/json")),REQUEST_TYPE.PATCH )
         // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
@@ -356,6 +366,7 @@ abstract class Device(
      */
     open fun updateSensor(): String {
         return if (status) {
+            updatePosition()
             sensedValue = if (getType() == EntityType.Camera) { """"image"""" } else { """"temperature"""" } + """: "${s.sense()}""""
             sensedValue
         } else {
@@ -376,10 +387,11 @@ abstract class Device(
             // println("$id - iterating")
             Thread.sleep(timeoutMs.toLong())
             val payload = sense()
-            if (i % 100 == 1) println("$id - $payload")
+            // if (i % 100 == 1) println("$id - $payload")
             send(payload, sendTopic)
             // logger.debug { id }
         }
+        close()
     }
 }
 
@@ -394,7 +406,6 @@ class DeviceSubscription(
     s: ISensor
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolSubscription()) {
     override fun getStatus(): String {
-        updatePosition()
         return """{"data": [{
                 "id":              "$id",
                 "type":            "Sub-${getType()}",
@@ -458,24 +469,11 @@ open class DeviceHTTP(
                     "description": "Notify the entity when it receives a command",
                     "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},
                     "notification": { "http": { "url": "http://${IOTA_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
-                }
-            """.trimIndent())
+                }""".trimIndent()) // .connection.disconnect()
         }
     }
 
     override fun getStatus(): String {
-        // return """{
-        //         "id": "$id",
-        //         "type": "OCB-${getType()}",
-        //         "${if (getType() == EntityType.Camera) "image" else "temperature"}": {"value": "${s.sense()}",                "type": "String"},
-        //         "status":                                                            {"value": $status,                       "type": "Boolean"},
-        //         "timestamp":                                                         {"value": ${System.currentTimeMillis()}, "type": "Integer"},
-        //         "latitude":                                                          {"value": $latitude,                     "type": "Float"},
-        //         "longitude":                                                         {"value": $longitude,                    "type": "Float"},
-        //         "mission":                                                           {"value": "$mission",                    "type": "String"},
-        //         "domain":                                                            {"value": "$domain",                     "type": "String"}
-        //     }""".replace("\\s+".toRegex(), " ")
-        updatePosition()
         return """{
                 "id":              "$id",
                 "type":            "OCB-${getType()}",
@@ -565,7 +563,6 @@ class DeviceMQTT(
     // }
 
     override fun getStatus(): String {
-        updatePosition()
         return """{
                 ${updateSensor()},
                 "status":          $status,
