@@ -17,8 +17,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
 import java.util.*
+import mu.KotlinLogging
 
 class IOTA {
+    private val logger = KotlinLogging.logger {}
+
     companion object {
         val iota = IOTA()
         fun start() {
@@ -85,9 +88,16 @@ class IOTA {
                 if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
                     try {
                         val deviceid = topic.split("/")[2]
-                        val payload = JSONObject(String(message!!.payload)).toString() // check that this is a valid JSON object
+                        val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
+                        payload.put("timestamp_iota", System.currentTimeMillis())
                         println("Sending from $topic")
-                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload)
+                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues",
+                            mapOf("Content-Type" to "application/json"),
+                            // onResponse = {
+                            //     logger.debug { "Sending from $topic" }
+                            // },
+                            data = payload.toString()
+                        )
                         // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                         // println("Done")
                     } catch (e: Exception) {

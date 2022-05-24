@@ -6,6 +6,7 @@ version: "3.9"
 services:
   # Orion is the context broker
   orion:
+    restart: on-failure
     image: fiware/orion:3.6.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
@@ -22,7 +23,8 @@ services:
     # You can also set the log level by adding `-logLevel DEBUG`
     command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
-      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
+      # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || exit 1
+      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 || exit 1
       interval: 5s
       timeout: 10s
       retries: 20

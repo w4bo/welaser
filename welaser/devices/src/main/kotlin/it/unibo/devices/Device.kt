@@ -8,6 +8,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.sync.withLock
+import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -273,7 +274,7 @@ class ProtocolHTTP : IProtocol {
             "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
             mapOf("Content-Type" to "application/json"),
             data = payloadJSON.toString()
-        )
+        ).connection.disconnect()
         // httpRequest("$ORION_URL/v2/entities/$id/attrs?options=keyValues",payload.toString(),listOf(Pair("Content-Type", "application/json")),REQUEST_TYPE.PATCH )
         // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
@@ -317,8 +318,10 @@ abstract class Device(
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
     val r = Random(3)
     abstract fun getStatus(): String
+    override fun sense(): String = getStatus()
     open fun getRegister(): String = getStatus()
     final override fun getType(): EntityType = s.getType()
+    private val logger = KotlinLogging.logger {}
 
     companion object {
         @JvmName("getId1")
@@ -375,6 +378,7 @@ abstract class Device(
             val payload = sense()
             if (i % 100 == 1) println("$id - $payload")
             send(payload, sendTopic)
+            // logger.debug { id }
         }
     }
 }
@@ -396,7 +400,7 @@ class DeviceSubscription(
                 "type":            "Sub-${getType()}",
                 ${updateSensor()},
                 "status":          $status,                      
-                "time":            ${System.currentTimeMillis()},
+                "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        $latitude,                    
                 "location":        "foo",                        
                 "longitude":       $longitude,                   
@@ -404,8 +408,6 @@ class DeviceSubscription(
                 "domain":          "$domain",                    
             }]}""".replace("\\s+".toRegex(), " ")
     }
-
-    override fun sense(): String = getStatus()
 }
 
 open class DeviceHTTP(
@@ -467,7 +469,7 @@ open class DeviceHTTP(
         //         "type": "OCB-${getType()}",
         //         "${if (getType() == EntityType.Camera) "image" else "temperature"}": {"value": "${s.sense()}",                "type": "String"},
         //         "status":                                                            {"value": $status,                       "type": "Boolean"},
-        //         "time":                                                              {"value": ${System.currentTimeMillis()}, "type": "Integer"},
+        //         "timestamp":                                                         {"value": ${System.currentTimeMillis()}, "type": "Integer"},
         //         "latitude":                                                          {"value": $latitude,                     "type": "Float"},
         //         "longitude":                                                         {"value": $longitude,                    "type": "Float"},
         //         "mission":                                                           {"value": "$mission",                    "type": "String"},
@@ -479,7 +481,7 @@ open class DeviceHTTP(
                 "type":            "OCB-${getType()}",
                 ${updateSensor()}, 
                 "status":          $status,                      
-                "time":            ${System.currentTimeMillis()},
+                "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        $latitude,                    
                 "longitude":       $longitude,                   
                 "mission":         "$mission",                    
@@ -488,8 +490,6 @@ open class DeviceHTTP(
                 "cmd":             ""               
             }""".replace("\\s+".toRegex(), " ")
     }
-
-    override fun sense() = getStatus()
 }
 
 class DeviceKafka(
@@ -502,7 +502,7 @@ class DeviceKafka(
     mission: String,
     s: ISensor
 ) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolKafka()) {
-    override fun sense(): String = getStatus().replace("OCB", "KAFKA")
+    override fun sense(): String = super.sense().replace("OCB", "KAFKA")
 }
 
 class DeviceMQTT(
@@ -526,7 +526,7 @@ class DeviceMQTT(
                 "type":            "MQTT-${getType()}",
                 ${updateSensor()}, 
                 "status":           $status,                      
-                "time":             ${System.currentTimeMillis()},
+                "timestamp":        ${System.currentTimeMillis()},
                 "latitude":         $latitude,                    
                 "longitude":        $longitude,                   
                 "mission":          "$mission",                    
@@ -551,7 +551,7 @@ class DeviceMQTT(
     //                     "attributes": [
     //                         {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "image" else "temperature"}", "type": "String"},
     //                         {"object_id": "stat",  "name": "status",       "type": "Boolean"},
-    //                         {"object_id": "time",  "name": "time",         "type": "Integer"},
+    //                         {"object_id": "timestamp",  "name": "timestamp",         "type": "Integer"},
     //                         {"object_id": "lat",   "name": "latitude",     "type": "Float"},
     //                         {"object_id": "lon",   "name": "longitude",    "type": "Float"},
     //                         {"object_id": "where", "name": "location",     "type": "String"}
@@ -569,11 +569,9 @@ class DeviceMQTT(
         return """{
                 ${updateSensor()},
                 "status":          $status,
-                "time":            ${System.currentTimeMillis()},
+                "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        ${latitude},
                 "longitude":       ${longitude}
             }""".replace("\\s+".toRegex(), " ")
     }
-
-    override fun sense(): String = getStatus()
 }
