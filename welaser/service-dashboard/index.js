@@ -85,6 +85,6 @@ routes(app)
 app.use(express.json())
 
 // http
-http.listen(process.env.WEB_SERVER_PORT_INT, process.env.WEB_SERVER_ADDRESS, function () {
+http.listen(process.env.WEB_SERVER_PORT_INT, "0.0.0.0", function () {
     console.log('Node Server listening on port ' + process.env.WEB_SERVER_PORT_INT)
 })
