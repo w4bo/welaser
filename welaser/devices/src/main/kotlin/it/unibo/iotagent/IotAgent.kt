@@ -18,6 +18,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
 import java.util.*
 import mu.KotlinLogging
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class IOTA {
     private val logger = KotlinLogging.logger {}
@@ -49,6 +51,9 @@ class IOTA {
             routing {
                 get("/") {
                     call.respondText("")
+                    val current = LocalDateTime.now()
+                    val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, HH:mm:ss")
+                    println("Alive at ${current.format(formatter)}")
                 }
                 post("/") {
                     call.respondText("")
@@ -56,7 +61,7 @@ class IOTA {
                         val payload = JSONObject(call.receive<String>())
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
-                            println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
+                            // println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
                         }
                     }
@@ -81,7 +86,7 @@ class IOTA {
                         val deviceid = topic.split("/")[2]
                         val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
                         payload.put("timestamp_iota", System.currentTimeMillis())
-                        println("Sending from $topic")
+                        // println("Sending from $topic")
                         khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues",
                             mapOf("Content-Type" to "application/json"),
                             // onResponse = {
