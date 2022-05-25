@@ -19,10 +19,6 @@ class S(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         self.wfile.write(bytes("", "utf-8"))
-        # if not self.wfile.closed:
-        #     self.wfile.flush()
-        # self.wfile.close()
-        # self.rfile.close()
 
     def do_GET(self):
         self._set_response()
@@ -66,15 +62,12 @@ class S(BaseHTTPRequestHandler):
         # print("Done at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
 
 def run(server_class=ThreadingHTTPServer, handler_class=S, port=DRACO_PORT):
-    # logging.basicConfig(level=logging.INFO)
     server_address = ('0.0.0.0', port)
     httpd = server_class(server_address, handler_class)
-    # logging.info('Starting httpd...\n')
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    # logging.info('Stopping httpd...\n')
 
 run()
