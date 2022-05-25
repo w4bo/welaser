@@ -34,7 +34,7 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use('/static', express.static(__dirname + '/public'));
 
-const ip = "mongodb://" + process.env.MONGO_DB_PERS_IP + ":" + process.env.MONGO_DB_PERS_PORT_EXT + "/docker-node-mongo"
+const ip = "mongodb://" + process.env.MONGO_DB_PERS_IP + ":" + process.env.MONGO_DB_PERS_PORT_EXT + "/" + process.env.MONGO_DB_PERS_DB
 
 // Connect to MongoDB
 mongoose
@@ -78,10 +78,10 @@ consumer.run({
 })
 
 app.use(cors({origin: '*'}))
-var routes = require('./src/routes/routes')
+const routes = require('./src/routes/routes')
 routes(app)
 
-//Middleware
+// middleware
 app.use(express.json())
 
 // http

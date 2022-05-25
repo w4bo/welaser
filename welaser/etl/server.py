@@ -6,11 +6,11 @@ from kafka import KafkaProducer
 from datetime import datetime
 
 KAFKA_IP = os.getenv("KAFKA_IP")
-KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
+KAFKA_PORT = int(os.getenv("KAFKA_PORT_EXT"))
 DRACO_PORT = int(os.getenv("DRACO_PORT_EXT"))
 DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
 
-producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
 class S(BaseHTTPRequestHandler):
 
