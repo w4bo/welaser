@@ -17,8 +17,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
 import java.util.*
+import mu.KotlinLogging
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class IOTA {
+    private val logger = KotlinLogging.logger {}
+
     companion object {
         val iota = IOTA()
         fun start() {
@@ -46,18 +51,19 @@ class IOTA {
             routing {
                 get("/") {
                     call.respondText("")
+                    val current = LocalDateTime.now()
+                    val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, HH:mm:ss")
+                    println("Alive at ${current.format(formatter)}")
                 }
                 post("/") {
+                    call.respondText("")
                     mutex.withLock {
                         val payload = JSONObject(call.receive<String>())
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
-                            println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
-                            // client2.connect(connOpts)
+                            // println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
-                            // client2.disconnect()
                         }
-                        call.respondText("")
                     }
                 }
             }
@@ -71,23 +77,23 @@ class IOTA {
         connOpts.connectionTimeout = 0
         connOpts.keepAliveInterval = 0
         connOpts.setAutomaticReconnect(true)
-
-        // wait for connection
         client.connect(connOpts)
-        while (!client.isConnected) {
-            // println("Waiting for client connection")
-            Thread.sleep(100)
-        }
-
         // subscribe to all mqtt messages
         client.subscribe("#", 0) { topic, message ->
             // synchronized(this) {
                 if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
                     try {
                         val deviceid = topic.split("/")[2]
-                        val payload = JSONObject(String(message!!.payload)).toString() // check that this is a valid JSON object
-                        println("Sending from $topic")
-                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = payload)
+                        val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
+                        payload.put("timestamp_iota", System.currentTimeMillis())
+                        // println("Sending from $topic")
+                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues",
+                            mapOf("Content-Type" to "application/json"),
+                            // onResponse = {
+                            //     logger.debug { "Sending from $topic" }
+                            // },
+                            data = payload.toString()
+                        )
                         // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                         // println("Done")
                     } catch (e: Exception) {

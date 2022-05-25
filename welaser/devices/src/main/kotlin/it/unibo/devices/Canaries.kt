@@ -37,4 +37,5 @@ fun main(args: Array<String>) {
             DeviceKafka(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2)
         )
     ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
+    executor.shutdown()
 }

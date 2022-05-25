@@ -20,7 +20,7 @@ rm devices/.env || true
 ln .env devices/.env
 
 # Mission planner
-rm service-missionplanner/mission-123. || true
+rm service-missionplanner/mission-123.json || true
 ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/mission-123.json
 
 # Visual dashboard

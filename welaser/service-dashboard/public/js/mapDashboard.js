@@ -302,7 +302,6 @@ const mapDashboard = {
                     console.log(err)
                 });
         },
-
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
             this.localSocket = io.connect(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}`)
