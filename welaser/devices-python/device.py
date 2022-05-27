@@ -8,7 +8,7 @@ import time
 load_dotenv(find_dotenv())
 
 # read the initial status from file
-with open("../resources/datamodels/carob-123.json") as f:
+with open("carob-123.json") as f:
     status = json.load(f)
     status["id"] = "carob-python"
 
@@ -37,6 +37,5 @@ while i < 60:
     r = requests.patch(url = "http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
                    data = json.dumps(status),
                    headers = {"Content-Type": "application/json"})
-    assert (r.status == 200)
-    print(r.text)
+    assert(r.status_code == 204)
     i += 1

@@ -19,6 +19,7 @@ welaser/draco/config
 **/conf/archive/*
 filelist.txt
 **/service-missionplanner/*.json
+**/devices-python/carob-123.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/venv,node,java,scala,macos,linux,gradle,python,windows,virtualenv,microsoftoffice,intellij,webstorm,pycharm
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,node,java,scala,macos,linux,gradle,python,windows,virtualenv,microsoftoffice,intellij,webstorm,pycharm
