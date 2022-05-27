@@ -12,6 +12,10 @@ cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
+# Devices python
+rm devices-python/carob-123.json || true
+ln welaser-datamodels/AgriRobot/examples/carob-123.json devices-python/carob-123.json
+
 # Devices
 rm devices/src/main/resources/datamodels/*.json || true
 find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/resources/datamodels/ \;
