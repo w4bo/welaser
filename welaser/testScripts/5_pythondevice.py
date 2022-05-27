@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
-import requests
 from json import loads
+import requests
+import time
 conf = dotenv_values("../.env")
 
 responseBody = []
@@ -10,7 +11,7 @@ url = "http://{}:{}/v2/entities?id=carob-python&options=keyValues&limit=1000".fo
 print("Looking for carob at: " + url)
 while i < 50 and len(responseBody) == 0:
     if i > 0:
-        sleep(2)
+        time.sleep(2)
     response = requests.request("GET", url)
     assert (response.status_code == 200)
     responseBody = [x for x in loads(response.text)]
