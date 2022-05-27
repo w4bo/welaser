@@ -5,9 +5,9 @@
 ## Set up
 
 This projects has been tested with Java 11 and Python 3.8.
-Refer to [this Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) to check the complete configuration set up.
+Refer to [this Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) to check the complete set up.
 
-Run
+To do the mandatory configuration, run:
 
 ```sh
 scripts/config.sh
