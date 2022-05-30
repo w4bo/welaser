@@ -6,11 +6,12 @@ const mapDashboard = {
           <!--     <v-switch v-model="satelliteVisibility" label='Show Satellite' v-on:click="toggleSatellite"></v-switch>-->
           <!--   </div>-->
           <!-- </v-row>-->
-          <v-row align="center" justify="center">
-              <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
-              <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
-          </v-row>
+          <!-- <v-row align="center" justify="center">-->
+          <!--     <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>-->
+          <!--     <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>-->
+          <!-- </v-row>-->
           <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 100%; height: 400px"></div></v-col></v-row>
+          <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
           <v-row align="center" justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
@@ -18,22 +19,23 @@ const mapDashboard = {
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
                           <!--For some strange reasons i need to extract (value,key) instead of (key,value)-->
                           <v-card-text class="flex">
-                              <table style="border: 1px solid black; margin-left: auto; margin-right: auto">
-                                  <template v-for="(value, key) in device.data">
-                                      <tr style="border: 1px solid black;" v-if="typeof(value) != 'object'">
-                                            <th style="border: 1px solid black;">{{key}}</th>
-                                            <td style="border: 1px solid black;">{{value}}</td>
-                                      </tr>
-                                      <tr style="border: 1px solid black;" v-else-if="key == 'image'">
-                                          <th style="border: 1px solid black;">{{key}}</th>
-                                          <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>
-                                      </tr>
-                                      <tr style="border: 1px solid black;" v-else>
-                                          <th style="border: 1px solid black;">{{key}}</th>
-                                          <td v-html="renderJSON(value.value)"></td>
-                                      </tr>
-                                  </template>
-                              </table>
+                              <div v-html="renderJSON(device.data)"></div>
+<!--                              <table style="border: 1px solid black; margin-left: auto; margin-right: auto">-->
+<!--                                  <template v-for="(value, key) in device.data">-->
+<!--                                      <tr style="border: 1px solid black;" v-if="typeof(value) != 'object'">-->
+<!--                                            <th style="border: 1px solid black;">{{key}}</th>-->
+<!--                                            <td style="border: 1px solid black;">{{value}}</td>-->
+<!--                                      </tr>-->
+<!--                                      <tr style="border: 1px solid black;" v-else-if="key == 'image'">-->
+<!--                                          <th style="border: 1px solid black;">{{key}}</th>-->
+<!--                                          <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>-->
+<!--                                      </tr>-->
+<!--                                      <tr style="border: 1px solid black;" v-else>-->
+<!--                                          <th style="border: 1px solid black;">{{key}}</th>-->
+<!--                                          <td v-html="renderJSON(value.value)"></td>-->
+<!--                                      </tr>-->
+<!--                                  </template>-->
+<!--                              </table>-->
                           </v-card-text>
                           <v-card-actions>
                               <!-- Commands from IoT Agent -->
@@ -74,6 +76,7 @@ const mapDashboard = {
             worldImagery: "",
             map: "",
             satelliteVisibility: true,
+            hideDetails: true,
             topics: [],
             selectedTopic: "data.canary.realtime",
             colors: ["#5778a4", "#e49444", "#d1615d", "#85b6b2", "#6a9f58", "#e7ca60", "#a87c9f", "#f1a2a9", "#967662", "#b8b0ac"]
@@ -85,26 +88,35 @@ const mapDashboard = {
                 if (typeof (data) == "string") {
                     data = data.trim()
                 }
-                if (data != undefined && data != "" && data != "\n" && data != "UNKNOWN") {
+                if (data && data !== "" && data !== "\n" && data !== "UNKNOWN") {
                     return `${data}`
                 }
-            } else if (data) {
-                return `<table style="border: 1px solid black; width:100%">${this.renderRows(data)}<table>`
+            } else {
+                // return `<table style="border: 1px solid black; width:100%">${this.renderRows(data)}<table>`
+                return this.renderRows(data)
             }
         },
         renderRows(data) {
-            var html = ``
-            for (var [key, value] of Object.entries(data)) {
+            let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
+            for (let [key, value] of Object.entries(data)) {
                 key = key.trim()
-                if (key !== "" && value !== "") {
+                if (this.hideDetails && ["id", "timestamp_subscription", "domain", "mission", "location", "actualLocation", "plannedLocation"].includes(key)) {
+                } else {
+                    if (value.value) { value = value.value }
+                    // if (key !== "" && value !== "") {
+                    key = `<th style="border: 1pt solid black">${key}</th>`
+                    if (Array.isArray(data)) { key = "" }
+                    html += `<tr style="border: 1pt solid black; width:100%">${key}<td>`
                     if (key === 'image') {
-                        html += `<tr style="border: 1px solid black; width:100%"><thstyle="border: 1px solid black">${key}</th><td><img src="data:image/png;base64,${value}" style="height:20vh" alt="an image"></td></tr>`
+                        html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="an image">`
                     } else if (value && value !== "") {
-                        html += `<tr style="border: 1px solid black; width:100%"><th style="border: 1px solid black;">${key}</th><td>${this.renderJSON(value)}</td></tr>`
+                        html += this.renderJSON(value)
                     }
+                    html += `</td></tr>`
+                    // }
                 }
             }
-            return html
+            return html + `</table>`
         },
         execute(deviceId, command) {
             const inner = {}
@@ -174,7 +186,6 @@ const mapDashboard = {
                     this.handleCollisionData(data)
                     break;
                 default:
-                    console.log(data);
                     this.handleDeviceData(data)
                     break;
             }
