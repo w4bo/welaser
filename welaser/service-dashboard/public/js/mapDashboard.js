@@ -17,26 +17,7 @@ const mapDashboard = {
                   <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
-                          <!--For some strange reasons i need to extract (value,key) instead of (key,value)-->
-                          <v-card-text class="flex">
-                              <div v-html="renderJSON(device.data)"></div>
-<!--                              <table style="border: 1px solid black; margin-left: auto; margin-right: auto">-->
-<!--                                  <template v-for="(value, key) in device.data">-->
-<!--                                      <tr style="border: 1px solid black;" v-if="typeof(value) != 'object'">-->
-<!--                                            <th style="border: 1px solid black;">{{key}}</th>-->
-<!--                                            <td style="border: 1px solid black;">{{value}}</td>-->
-<!--                                      </tr>-->
-<!--                                      <tr style="border: 1px solid black;" v-else-if="key == 'image'">-->
-<!--                                          <th style="border: 1px solid black;">{{key}}</th>-->
-<!--                                          <td><img :src="'data:image/png;base64,' + value.value" style="height:20vh"></td>-->
-<!--                                      </tr>-->
-<!--                                      <tr style="border: 1px solid black;" v-else>-->
-<!--                                          <th style="border: 1px solid black;">{{key}}</th>-->
-<!--                                          <td v-html="renderJSON(value.value)"></td>-->
-<!--                                      </tr>-->
-<!--                                  </template>-->
-<!--                              </table>-->
-                          </v-card-text>
+                          <v-card-text class="flex"><div v-html="renderJSON(device.data)"></div></v-card-text>
                           <v-card-actions>
                               <!-- Commands from IoT Agent -->
                               <template v-for="(value, key) in device.data">
@@ -92,7 +73,6 @@ const mapDashboard = {
                     return `${data}`
                 }
             } else {
-                // return `<table style="border: 1px solid black; width:100%">${this.renderRows(data)}<table>`
                 return this.renderRows(data)
             }
         },
@@ -100,7 +80,9 @@ const mapDashboard = {
             let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
             for (let [key, value] of Object.entries(data)) {
                 key = key.trim()
-                if (this.hideDetails && ["id", "timestamp_subscription", "domain", "mission", "location", "actualLocation", "plannedLocation"].includes(key)) {
+                if (this.hideDetails &&
+                    ["id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
+                        "actualLocation", "plannedLocation"].includes(key)) {
                 } else {
                     if (value.value) { value = value.value }
                     // if (key !== "" && value !== "") {
