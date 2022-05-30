@@ -104,9 +104,9 @@ const mapDashboard = {
                 } else {
                     if (value.value) { value = value.value }
                     // if (key !== "" && value !== "") {
-                    key = `<th style="border: 1pt solid black">${key}</th>`
-                    if (Array.isArray(data)) { key = "" }
-                    html += `<tr style="border: 1pt solid black; width:100%">${key}<td>`
+                    let th = `<th style="border: 1pt solid black">${key}</th>`
+                    if (Array.isArray(data)) { th = "" }
+                    html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
                     if (key === 'image') {
                         html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="an image">`
                     } else if (value && value !== "") {
