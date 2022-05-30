@@ -244,6 +244,18 @@ services:
       etl:
         condition: service_healthy
 
+  device-python:
+    hostname: device-python
+    build: ./devices-python
+    container_name: device-python
+    networks:
+      - default
+    env_file:
+      - .env
+    depends_on:
+      node:
+        condition: service_healthy
+
   missionmanager:
     hostname: missionmanager
     build: service-manager
