@@ -28,7 +28,7 @@ del status["cmd"]
 
 # update the entity for a minute
 i = 0
-while i < 60:
+while i < 300:
     # sleep
     time.sleep(1)
     # update the entity
