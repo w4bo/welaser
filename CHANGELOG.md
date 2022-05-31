@@ -1,3 +1,31 @@
+## [1.1.0](https://github.com/w4bo/welaser/compare/1.0.3...1.1.0) (2022-05-27)
+
+
+### Features
+
+* **agrirobot:** Feature pythonmockup ([#148](https://github.com/w4bo/welaser/issues/148)) ([46b2bbf](https://github.com/w4bo/welaser/commit/46b2bbfbba1148f2d7a68bed70251f7f95127c6d))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.0.1 ([a4821a0](https://github.com/w4bo/welaser/commit/a4821a03dc733de396a83dd3d74afb0cb754d871))
+* **deps:** update actions/checkout action to v3.0.2 ([de37495](https://github.com/w4bo/welaser/commit/de37495ea9be16350cebb3e93c905388aa1edc9e))
+
+
+### Dependency updates
+
+* **deps:** update dependency confluentinc/cp-kafkacat to v7.1.1 ([f4d9b5e](https://github.com/w4bo/welaser/commit/f4d9b5e47f106717add246ec3f3e8304550715c5))
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v2.1.23 ([627aba0](https://github.com/w4bo/welaser/commit/627aba061a059e7b18da2ad5f998071fa97f1b12))
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.2.0 ([2617a1b](https://github.com/w4bo/welaser/commit/2617a1bb5c6fa7e55d5d62523182df64a27ae622))
+* **deps:** update dependency org.junit.jupiter:junit-jupiter to v5.8.2 ([1bacc03](https://github.com/w4bo/welaser/commit/1bacc03a6acf7379bdf8f958b4d983861545b210))
+* **deps:** update dependency pymongo to v4.1.1 ([070e10b](https://github.com/w4bo/welaser/commit/070e10b9b358ab34216a6a6dd208a81152ba026b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.6 ([57b0f66](https://github.com/w4bo/welaser/commit/57b0f66686df8301dc35b3d0d94e8f6dc9e4b39e))
+* **deps:** update node.js to 16.15 ([dd389fb](https://github.com/w4bo/welaser/commit/dd389fb0a6195f80cc4aaee51d1872798cf79d4a))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.6.21 ([f45b137](https://github.com/w4bo/welaser/commit/f45b137aedefcd756a8e1ce05d4c78466168b0d1))
+* **deps:** update welaser/welaser-datamodels digest to 3814f01 ([9e98cf8](https://github.com/w4bo/welaser/commit/9e98cf841d5777bb51268df463130af1a51b2cf0))
+* **deps:** update welaser/welaser-datamodels digest to 5338423 ([afb59e4](https://github.com/w4bo/welaser/commit/afb59e4a73fbeb6e5be72f172016f5b06cd27a97))
+* **deps:** update welaser/welaser-datamodels digest to 977187e ([2823cdc](https://github.com/w4bo/welaser/commit/2823cdcb3d7258ed4466dbb83d0e7c5d47c51f09))
+
 ### [1.0.3](https://github.com/w4bo/welaser/compare/1.0.2...1.0.3) (2022-04-12)
 
 

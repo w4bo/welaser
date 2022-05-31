@@ -13,12 +13,10 @@ fun main(args: Array<String>) {
     val domain by parser.option(ArgType.String, shortName = "domain", description = "Domain name").default(DOMAIN) // .default("d506218")
     val mission by parser.option(ArgType.String, shortName = "mission", description = "Mission name").default(MISSION) // .default("m882099")
     parser.parse(args)
-
     val folder = "/datamodels"
     EntityFactory.createFromFile("$folder/mission-123.json", 1, 2).run()
     val robot = EntityFactory.createFromFile("$folder/carob-123.json", 1000)
     robot.exec(ROBOT_CMD_START, "mission-123")
-
     val executor = Executors.newCachedThreadPool()
     (
             listOf(

@@ -23,8 +23,7 @@ services:
     # You can also set the log level by adding `-logLevel DEBUG`
     command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
-      # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
-      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 #
       interval: 5s
       timeout: 10s
 
@@ -47,10 +46,10 @@ services:
       - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}"
       - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
     healthcheck:
-      test: curl --fail -s http://localhost:4041/ || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
-      interval: 60s
+      test: curl --fail -s http://${IOTA_IP}:${IOTA_NORTH_PORT}
+      interval: 5s
       timeout: 10s
-      
+
     #  iot-agent:
     #    image: fiware/iotagent-json:1.17.0-distroless
     #    hostname: iot-agent
@@ -80,7 +79,7 @@ services:
     #      - "IOTA_CB_HOST=${ORION_IP}"              # Name of the context broker to update context
     #      - "IOTA_CB_PORT=${ORION_PORT_EXT}"        # Port the context broker listens on to update context
     #      - "IOTA_NORTH_PORT=${IOTA_NORTH_PORT}"
-    #      - IOTA_REGISTRY_TYPE=mongo-db       # Whether to hold IoT device info in memory or in a database
+    #      - IOTA_REGISTRY_TYPE=mongo-db             # Whether to hold IoT device info in memory or in a database
     #      - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
     #      - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
     #      - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
@@ -99,7 +98,7 @@ services:
     #      - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
     #      - IOTA_MULTI_CORE=True
     #    healthcheck:
-    #      test: curl --fail -s 'http://localhost:4041/iot/about' || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+    #      test: curl --fail -s 'http://localhost:4041/iot/about'
     #      interval: 5s
 
   # Database (ORION)
@@ -122,11 +121,10 @@ services:
         mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
       timeout: 10s
-      
 
   # MQTT Broker
   mosquitto:
-    image: eclipse-mosquitto:2.0.11
+    image: eclipse-mosquitto:2.0.14
     hostname: mosquitto
     container_name: mosquitto
     expose:
@@ -154,20 +152,12 @@ services:
     volumes:
       - ./service-dashboard:/code
     depends_on:
-      mongo-db:
-        condition: service_healthy
       orion:
-        condition: service_healthy
-      iot-agent:
-        condition: service_healthy
-      etl:
-        condition: service_healthy
-      missionplanner:
         condition: service_healthy
     env_file:
       - .env
     healthcheck:
-      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_INT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_INT} #
       interval: 5s
       timeout: 10s
 
@@ -186,7 +176,7 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT}
       interval: 5s
       timeout: 10s
 
@@ -204,7 +194,7 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT} || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT}
       interval: 5s
       timeout: 10s
 
@@ -225,10 +215,6 @@ services:
     depends_on:
       orion:
         condition: service_healthy
-      iot-agent:
-        condition: service_healthy
-      etl:
-        condition: service_healthy
 
   writetomongo:
     hostname: writetomongo
@@ -242,6 +228,18 @@ services:
       orion:
         condition: service_healthy
       etl:
+        condition: service_healthy
+
+  device-python:
+    hostname: device-python
+    build: ./devices-python
+    container_name: device-python
+    networks:
+      - default
+    env_file:
+      - .env
+    depends_on:
+      node:
         condition: service_healthy
 
   missionmanager:
