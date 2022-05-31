@@ -104,7 +104,7 @@ services:
   # Database (ORION)
   mongo-db:
     restart: always
-    image: mongo:5.0
+    image: mongo:4.4
     hostname: mongo-db
     container_name: mongo-db
     expose:
@@ -124,7 +124,7 @@ services:
 
   # MQTT Broker
   mosquitto:
-    image: eclipse-mosquitto:2.0.14
+    image: eclipse-mosquitto:2.0.11
     hostname: mosquitto
     container_name: mosquitto
     expose:
