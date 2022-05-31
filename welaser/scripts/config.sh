@@ -2,8 +2,8 @@
 set -e
 set -xo
 
-# git submodule update --recursive
-# git submodule update --init --recursive
+git submodule update --recursive
+git submodule update --init --recursive
 
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
