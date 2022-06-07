@@ -119,8 +119,8 @@ const mapDashboard = {
                 });
         },
         executeRobot(robotId, command) {
-            var offsetTime = Math.round((Date.now() / 1000)) + 1000
-            var data = JSON.stringify({
+            const offsetTime = Math.round((Date.now() / 1000)) + 1000
+            const data = JSON.stringify({
                 "cmd": {
                     "metadata": {},
                     "value": `{%27firosstamp%27: ${offsetTime}, %27data%27: %27${command}%27}`,
@@ -131,10 +131,8 @@ const mapDashboard = {
         },
         hashCode(s) {
             if (s) {
-                var h;
-                for (var i = 0; i < s.length; i++) {
-                    h = Math.imul(31, h) + s.charCodeAt(i) | 1;
-                }
+                let h;
+                for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 1; }
                 return Math.abs(h);
             } else {
                 return 0
