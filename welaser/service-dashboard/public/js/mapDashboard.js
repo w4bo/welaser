@@ -84,18 +84,17 @@ const mapDashboard = {
                     ["id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
                         "actualLocation", "plannedLocation"].includes(key)) {
                 } else {
+                    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
                     if (value.value) { value = value.value }
-                    // if (key !== "" && value !== "") {
                     let th = `<th style="border: 1pt solid black">${key}</th>`
                     if (Array.isArray(data)) { th = "" }
                     html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-                    if (key === 'image') {
-                        html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="an image">`
+                    if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
+                        html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="Broken image: ${value}">`
                     } else if (value && value !== "") {
                         html += this.renderJSON(value)
                     }
                     html += `</td></tr>`
-                    // }
                 }
             }
             return html + `</table>`
