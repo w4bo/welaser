@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
                     val executor = Executors.newCachedThreadPool()
                     val periodMs = 1000 / frequency
                     (1..devices).map {
-                        DeviceMQTT(true, periodMs, false, 40.31308266787424, -3.4804348644627585, DOMAIN, mission, Thermometer(), times=duration / periodMs)
+                        DeviceMQTT(STATUS.ON, periodMs, false, 40.31308266787424, -3.4804348644627585, DOMAIN, mission, RandomSensor(), times=duration / periodMs)
                     }.forEach { d -> executor.submit { d.run() } }
                     executor.shutdown()
                     executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)

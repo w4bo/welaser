@@ -7,7 +7,6 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.sync.withLock
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -15,12 +14,11 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.eclipse.paho.client.mqttv3.IMqttClient
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
+import java.net.ServerSocket
 import java.util.*
 import kotlin.random.Random
-import java.net.ServerSocket
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
@@ -44,7 +42,7 @@ val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"].toInt()
 /**
  * Some entity types
  */
-enum class EntityType { Camera, Thermometer, Dummy }
+enum class EntityType { Camera, Thermometer, Dummy, Heartbeat }
 
 /**
  * Any thing
@@ -69,15 +67,15 @@ interface ISensor : IThing {
 /**
  * A camera
  */
-class Camera : ISensor {
+class Camera(val onBoard: Boolean = true) : ISensor {
     override fun getType(): EntityType = EntityType.Camera
 
     /**
      * @return get an image from src/main/resources, the image is encoded in Base64
      */
     @Synchronized override fun sense(): String {
-        val inputstream = Camera::class.java.getResourceAsStream("/img0" + Random.nextInt(1, 4) + ".png")
-        return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream))
+        val inputstream = Camera::class.java.getResourceAsStream(if (onBoard) { "/img0" } else { "/field0" } + Random.nextInt(1, 4) + ".png")
+        return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream)).replace("=", "%3D")
     }
 }
 
@@ -90,14 +88,24 @@ class DummySensor : ISensor {
 /**
  * A thermometer
  */
-class Thermometer : ISensor {
+class RandomSensor(val from: Int = 10, val to: Int = 30) : ISensor {
     override fun getType(): EntityType = EntityType.Thermometer
 
     /**
      * @return a random temperature value
      */
     override fun sense(): String {
-        return "" + Random.nextInt(10, 30)
+        return "" + Random.nextInt(from, to)
+    }
+}
+
+/**
+ * A heartbeat
+ */
+class Heartbeat(val from: Int = 10, val to: Int = 30) : ISensor {
+    override fun getType(): EntityType = EntityType.Heartbeat
+    override fun sense(): String {
+        return "" + System.currentTimeMillis()
     }
 }
 
@@ -202,7 +210,8 @@ class ProtocolMQTT : IProtocol {
         }
         khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = { /* connection.disconnect() */ })
         // khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
-        //     khttp.get("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
+        //     println(this.text)
+        //     khttp.get("${ORION_URL}/v2/entities?id=" + JSONObject(s).getString("id"))
         // })
         // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
         // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
@@ -310,8 +319,10 @@ class ProtocolKafka : IProtocol {
     }
 }
 
+enum class STATUS { ON, OFF }
+
 abstract class Device(
-    open var status: Boolean,
+    open var status: STATUS,
     val timeoutMs: Int,
     open val moving: Boolean,
     var latitude: Double,
@@ -328,7 +339,6 @@ abstract class Device(
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
     val r = Random(3)
     abstract fun getStatus(): String
-    override fun sense(): String = getStatus()
     open fun getRegister(): String = getStatus()
     final override fun getType(): EntityType = s.getType()
     private val logger = KotlinLogging.logger {}
@@ -346,7 +356,7 @@ abstract class Device(
      */
     override fun exec(commandName: String, payload: String) {
         // println("$commandName $payload")
-        status = commandName == "on"
+        status = if (commandName == "on") STATUS.ON else STATUS.OFF
     }
 
     /**
@@ -365,12 +375,13 @@ abstract class Device(
      * Update sensor value
      */
     open fun updateSensor(): String {
-        return if (status) {
-            updatePosition()
-            sensedValue = if (getType() == EntityType.Camera) { """"image"""" } else { """"temperature"""" } + """: "${s.sense()}""""
-            sensedValue
-        } else {
-            sensedValue
+        return when(status) {
+            STATUS.ON -> {
+                updatePosition()
+                sensedValue = if (getType() == EntityType.Camera) { """"image"""" } else { """"temperature"""" } + """: "${s.sense()}""""
+                sensedValue
+            }
+            else -> sensedValue
         }
     }
 
@@ -386,17 +397,16 @@ abstract class Device(
         while (i++ < times) {
             // println("$id - iterating")
             Thread.sleep(timeoutMs.toLong())
-            val payload = sense()
-            // if (i % 100 == 1) println("$id - $payload")
+            val payload = getStatus()
+            // println("$id - $payload")
             send(payload, sendTopic)
-            // logger.debug { id }
         }
         close()
     }
 }
 
 class DeviceSubscription(
-    status: Boolean,
+    status: STATUS,
     timeoutMs: Int,
     moving: Boolean,
     latitude: Double,
@@ -410,7 +420,7 @@ class DeviceSubscription(
                 "id":              "$id",
                 "type":            "Sub-${getType()}",
                 ${updateSensor()},
-                "status":          $status,                      
+                "status":          "$status",                      
                 "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        $latitude,                    
                 "location":        "foo",                        
@@ -422,7 +432,7 @@ class DeviceSubscription(
 }
 
 open class DeviceHTTP(
-    status: Boolean,
+    status: STATUS,
     timeoutMs: Int,
     moving: Boolean,
     latitude: Double,
@@ -478,7 +488,7 @@ open class DeviceHTTP(
                 "id":              "$id",
                 "type":            "OCB-${getType()}",
                 ${updateSensor()}, 
-                "status":          $status,                      
+                "status":          "$status",                      
                 "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        $latitude,                    
                 "longitude":       $longitude,                   
@@ -491,7 +501,7 @@ open class DeviceHTTP(
 }
 
 class DeviceKafka(
-    status: Boolean,
+    status: STATUS,
     timeoutMs: Int,
     moving: Boolean,
     latitude: Double,
@@ -504,7 +514,7 @@ class DeviceKafka(
 }
 
 class DeviceMQTT(
-    status: Boolean,
+    status: STATUS,
     timeoutMs: Int,
     moving: Boolean,
     latitude: Double,
@@ -523,7 +533,7 @@ class DeviceMQTT(
                 "id":              "$id",
                 "type":            "MQTT-${getType()}",
                 ${updateSensor()}, 
-                "status":           $status,                      
+                "status":           "$status",                      
                 "timestamp":        ${System.currentTimeMillis()},
                 "latitude":         $latitude,                    
                 "longitude":        $longitude,                   
@@ -565,7 +575,7 @@ class DeviceMQTT(
     override fun getStatus(): String {
         return """{
                 ${updateSensor()},
-                "status":          $status,
+                "status":          "$status",
                 "timestamp":       ${System.currentTimeMillis()},
                 "latitude":        ${latitude},
                 "longitude":       ${longitude}

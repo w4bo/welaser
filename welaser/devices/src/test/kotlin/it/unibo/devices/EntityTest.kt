@@ -2,6 +2,7 @@ package it.unibo.devices
 
 import it.unibo.ROBOT_CMD_PAUSE
 import it.unibo.ROBOT_CMD_RESUME
+import it.unibo.ROBOT_CMD_START
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
@@ -31,7 +32,7 @@ class EntityTest {
         }
     }
 
-    fun waitFor(d: Device, goal: Boolean) {
+    fun waitFor(d: Device, goal: STATUS) {
         var retry = 100
         while (retry-- > 0 && goal != d.status) {
             Thread.sleep(500)
@@ -43,13 +44,13 @@ class EntityTest {
     @Test
     fun testRobot() {
         try {
-            val r = EntityFactory.createFromFile("$folder/carob-123.json", 1, times = 1000)
-            r.exec("running", "mission-123")
+            val r = EntityFactory.createFromFile("$folder/carob-1.json", 1, times = 1000)
+            r.exec(ROBOT_CMD_START, "mission-123")
             r.run()
-            khttp.async.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
-                waitFor(r, false)
-                khttp.async.patch("$ORION_URL/v2/entities/carob-123/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
-                    waitFor(r, true)
+            khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
+                waitFor(r, STATUS.OFF)
+                khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
+                    waitFor(r, STATUS.ON)
                 })
             })
         } catch (e: Exception) {
@@ -59,7 +60,7 @@ class EntityTest {
     }
 
     fun init(): Device {
-        val d = DeviceMQTT(true, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", Thermometer(), times = 2)
+        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", RandomSensor(), times = 2)
         d.run()
         return d
     }
@@ -72,7 +73,8 @@ class EntityTest {
             if (i > 1) {
                 Thread.sleep(100)
             }
-            s = khttp.get("${ORION_URL}/v2/entities/?id=${d.id}").text
+            println("Looking for ${d.id} at ${ORION_URL}/v2/entities?id=${d.id}")
+            s = khttp.get("${ORION_URL}/v2/entities?id=${d.id}").text
             // s = httpRequest(
             //     "${ORION_URL}/v2/entities/?id=${d.id}",
             //     // listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
@@ -82,27 +84,16 @@ class EntityTest {
     }
 
     @Test
-    fun waitMqttDevice() {
+    fun testMqttCommand() {
         try {
             val d = init()
             val s = waitDevice(d)
             assertTrue(s.contains(d.id))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            fail(e.message)
-        }
-    }
-
-    @Test
-    fun testMqttCommand() {
-        try {
-            val d = init()
-            waitDevice(d)
-            assertTrue(d.status)
+            assertTrue(d.status == STATUS.ON)
             khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"off" : {}}}""", onResponse = {
-                waitFor(d, false)
+                waitFor(d, STATUS.OFF)
                 khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""", onResponse = {
-                    waitFor(d, true)
+                    waitFor(d, STATUS.ON)
                 })
             })
             // httpRequest(

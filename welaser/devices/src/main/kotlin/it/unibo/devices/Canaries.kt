@@ -21,20 +21,20 @@ fun rnd(d: Double, p: Int): Double {
 
 fun main(args: Array<String>) {
     val s1: ISensor = Camera()
-    val s2: ISensor = Thermometer()
+    val s2: ISensor = RandomSensor()
 
     val executor = Executors.newCachedThreadPool()
     (
         EntityFactory.createAll("/datamodels") +
         listOf(
-            DeviceHTTP(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceHTTP(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            DeviceMQTT(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceMQTT(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            DeviceSubscription(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceSubscription(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            // DeviceKafka(true, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceKafka(true, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2)
+            DeviceHTTP(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceHTTP(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            DeviceMQTT(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceMQTT(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            DeviceSubscription(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceSubscription(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
+            // DeviceKafka(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
+            DeviceKafka(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2)
         )
     ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
     executor.shutdown()
