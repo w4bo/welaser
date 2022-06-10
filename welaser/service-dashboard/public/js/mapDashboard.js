@@ -66,12 +66,8 @@ const mapDashboard = {
     methods: {
         renderJSON(data) {
             if (typeof (data) != "object") {
-                if (typeof (data) == "string") {
-                    data = data.trim()
-                }
-                if (data && data !== "" && data !== "\n" && data !== "UNKNOWN") {
-                    return `${data}`
-                }
+                if (typeof (data) == "string") { data = data.trim() }
+                return data
             } else {
                 return this.renderRows(data)
             }
@@ -80,22 +76,43 @@ const mapDashboard = {
             let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
             for (let [key, value] of Object.entries(data)) {
                 key = key.trim()
-                if (this.hideDetails &&
-                    ["id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
-                        "actualLocation", "plannedLocation"].includes(key)) {
+                if (typeof value == 'string') value = value.trim().replaceAll("%3D", "=")
+                if (this.hideDetails && [
+                        "id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
+                        "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
+                        "hasFarm", "hasDevice", "hitch", "refRobotModel"
+                    ].includes(key)) {
                 } else {
-                    if (value.value) { value = value.value }
-                    // if (key !== "" && value !== "") {
+                    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                    if (typeof value.value !== "undefined" || value.value === "") { value = value.value }
                     let th = `<th style="border: 1pt solid black">${key}</th>`
                     if (Array.isArray(data)) { th = "" }
                     html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-                    if (key === 'image') {
-                        html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="an image">`
-                    } else if (value && value !== "") {
+                    if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
+                        html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
+                    } else if (key === 'timestamp') {
+                        const date = new Date(parseInt(value));
+                        // Hours part from the timestamp
+                        const year = date.getFullYear();
+                        // Minutes part from the timestamp
+                        const month = "0" + date.getMonth();
+                        // Seconds part from the timestamp
+                        const day = "0" + date.getDay();
+                        // Hours part from the timestamp
+                        const hours = date.getHours();
+                        // Minutes part from the timestamp
+                        const minutes = "0" + date.getMinutes();
+                        // Seconds part from the timestamp
+                        const seconds = "0" + date.getSeconds();
+                        const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                        html += formattedTime
+                    } else if (value !== "") {
                         html += this.renderJSON(value)
                     }
                     html += `</td></tr>`
-                    // }
+                    html = html
+                        .replaceAll("<table style=\"border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto\"></table>", "")
+                        .replaceAll("<td></td>", "")
                 }
             }
             return html + `</table>`
@@ -119,8 +136,8 @@ const mapDashboard = {
                 });
         },
         executeRobot(robotId, command) {
-            var offsetTime = Math.round((Date.now() / 1000)) + 1000
-            var data = JSON.stringify({
+            const offsetTime = Math.round((Date.now() / 1000)) + 1000
+            const data = JSON.stringify({
                 "cmd": {
                     "metadata": {},
                     "value": `{%27firosstamp%27: ${offsetTime}, %27data%27: %27${command}%27}`,
@@ -131,10 +148,8 @@ const mapDashboard = {
         },
         hashCode(s) {
             if (s) {
-                var h;
-                for (var i = 0; i < s.length; i++) {
-                    h = Math.imul(31, h) + s.charCodeAt(i) | 1;
-                }
+                let h;
+                for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 1; }
                 return Math.abs(h);
             } else {
                 return 0

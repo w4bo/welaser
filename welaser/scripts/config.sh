@@ -13,8 +13,10 @@ sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
 # Devices python
-rm devices-python/carob-123.json || true
-ln welaser-datamodels/AgriRobot/examples/carob-123.json devices-python/carob-123.json
+rm devices-python/carob-1.json || true
+ln welaser-datamodels/AgriRobot/examples/carob-1.json devices-python/carob-1.json
+rm devices-python/img01.png || true
+ln devices/src/main/resources/img01.png devices-python/img01.png
 
 # Devices
 rm devices/src/main/resources/datamodels/*.json || true

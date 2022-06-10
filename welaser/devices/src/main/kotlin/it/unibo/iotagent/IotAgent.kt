@@ -10,16 +10,16 @@ import io.ktor.server.routing.*
 import it.unibo.devices.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import mu.KotlinLogging
 import org.eclipse.paho.client.mqttv3.IMqttClient
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
-import java.util.*
-import mu.KotlinLogging
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class IOTA {
     private val logger = KotlinLogging.logger {}
@@ -92,7 +92,7 @@ class IOTA {
                             // onResponse = {
                             //     logger.debug { "Sending from $topic" }
                             // },
-                            data = payload.toString()
+                            data = payload.toString().replace("=", "%3D")
                         )
                         // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                         // println("Done")

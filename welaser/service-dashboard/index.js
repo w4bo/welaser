@@ -1,17 +1,15 @@
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
 const expressip = require('express-ip');
 app.use(expressip().getIpInfoMiddleware);
-var http = require('http').createServer(app)
-var bodyParser = require('body-parser')
-var mongoose = require('mongoose')
-var path = require('path')
-var env = require('dotenv')
-var io = require('socket.io')(http);
-const fs = require("fs")
+const http = require('http').createServer(app)
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const path = require('path')
+const env = require('dotenv')
+const io = require('socket.io')(http);
 const {Kafka} = require('kafkajs')
-var cors = require('cors');
-
+const cors = require('cors');
 const topicController = require('./src/controllers/topicController')
 
 env.config()
