@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
     val parser = ArgParser("MissionSimulator")
     val domain by parser.option(ArgType.String, shortName = "domain", description = "Domain name").default(DOMAIN)
     val mission by parser.option(ArgType.String, shortName = "mission", description = "Mission name").default(MISSION)
+    parser.parse(args)
     EntityFactory.createFromFile("$folder/mission-123.json", 1, 2).run()
     val robot = EntityFactory.createFromFile("$folder/carob-1.json", timeout)
     robot.exec(ROBOT_CMD_START, "mission-123")
