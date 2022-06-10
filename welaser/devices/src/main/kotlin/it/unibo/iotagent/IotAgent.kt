@@ -92,7 +92,7 @@ class IOTA {
                             // onResponse = {
                             //     logger.debug { "Sending from $topic" }
                             // },
-                            data = payload.toString()
+                            data = payload.toString().replace("=", "%3D")
                         )
                         // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
                         // println("Done")

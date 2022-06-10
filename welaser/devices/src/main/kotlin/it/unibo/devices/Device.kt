@@ -105,7 +105,7 @@ class RandomSensor(val from: Int = 10, val to: Int = 30) : ISensor {
 class Heartbeat(val from: Int = 10, val to: Int = 30) : ISensor {
     override fun getType(): EntityType = EntityType.Heartbeat
     override fun sense(): String {
-        return "" + System.currentTimeMillis()
+        return "live" // "" + System.currentTimeMillis()
     }
 }
 

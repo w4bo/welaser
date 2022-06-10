@@ -128,6 +128,7 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
         when (initStatus.getString("type")) {
             "Device" -> sensors.forEach { s -> find(initStatus, s.key, s.value.sense()) }
         }
+        initStatus.put("timestamp", System.currentTimeMillis())
         return initStatus.toString()
     }
 

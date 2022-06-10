@@ -89,7 +89,7 @@ const mapDashboard = {
                     if (Array.isArray(data)) { th = "" }
                     html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
                     if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
-                        html += `<img src="data:image/png;base64,${value}" style="height:20vh" alt="Broken image: ${value}">`
+                        html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
                     } else if (key === 'timestamp') {
                         const date = new Date(parseInt(value));
                         // Hours part from the timestamp
