@@ -39,8 +39,7 @@ while i < 300:
         # You cannot send messages containing "=" to the OCB,
         # so you need to encode it using its html representation ("%3D")
         # See the encoding here: https://www.w3schools.com/tags/ref_urlencode.asp
-        status["status"][1] = base64.b64encode(image_file.read())
-        status["status"][1] = status["status"][1].decode('utf-8').replace("=", "%3D")
+        status["status"][1] = base64.b64encode(image_file.read()).decode('utf-8').replace("=", "%3D")
 
     # update the context broker
     r = requests.patch(url = "http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
