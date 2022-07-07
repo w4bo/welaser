@@ -1,5 +1,5 @@
 kafka-python==2.0.2
 python-dotenv==0.20.0
-requests==2.28.0
+requests==2.28.1
 urllib3==1.26.9
 paho-mqtt==1.6.1
