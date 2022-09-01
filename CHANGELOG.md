@@ -1,3 +1,43 @@
+## [1.1.1](https://github.com/w4bo/welaser/compare/1.1.0...1.1.1) (2022-09-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-cli to v0.3.5 ([b5e4db6](https://github.com/w4bo/welaser/commit/b5e4db6b76e6b766fb42fcfa78ff606c624acc89))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-python action to v4 ([c3af57c](https://github.com/w4bo/welaser/commit/c3af57c6c508eec16bba72f556af8b3c18df537f))
+
+
+### Dependency updates
+
+* **deps:** bump semantic-release from 19.0.2 to 19.0.3 ([#173](https://github.com/w4bo/welaser/issues/173)) ([1f63baf](https://github.com/w4bo/welaser/commit/1f63baf5bd45ba71292a319c792e96241a392960))
+* **deps:** update dependency confluentinc/cp-kafkacat to v7.1.2 ([227d36b](https://github.com/w4bo/welaser/commit/227d36bd05a13855a7a7ec00d1d6e249f169bfb8))
+* **deps:** update dependency eclipse-mosquitto to v2.0.14 ([bb95e3b](https://github.com/w4bo/welaser/commit/bb95e3bf9ed9594ef375febe302b04df671a9495))
+* **deps:** update dependency io.github.cdimascio:dotenv-kotlin to v6.3.1 ([1f1dab9](https://github.com/w4bo/welaser/commit/1f1dab957fd3d5b6066e2725c0d327dcca2daa47))
+* **deps:** update dependency io.ktor:ktor-server-core to v2.0.2 ([dc426c6](https://github.com/w4bo/welaser/commit/dc426c6c5ef156b511bf707916684cebff2381ff))
+* **deps:** update dependency io.ktor:ktor-server-core to v2.0.3 ([88fe626](https://github.com/w4bo/welaser/commit/88fe6262e55eb0e39ea1c7ed7e7377ceaab450b5))
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.0.2 ([4eb0b4a](https://github.com/w4bo/welaser/commit/4eb0b4a7560df57c0a4620cf4f4130a516c59a91))
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.0.3 ([074d140](https://github.com/w4bo/welaser/commit/074d140780277746b86c21e86c8726f2d3469345))
+* **deps:** update dependency matplotlib to v3.5.3 ([71bb459](https://github.com/w4bo/welaser/commit/71bb459d7f6b5fa7810cd395227a7f3c0e7c7ea4))
+* **deps:** update dependency notebook to v6.4.12 ([61a631c](https://github.com/w4bo/welaser/commit/61a631c6eb4c5c18a575e6b089f4a3eb74f74962))
+* **deps:** update dependency org.slf4j:slf4j-api to v1.7.36 ([fa14942](https://github.com/w4bo/welaser/commit/fa1494232be7d39eda5f10bac82c8f17525863e0))
+* **deps:** update dependency org.slf4j:slf4j-simple to v1.7.36 ([46773c0](https://github.com/w4bo/welaser/commit/46773c0eead7054be138390b5f475896d2ab3495))
+* **deps:** update dependency pandas to v1.4.3 ([eb9fd13](https://github.com/w4bo/welaser/commit/eb9fd131e8bdd813b1e6ae8fb648160dd2e8c63a))
+* **deps:** update dependency requests to v2.28.0 ([9e75867](https://github.com/w4bo/welaser/commit/9e75867a88692ba24c233f5567ebc6a7c5c92761))
+* **deps:** update dependency requests to v2.28.1 ([f817e82](https://github.com/w4bo/welaser/commit/f817e8250901e5edb46ed56dfee0b0461912de8b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.7 ([4790852](https://github.com/w4bo/welaser/commit/47908521050f5831b857b57e6a1ba45ec631bd67))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.8 ([47e2c13](https://github.com/w4bo/welaser/commit/47e2c13bc08a6803d06004fa5ff8205a43746802))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.9 ([ef5db96](https://github.com/w4bo/welaser/commit/ef5db961606ad112d063e6c5e3b8114f7b0d11f7))
+* **deps:** update dependency urllib3 to v1.26.10 ([ff4f190](https://github.com/w4bo/welaser/commit/ff4f190e661ed9830474f4b07abf0b80a6e896c8))
+* **deps:** update dependency urllib3 to v1.26.11 ([deee40f](https://github.com/w4bo/welaser/commit/deee40fd0f4212ead929368ad7a869a2011771e1))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.0 ([a1c7c9e](https://github.com/w4bo/welaser/commit/a1c7c9ea3318364a3388e3674279bd6c9a5bad1c))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.10 ([643efaf](https://github.com/w4bo/welaser/commit/643efaf4a7a6f2194be6a7290dd7c3ceece9ec6c))
+* **deps:** update welaser/welaser-datamodels digest to 2fab7c6 ([b9ff173](https://github.com/w4bo/welaser/commit/b9ff1736888dc5c0b06329e074de1b12da2af508))
+* **deps:** update welaser/welaser-datamodels digest to 377aae6 ([318fdaf](https://github.com/w4bo/welaser/commit/318fdafb419828c15d688a6cae3ca01d84eed5da))
+
 ## [1.1.0](https://github.com/w4bo/welaser/compare/1.0.3...1.1.0) (2022-05-27)
 
 
