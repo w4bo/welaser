@@ -1,3 +1,18 @@
+## [1.1.3](https://github.com/w4bo/welaser/compare/1.1.2...1.1.3) (2022-09-02)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.9.0 ([94ea672](https://github.com/w4bo/welaser/commit/94ea672a4bf5395551cb6bed97574dee4241e7f0))
+
+
+### Dependency updates
+
+* **deps:** update dependency pymongo to v4.2.0 ([dfae2dc](https://github.com/w4bo/welaser/commit/dfae2dc1c376a4e9abc3b4e3a5e2d078c773127a))
+* **deps:** update fiware/orion docker tag to v3.7.0 ([57691ad](https://github.com/w4bo/welaser/commit/57691adc27c387b9055891e5c5fcf1e968a3db79))
+* **deps:** update mongo docker tag to v6 ([b5bc115](https://github.com/w4bo/welaser/commit/b5bc1150b9519fb7f811eed95f1b33cb779cf729))
+* **deps:** update node.js to 16.17 ([af4f2fb](https://github.com/w4bo/welaser/commit/af4f2fb17f54cdd07f7c772a24c062fa6f9d8b98))
+
 ## [1.1.2](https://github.com/w4bo/welaser/compare/1.1.1...1.1.2) (2022-09-02)
 
 
