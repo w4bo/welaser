@@ -1,3 +1,19 @@
+## [1.1.2](https://github.com/w4bo/welaser/compare/1.1.1...1.1.2) (2022-09-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.2.1 ([7192857](https://github.com/w4bo/welaser/commit/71928576cd882dbfedf6979d0ec574f2f77309c2))
+
+
+### Dependency updates
+
+* **deps:** update confluentinc/cp-kafkacat docker tag to v7.1.3 ([8c09343](https://github.com/w4bo/welaser/commit/8c0934335268cba2d14126df5c14a7ba43aefaa3))
+* **deps:** update dependency gradle to v7.5.1 ([b2169c0](https://github.com/w4bo/welaser/commit/b2169c095df9ffb7800fd200e7ec990f869e3eba))
+* **deps:** update dependency pandas to v1.4.4 ([aa562eb](https://github.com/w4bo/welaser/commit/aa562eb44d76c5fb46ebdefa5bc10c1f31b38dea))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.11 ([bbaf736](https://github.com/w4bo/welaser/commit/bbaf736eebb533cd6bed0057b69b7e473f3cb338))
+* **deps:** update dependency urllib3 to v1.26.12 ([15ecb0a](https://github.com/w4bo/welaser/commit/15ecb0aff03bf5589906084e7494a84791f4700f))
+
 ## [1.1.1](https://github.com/w4bo/welaser/compare/1.1.0...1.1.1) (2022-09-01)
 
 
