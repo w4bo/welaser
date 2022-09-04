@@ -1,3 +1,15 @@
+## [1.1.6](https://github.com/w4bo/welaser/compare/1.1.5...1.1.6) (2022-09-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2 ([b167d81](https://github.com/w4bo/welaser/commit/b167d817cde0e5f56e62428d83207f9a6928c512))
+
+
+### Dependency updates
+
+* **deps:** update dependency python-dotenv to v0.21.0 ([06ad273](https://github.com/w4bo/welaser/commit/06ad273d10d47bb6de8247479c0e97c9b68fc11a))
+
 ## [1.1.5](https://github.com/w4bo/welaser/compare/1.1.4...1.1.5) (2022-09-03)
 
 
