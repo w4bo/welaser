@@ -121,35 +121,35 @@ assert (responseBody["notification"]["lastSuccessCode"] == 200)
 print("OK: Subscription found")
 
 # test domain stream
-domainStreamTopic = "data.{}.realtime".format(domain)
-consumerDomainStream = KafkaConsumer(
-    domainStreamTopic,
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    auto_offset_reset='latest',
-    enable_auto_commit=True,
-    group_id='fiware-demo-testing-domain-streaming',
-    value_deserializer=lambda x: loads(x.decode('utf-8')))
-domainStreamPartitions = []
-for partition in consumerDomainStream.partitions_for_topic(domainStreamTopic):
-    domainStreamPartitions.append(TopicPartition(domainStreamTopic, partition))
-offsetsDomainStream = consumerDomainStream.end_offsets(domainStreamPartitions)
-sleep(2)
-offsetsDomainStream1 = consumerDomainStream.end_offsets(domainStreamPartitions)
-assert (offsetsDomainStream != offsetsDomainStream1)
-
-# test mission stream
-missionStreamTopic = "data.{}.realtime.{}".format(domain, mission)
-consumerMissionStream = KafkaConsumer(
-    missionStreamTopic,
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    auto_offset_reset='latest',
-    enable_auto_commit=True,
-    group_id='fiware-demo-testing-mission-streaming',
-    value_deserializer=lambda x: loads(x.decode('utf-8')))
-missionStreamPartitions = []
-for partition in consumerDomainStream.partitions_for_topic(missionStreamTopic):
-    missionStreamPartitions.append(TopicPartition(missionStreamTopic, partition))
-offsetsMissionStream = consumerMissionStream.end_offsets(missionStreamPartitions)
-sleep(2)
-offsetsMissionStream1 = consumerMissionStream.end_offsets(missionStreamPartitions)
-assert (offsetsMissionStream != offsetsMissionStream1)
+# domainStreamTopic = "data.{}.realtime".format(domain)
+# consumerDomainStream = KafkaConsumer(
+#     domainStreamTopic,
+#     bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
+#     auto_offset_reset='latest',
+#     enable_auto_commit=True,
+#     group_id='fiware-demo-testing-domain-streaming',
+#     value_deserializer=lambda x: loads(x.decode('utf-8')))
+# domainStreamPartitions = []
+# for partition in consumerDomainStream.partitions_for_topic(domainStreamTopic):
+#     domainStreamPartitions.append(TopicPartition(domainStreamTopic, partition))
+# offsetsDomainStream = consumerDomainStream.end_offsets(domainStreamPartitions)
+# sleep(2)
+# offsetsDomainStream1 = consumerDomainStream.end_offsets(domainStreamPartitions)
+# assert (offsetsDomainStream != offsetsDomainStream1)
+# 
+# # test mission stream
+# missionStreamTopic = "data.{}.realtime.{}".format(domain, mission)
+# consumerMissionStream = KafkaConsumer(
+#     missionStreamTopic,
+#     bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
+#     auto_offset_reset='latest',
+#     enable_auto_commit=True,
+#     group_id='fiware-demo-testing-mission-streaming',
+#     value_deserializer=lambda x: loads(x.decode('utf-8')))
+# missionStreamPartitions = []
+# for partition in consumerDomainStream.partitions_for_topic(missionStreamTopic):
+#     missionStreamPartitions.append(TopicPartition(missionStreamTopic, partition))
+# offsetsMissionStream = consumerMissionStream.end_offsets(missionStreamPartitions)
+# sleep(2)
+# offsetsMissionStream1 = consumerMissionStream.end_offsets(missionStreamPartitions)
+# assert (offsetsMissionStream != offsetsMissionStream1)
