@@ -7,7 +7,7 @@ services:
   # Orion is the context broker
   orion:
     restart: always
-    image: fiware/orion:3.6.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
+    image: fiware/orion:3.7.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
     depends_on:
@@ -105,7 +105,7 @@ services:
   # Database (ORION)
   mongo-db:
     restart: always
-    image: mongo:4.4
+    image: mongo:6.0
     hostname: mongo-db
     container_name: mongo-db
     expose:
