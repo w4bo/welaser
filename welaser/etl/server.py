@@ -13,6 +13,8 @@ DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
 producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
 class S(BaseHTTPRequestHandler):
+    def log_request(self, code='-', size='-'):
+        return
 
     def _set_response(self):
         self.send_response(200)

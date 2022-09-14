@@ -30,6 +30,8 @@ def create_plan():
         return json.load(f)
 
 class S(BaseHTTPRequestHandler):
+    def log_request(self, code='-', size='-'):
+        return
 
     def _set_response(self, payload=""):
         self.send_response(200)
