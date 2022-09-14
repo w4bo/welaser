@@ -6,10 +6,10 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
-    (120000..120000).forEach { duration ->
-        (10..80 step 20).forEach { devices ->
-            (1..41 step 20).forEach { frequency ->
-                (0..0 step 5000).forEach { payload ->
+    listOf(1000 * 60 * 200).forEach { duration -> /* 200 minutes */
+        listOf(100).forEach { devices -> /* 100 devices */
+            listOf(1).forEach { frequency -> /* 1 message every second */
+                listOf(0).forEach { payload -> /* 0B of additional payload */
                     val mission = "TEST--dev-$devices--freq-$frequency--pay-$payload--dur-$duration"
                     val executor = Executors.newCachedThreadPool()
                     val periodMs = 1000 / frequency

@@ -73,6 +73,12 @@ test {
     maxHeapSize = '1G'
 }
 
+task runScalability(type: JavaExec) {
+    description = "Run the scalability tests"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.devices.ScalabilityTest'
+}
+
 task runCanaries(type: JavaExec) {
     description = "Run the canary sensors"
     classpath = sourceSets.main.runtimeClasspath
