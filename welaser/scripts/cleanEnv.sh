@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -exo
 
 if [ -f .env ]; then
   export $(echo $(cat .env | sed 's/#.*//g' | xargs) | envsubst)
