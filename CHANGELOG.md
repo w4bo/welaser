@@ -1,3 +1,15 @@
+## [1.1.14](https://github.com/w4bo/welaser/compare/1.1.13...1.1.14) (2022-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.2.3 ([fa763d9](https://github.com/w4bo/welaser/commit/fa763d9d34e9605306428334a7076276083fd1e9))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.0 ([1be4f2c](https://github.com/w4bo/welaser/commit/1be4f2ccf29fe35c003b84e2ec0a1f34d180d939))
+
 ## [1.1.13](https://github.com/w4bo/welaser/compare/1.1.12...1.1.13) (2022-09-15)
 
 
