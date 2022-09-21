@@ -46,6 +46,9 @@ for collection in collections:
     elif rows > 1 and cols > 1:
         ax = axs[int(i / cols)][i % cols]
         ax2 = axs2[int(i / cols)][i % cols]
+    else:
+        ax = axs
+        ax2 = axs2
 
     mint = -1
     maxt = -1
