@@ -1,3 +1,56 @@
+## [1.1.17](https://github.com/w4bo/welaser/compare/1.1.16...1.1.17) (2022-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.2 ([1bbc914](https://github.com/w4bo/welaser/commit/1bbc914da02c4202fe3a6ddf858286679b8ee862))
+
+## [1.1.16](https://github.com/w4bo/welaser/compare/1.1.15...1.1.16) (2022-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.2 ([3f342a6](https://github.com/w4bo/welaser/commit/3f342a66d09620f82258a43b941161f4ac4f4f5a))
+* **deps:** update junit5 monorepo to v5.9.1 ([58cabaf](https://github.com/w4bo/welaser/commit/58cabafe48e336c1028da0714968042afa8df1ed))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.0 ([d410e2e](https://github.com/w4bo/welaser/commit/d410e2e4a118fd61fc57a97aa2d928206583fa70))
+
+## [1.1.15](https://github.com/w4bo/welaser/compare/1.1.14...1.1.15) (2022-09-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3 ([249b51b](https://github.com/w4bo/welaser/commit/249b51ba8b623088cd07348abe4c5841add666ce))
+
+## [1.1.14](https://github.com/w4bo/welaser/compare/1.1.13...1.1.14) (2022-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.2.3 ([fa763d9](https://github.com/w4bo/welaser/commit/fa763d9d34e9605306428334a7076276083fd1e9))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.0 ([1be4f2c](https://github.com/w4bo/welaser/commit/1be4f2ccf29fe35c003b84e2ec0a1f34d180d939))
+
+## [1.1.13](https://github.com/w4bo/welaser/compare/1.1.12...1.1.13) (2022-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.1 ([af4ff4b](https://github.com/w4bo/welaser/commit/af4ff4b51e86b1d19704493664ae27014f580b17))
+
+## [1.1.12](https://github.com/w4bo/welaser/compare/1.1.11...1.1.12) (2022-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.1 ([d3c5e55](https://github.com/w4bo/welaser/commit/d3c5e557342cf904ab8da3476cd9f4bde8762c57))
+
 ## [1.1.11](https://github.com/w4bo/welaser/compare/1.1.10...1.1.11) (2022-09-14)
 
 
