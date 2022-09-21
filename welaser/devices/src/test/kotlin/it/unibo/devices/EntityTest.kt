@@ -15,7 +15,7 @@ class EntityTest {
 
     @Test
     fun testScalability() {
-        scalability(10, 10, 1, 60000)
+        scalability(30000, 10, 2, 1000)
     }
 
     @Test
