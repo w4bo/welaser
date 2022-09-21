@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pymongo
-
+import sys
 db_connect = pymongo.MongoClient('127.0.0.1', 37017)
 database_name = 'persistence'
 database = db_connect[database_name]
@@ -42,6 +42,7 @@ for collection in collections:
         ax2 = axs2[int(i / cols)][i % cols]
 
     mint = -1
+    maxt = -1
     for timestamp in ["$timestamp.value", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota.value"]:
         print(" - " + timestamp)
         if timestamp in ["$timestamp.value", "$timestamp_iota.value"]:  # these timestamps are in ms
@@ -62,21 +63,26 @@ for collection in collections:
             ax2.plot(x, y, label="Optimal", ls="--")
         # shift the time values to 0
         data["_id"] = data["_id"] - mint
+        duration = int(int(setup["dur"]) / 1000)
+        # get the last theoretical/empirical timestamp
+        maxt = max(duration, data["_id"].max() / 1000)
         data["_id"] = data["_id"].apply(lambda x: int(x / 1000))
         data = data.sort_values(by=["_id"], axis=0)
         data.plot.line(x="_id", y="count", label=label(timestamp), ax=ax, legend=False)
         data["count"] = data["count"].cumsum()
         data.plot.line(x="_id", y="count", label=label(timestamp), ax=ax2, legend=False)
-    for a in [ax, ax2]:
+    for a, ylabel in [(ax, "#msg"), (ax2, "cum #msg")]:
         # set the legend only on the first axis
         if i == 0:
             a.legend()
         # set the title of the axis
-        a.set_title("$dev={},freq={},msg/s={}$".format(setup["dev"], setup["freq"], int(setup["freq"]) * int(setup["dev"])))
+        a.set_title("$dev={},f={},msg/s={},d={}$".format(setup["dev"], setup["freq"], int(setup["freq"]) * int(setup["dev"]), duration))
         # set the y and x ticks
         a.yaxis.set_tick_params(labelbottom=True)
         a.set_axisbelow(True)
+        a.set_xticks(np.linspace(0, maxt, num=5))
         a.set_xlabel('Time (s)')
+        a.set_ylabel(ylabel)
         # show the grid
         a.grid(visible=True, which='major', linestyle='-', axis='y')
         a.set_yscale('log')
@@ -85,3 +91,4 @@ for f, name in [(fig, "scalability"), (fig2, "scalability_cum")]:
     f.tight_layout()
     f.savefig(name + ".pdf")
     f.savefig(name + ".svg")
+sys.exit(0)
