@@ -8,10 +8,15 @@ import numpy as np
 import pandas as pd
 import pymongo
 import sys
-db_connect = pymongo.MongoClient('127.0.0.1', 37017)
-database_name = 'persistence'
-database = db_connect[database_name]
-collections = sorted([x for x in database.list_collection_names() if "TEST" in x])
+from dotenv import dotenv_values
+
+conf = dotenv_values("../.env")
+client = pymongo.MongoClient(conf["MONGO_DB_PERS_IP"], int(conf["MONGO_DB_PERS_PORT_EXT"]))
+database_name = conf["MONGO_DB_PERS_DB"]
+database = client[database_name]
+collections = database.list_collection_names()
+print(collections)
+collections = sorted([x for x in collections if "TEST" in x])
 assert (len(collections) > 0)
 # In[2]:
 
@@ -20,6 +25,7 @@ rows = math.ceil(len(collections) / cols)
 fig, axs = plt.subplots(rows, cols, figsize=(4 * cols, 3 * rows))
 fig2, axs2 = plt.subplots(rows, cols, figsize=(4 * cols, 3 * rows))
 i = 0
+
 
 def label(timestamp):
     if timestamp == "$timestamp.value":

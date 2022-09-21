@@ -30,5 +30,5 @@ for message in consumer:
     message = message.value
     message["timestamp_kafka"] = time.time()
     mission = "mission_" + message["mission"]
-    collection = client.persistence.get_collection(mission)
+    collection = client[os.getenv("MONGO_DB_PERS_DB")].get_collection(mission)
     collection.insert_one(message)

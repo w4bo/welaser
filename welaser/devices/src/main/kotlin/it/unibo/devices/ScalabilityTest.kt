@@ -41,7 +41,7 @@ fun scalability(duration: Int, devices: Int, frequency: Int, payload: Int) {
 
 fun main(args: Array<String>) {
     val parser = ArgParser("ScalabilityTest")
-    val defaultDuration = 1000 * 60 * 60 * 24 * 2 /* 1000 * 60 * 60 * 24 * 2 = 2 days, 1000 * 60 * 200 = 200 minutes */
+    val defaultDuration = 1000 * 60 * 60 * 24 * 3 /* 1000 * 60 * 60 * 24 * 2 = 2 days, 1000 * 60 * 200 = 200 minutes */
     val defaultDevices = 100
     val defaultFrequency = 1
     val defaultPayload = 0
