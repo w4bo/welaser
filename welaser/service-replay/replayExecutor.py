@@ -31,7 +31,7 @@ if __name__ == '__main__':
     )
 
     mongoClient = MongoClient(MONGO_CONNECTION_STR)
-    persistenceDB = mongoClient[os.getenv(["MONGO_DB_PERS_DB"])]
+    persistenceDB = mongoClient[os.getenv("MONGO_DB_PERS_DB")]
     missionCollection = persistenceDB["mission_" + MISSION_NAME]
     cursor = missionCollection.find({"Time.value": {"$ne": None}}).sort('Time.value', ASCENDING)
 
