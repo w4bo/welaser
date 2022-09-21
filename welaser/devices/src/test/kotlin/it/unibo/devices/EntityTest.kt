@@ -14,6 +14,11 @@ class EntityTest {
     val folder = "/datamodels"
 
     @Test
+    fun testScalability() {
+        scalability(10, 10, 1, 10)
+    }
+
+    @Test
     fun testCamera() {
         try {
             Base64.getDecoder().decode(Camera().sense())

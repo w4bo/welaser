@@ -12,7 +12,7 @@ db_connect = pymongo.MongoClient('127.0.0.1', 37017)
 database_name = 'persistence'
 database = db_connect[database_name]
 collections = sorted([x for x in database.list_collection_names() if "TEST" in x])
-
+assert (len(collections) > 0)
 # In[2]:
 
 cols = 3 if len(collections) > 3 else len(collections)
