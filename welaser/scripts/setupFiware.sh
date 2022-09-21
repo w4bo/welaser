@@ -15,8 +15,6 @@ else
   exit 1
 fi
 
-sleep 30
-
 docker-compose up --build &>logs/docker-compose-$(date +%s).txt &
 
 ./wait-for-it.sh ${ORION_IP}:${ORION_PORT_EXT} --timeout=480 -- echo "OCB is up"
