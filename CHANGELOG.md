@@ -1,3 +1,10 @@
+## [1.1.17](https://github.com/w4bo/welaser/compare/1.1.16...1.1.17) (2022-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.2 ([1bbc914](https://github.com/w4bo/welaser/commit/1bbc914da02c4202fe3a6ddf858286679b8ee862))
+
 ## [1.1.16](https://github.com/w4bo/welaser/compare/1.1.15...1.1.16) (2022-09-21)
 
 
