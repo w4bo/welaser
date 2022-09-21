@@ -1,3 +1,16 @@
+## [1.1.16](https://github.com/w4bo/welaser/compare/1.1.15...1.1.16) (2022-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.2 ([3f342a6](https://github.com/w4bo/welaser/commit/3f342a66d09620f82258a43b941161f4ac4f4f5a))
+* **deps:** update junit5 monorepo to v5.9.1 ([58cabaf](https://github.com/w4bo/welaser/commit/58cabafe48e336c1028da0714968042afa8df1ed))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.0 ([d410e2e](https://github.com/w4bo/welaser/commit/d410e2e4a118fd61fc57a97aa2d928206583fa70))
+
 ## [1.1.15](https://github.com/w4bo/welaser/compare/1.1.14...1.1.15) (2022-09-18)
 
 
