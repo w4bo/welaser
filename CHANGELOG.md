@@ -1,3 +1,10 @@
+## [1.1.19](https://github.com/w4bo/welaser/compare/1.1.18...1.1.19) (2022-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.fasterxml.jackson.module:jackson-module-kotlin to v2.13.4 ([bd215d1](https://github.com/w4bo/welaser/commit/bd215d16beaba19fbb36a4db27013074c3ffa6d4))
+
 ## [1.1.18](https://github.com/w4bo/welaser/compare/1.1.17...1.1.18) (2022-09-22)
 
 
