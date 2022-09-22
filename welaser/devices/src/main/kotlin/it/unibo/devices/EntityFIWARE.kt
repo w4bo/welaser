@@ -118,10 +118,7 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
         else -> STATUS.OFF
     }
 
-    override var moving = when (type) {
-        "Device" -> false
-        else -> false
-    }
+    override var moving = false
 
     @Synchronized
     override fun getStatus(): String {
