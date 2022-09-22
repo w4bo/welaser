@@ -7,6 +7,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 import java.util.*
 import java.util.stream.Stream
 
@@ -23,72 +24,72 @@ fun name(t: String) = t + "_name"
 fun type(t: String) = t + "_type"
 
 class AgriParcel: Loadable {
-    override fun load(obj: JSONObject, conn: Connection) {
+    override fun load(from: JSONObject, to: Connection) {
         var query = ("insert into $LOCATION(${id(LOCATION)}, ${name(LOCATION)}, ${type(LOCATION)}, polygon, raw_json) values (?, ?, ?, ?, ?)")
-        var preparedStmt = conn.prepareStatement(query)
-        val id = obj["id"].toString()
+        var preparedStmt = to.prepareStatement(query)
+        val id = from["id"].toString()
         preparedStmt.setString(1, id)
-        preparedStmt.setString(2, obj.optString("name", ""))
-        preparedStmt.setString(3, obj["type"].toString())
-        preparedStmt.setString(4, obj["location"].toString())
-        preparedStmt.setString(5, obj.toString())
+        preparedStmt.setString(2, from.optString("name", ""))
+        preparedStmt.setString(3, from["type"].toString())
+        preparedStmt.setString(4, from["location"].toString())
+        preparedStmt.setString(5, from.toString())
         preparedStmt.execute()
         query = ("insert into isIn(location_parent, location_child) values (?, ?)")
-        obj.getJSONArray("hasAgriParcelChildren").forEach {
+        from.getJSONArray("hasAgriParcelChildren").forEach {
             try {
-                preparedStmt = conn.prepareStatement(query)
+                preparedStmt = to.prepareStatement(query)
                 preparedStmt.setString(1, id)
                 preparedStmt.setString(2, it.toString())
                 preparedStmt.execute()
-            } catch (e: Exception) {
+            } catch (e: SQLException) {
 //                e.printStackTrace()
             }
         }
-        val parent = obj["hasAgriParcelParent"]?.toString() ?: ""
+        val parent = from["hasAgriParcelParent"]?.toString() ?: ""
         if (parent.isNotEmpty()) {
             query = ("insert into isIN(location_parent, location_child) values (?, ?)")
             try {
-                preparedStmt = conn.prepareStatement(query)
+                preparedStmt = to.prepareStatement(query)
                 preparedStmt.setString(1, parent)
                 preparedStmt.setString(2, id)
                 preparedStmt.execute()
-            } catch (e: Exception) {
+            } catch (e: SQLException) {
 //                e.printStackTrace()
             }
         }
     }
 }
 
-fun addLocation(obj: JSONObject, conn: Connection): String {
+fun addLocation(from: JSONObject, to: Connection): String {
     var locationId = ""
-    if (obj.has("location")) {
+    if (from.has("location")) {
         locationId = UUID.randomUUID().toString()
         val query = ("insert into $LOCATION(${id(LOCATION)}, ${name(LOCATION)}, ${type(LOCATION)}, polygon) values (?, ?, ?, ?)")
-        val preparedStmt2 = conn.prepareStatement(query)
+        val preparedStmt2 = to.prepareStatement(query)
         preparedStmt2.setString(1, locationId)
-        preparedStmt2.setString(2, obj.optString("name", null))
-        preparedStmt2.setString(3, obj["type"].toString())
-        preparedStmt2.setString(4, obj["location"].toString())
+        preparedStmt2.setString(2, from.optString("name", null))
+        preparedStmt2.setString(3, from["type"].toString())
+        preparedStmt2.setString(4, from["location"].toString())
         preparedStmt2.execute()
     }
     return locationId
 }
 
 class DeviceMeasurement: Loadable {
-    override fun load(obj: JSONObject, conn: Connection) {
-        val locationId = addLocation(obj, conn)
+    override fun load(from: JSONObject, to: Connection) {
+        val locationId = addLocation(from, to)
 
         var query = ("insert into $MEASUREMENT_TYPE(${id(MEASUREMENT_TYPE)}, unit) values (?, ?)")
-        var preparedStmt = conn.prepareStatement(query)
-        preparedStmt.setString(1, obj["controlledProperty"].toString())
-        preparedStmt.setString(2, obj["unit"].toString())
+        var preparedStmt = to.prepareStatement(query)
+        preparedStmt.setString(1, from["controlledProperty"].toString())
+        preparedStmt.setString(2, from["unit"].toString())
         preparedStmt.execute()
 
         query = ("insert into $MEASUREMENT(${id(ASSIGNED_DEVICE)}, ${id(MEASUREMENT_TYPE)}, measurement_value, sensing_timestamp, reception_timestamp, ${id(LOCATION)}) values (?, ?, ?, ?, ?, ?)")
-        preparedStmt = conn.prepareStatement(query)
-        preparedStmt.setString(1, obj["refDevice"].toString())
-        preparedStmt.setString(2, obj["controlledProperty"].toString())
-        preparedStmt.setString(3, obj["numValue"].toString())
+        preparedStmt = to.prepareStatement(query)
+        preparedStmt.setString(1, from["refDevice"].toString())
+        preparedStmt.setString(2, from["controlledProperty"].toString())
+        preparedStmt.setString(3, from["numValue"].toString())
         preparedStmt.setLong(4, System.currentTimeMillis())
         preparedStmt.setLong(5, System.currentTimeMillis())
         preparedStmt.setString(6, locationId)
@@ -97,55 +98,55 @@ class DeviceMeasurement: Loadable {
 }
 
 class Device: Loadable {
-    override fun load(obj: JSONObject, conn: Connection) {
-        var props = obj.getJSONArray("controlledProperty").map { it.toString() }.toList()
-        var values = obj["value"].toString().replace("%3B", ";").replace("%3D", "=").split(";").map { it.split("=")[1] }
+    override fun load(from: JSONObject, to: Connection) {
+        var props = from.getJSONArray("controlledProperty").map { it.toString() }.toList()
+        var values = from["value"].toString().replace("%3B", ";").replace("%3D", "=").split(";").map { it.split("=")[1] }
 
         // optional measurements
         listOf("batteryLevel", "rssi").forEach {
-            if (obj.has(it)) {
+            if (from.has(it)) {
                 props += it
-                values += obj[it].toString()
+                values += from[it].toString()
             }
         }
 
-        val locationId = addLocation(obj, conn)
+        val locationId = addLocation(from, to)
 
         props.zip(values).forEach {
             var query = ("insert into $MEASUREMENT_TYPE(${id(MEASUREMENT_TYPE)}, unit) values (?, ?)")
-            var preparedStmt = conn.prepareStatement(query)
+            var preparedStmt = to.prepareStatement(query)
             preparedStmt.setString(1, it.first)
             preparedStmt.setString(2, "")
             preparedStmt.execute()
 
             query = ("insert into $MEASUREMENT(${id(ASSIGNED_DEVICE)}, ${id(MEASUREMENT_TYPE)}, measurement_value, sensing_timestamp, reception_timestamp, ${id(LOCATION)}, raw_json) values (?, ?, ?, ?, ?, ?, ?)")
-            preparedStmt = conn.prepareStatement(query)
-            preparedStmt.setString(1, obj["id"].toString())
+            preparedStmt = to.prepareStatement(query)
+            preparedStmt.setString(1, from["id"].toString())
             preparedStmt.setString(2, it.first)
             preparedStmt.setString(3, it.second)
             preparedStmt.setLong(4, System.currentTimeMillis())
             preparedStmt.setLong(5, System.currentTimeMillis())
             preparedStmt.setString(6, locationId)
-            preparedStmt.setString(7, obj.toString())
+            preparedStmt.setString(7, from.toString())
             preparedStmt.execute()
         }
     }
 }
 
 class AgriFarm: Loadable {
-    override fun load(obj: JSONObject, conn: Connection) {
+    override fun load(from: JSONObject, to: Connection) {
         var query = ("insert into $LOCATION(${id(LOCATION)}, ${name(LOCATION)}, ${type(LOCATION)}, polygon, raw_json) values (?, ?, ?, ?, ?)")
-        var preparedStmt = conn.prepareStatement(query)
-        val id = obj["id"].toString()
+        var preparedStmt = to.prepareStatement(query)
+        val id = from["id"].toString()
         preparedStmt.setString(1, id)
-        preparedStmt.setString(2, obj["name"].toString())
-        preparedStmt.setString(3, obj["type"].toString())
-        preparedStmt.setString(4, obj["landLocation"].toString())
-        preparedStmt.setString(5, obj.toString())
+        preparedStmt.setString(2, from["name"].toString())
+        preparedStmt.setString(3, from["type"].toString())
+        preparedStmt.setString(4, from["landLocation"].toString())
+        preparedStmt.setString(5, from.toString())
         preparedStmt.execute()
         query = ("insert into isIN(location_parent, location_child) values (?, ?)")
-        obj.getJSONArray("hasAgriParcel").forEach {
-            preparedStmt = conn.prepareStatement(query)
+        from.getJSONArray("hasAgriParcel").forEach {
+            preparedStmt = to.prepareStatement(query)
             preparedStmt.setString(1, id)
             preparedStmt.setString(2, it.toString())
             preparedStmt.execute()
@@ -168,8 +169,8 @@ fun main(args: Array<String>) {
     connectionProps.put("user", dotenv["MYSQL_USER"])
     connectionProps.put("password", dotenv["MYSQL_PWD"])
     Class.forName("com.mysql.cj.jdbc.Driver")
-    val conn: Connection = DriverManager.getConnection("jdbc:mysql://${dotenv["MYSQL_IP"]}:${dotenv["MYSQL_PORT"]}/${dotenv["MYSQL_DB"]}", connectionProps)
-    getAllFilesInResources().forEach { load(it.toString(), conn) }
+    val to: Connection = DriverManager.getConnection("jdbc:mysql://${dotenv["MYSQL_IP"]}:${dotenv["MYSQL_PORT"]}/${dotenv["MYSQL_DB"]}", connectionProps)
+    getAllFilesInResources().forEach { load(it.toString(), to) }
 }
 
 
