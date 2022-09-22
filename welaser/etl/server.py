@@ -1,16 +1,19 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 import json
-import time
 import os
-from kafka import KafkaProducer
+import time
 from datetime import datetime
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+from kafka import KafkaProducer
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = int(os.getenv("KAFKA_PORT_EXT"))
 DRACO_PORT = int(os.getenv("DRACO_PORT_EXT"))
 DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
 
-producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)],
+                         value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+
 
 class S(BaseHTTPRequestHandler):
     def log_request(self, code='-', size='-'):
@@ -27,22 +30,22 @@ class S(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self._set_response()
-        content_length = int(self.headers['Content-Length']) # Get the size of data
-        post_data = self.rfile.read(content_length) # Get the data itself
-        subscription = json.loads(post_data.decode('utf-8')) # get the subscription
+        content_length = int(self.headers['Content-Length'])  # Get the size of data
+        post_data = self.rfile.read(content_length)  # Get the data itself
+        subscription = json.loads(post_data.decode('utf-8'))  # get the subscription
         now = datetime.now()
         if "heartbeat" in subscription:
             print("Alive at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
             return
         # print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
-        data = subscription["data"] # get the data from the subscription
-        for d in data: # data can be more than one item, do some preprocessing
+        data = subscription["data"]  # get the data from the subscription
+        for d in data:  # data can be more than one item, do some preprocessing
             def get(k, domain):
                 if k in d:
                     if "value" in d[k]:
-                        return d[k]["value"] # this is filled by an IoT Sensor
+                        return d[k]["value"]  # this is filled by an IoT Sensor
                     else:
-                        return d[k] # this is filled by the robot
+                        return d[k]  # this is filled by the robot
                 else:
                     return domain
 
@@ -60,8 +63,8 @@ class S(BaseHTTPRequestHandler):
             producer.send('data.' + domain + ".realtime", value=d)
             producer.send('data.' + domain + ".realtime." + mission, value=d)
             producer.send(DRACO_RAW_TOPIC, value=d)
-        now = datetime.now()
-        # print("Done at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+        # print("Done at " + datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+
 
 def run(server_class=ThreadingHTTPServer, handler_class=S, port=DRACO_PORT):
     server_address = ('0.0.0.0', port)
@@ -71,5 +74,6 @@ def run(server_class=ThreadingHTTPServer, handler_class=S, port=DRACO_PORT):
     except KeyboardInterrupt:
         pass
     httpd.server_close()
+
 
 run()
