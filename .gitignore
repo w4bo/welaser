@@ -1,4 +1,6 @@
 **/datamodels/*.json
+**/testScripts/*.svg
+**/testScripts/*.pdf
 createmission.txt
 createdomain.txt
 flow.xml.gz
