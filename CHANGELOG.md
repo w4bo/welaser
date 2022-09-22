@@ -1,3 +1,10 @@
+## [1.1.18](https://github.com/w4bo/welaser/compare/1.1.17...1.1.18) (2022-09-22)
+
+
+### Bug Fixes
+
+* **demo:** add scalability tests ([4c302f6](https://github.com/w4bo/welaser/commit/4c302f68889b245230bec446fce3c8c6aeeb3fae))
+
 ## [1.1.17](https://github.com/w4bo/welaser/compare/1.1.16...1.1.17) (2022-09-21)
 
 
