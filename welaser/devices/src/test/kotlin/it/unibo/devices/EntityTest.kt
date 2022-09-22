@@ -3,7 +3,8 @@ package it.unibo.devices
 import it.unibo.ROBOT_CMD_PAUSE
 import it.unibo.ROBOT_CMD_RESUME
 import it.unibo.ROBOT_CMD_START
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
@@ -52,9 +53,9 @@ class EntityTest {
             val r = EntityFactory.createFromFile("$folder/carob-1.json", 1, times = 1000)
             r.exec(ROBOT_CMD_START, "mission-123")
             r.run()
-            khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
+            khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
                 waitFor(r, STATUS.OFF)
-                khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
+                khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
                     waitFor(r, STATUS.ON)
                 })
             })
@@ -95,9 +96,9 @@ class EntityTest {
             val s = waitDevice(d)
             assertTrue(s.contains(d.id))
             assertTrue(d.status == STATUS.ON)
-            khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"off" : {}}}""", onResponse = {
+            khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"off" : {}}}""", onResponse = {
                 waitFor(d, STATUS.OFF)
-                khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf("Content-Type" to "application/json"), data = """{"cmd": {"on" : {}}}""", onResponse = {
+                khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"on" : {}}}""", onResponse = {
                     waitFor(d, STATUS.ON)
                 })
             })

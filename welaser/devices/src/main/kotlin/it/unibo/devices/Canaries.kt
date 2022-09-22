@@ -19,7 +19,7 @@ fun rnd(d: Double, p: Int): Double {
     return d + (r.nextDouble() - 0.5) / pow(10.0, p * 1.0)
 }
 
-fun main(args: Array<String>) {
+fun main() {
     val s1: ISensor = Camera()
     val s2: ISensor = RandomSensor()
 
