@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'idea'
-    id "org.jetbrains.kotlin.jvm" version "1.7.10"
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'checkstyle'
 }
@@ -71,6 +71,12 @@ dependencies {
 test {
     useJUnitPlatform()
     maxHeapSize = '1G'
+}
+
+task runScalability(type: JavaExec) {
+    description = "Run the scalability tests"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.devices.ScalabilityTest'
 }
 
 task runCanaries(type: JavaExec) {

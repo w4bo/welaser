@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+
+  # Image of the MySQL database
+  mysql:
+    image: mysql:8.0
+    hostname: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PWD}
+      MYSQL_TCP_PORT: ${MYSQL_PORT}
+    expose:
+      - ${MYSQL_PORT}
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+    networks:
+      - default
+
+  # Populate the MySQL database when the database is ready (i.e., is healthy)
+  mysql-seed:
+    hostname: mysql-seed
+    container_name: mysql-seed
+    image: mysql:8.0
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./resources/:/data
+    command: >
+      /bin/bash -c "mysql -hmysql -u${MYSQL_USER} -P${MYSQL_PORT} -p${MYSQL_PWD} < /data/sensordwh.sql;"
+    networks:
+      - default

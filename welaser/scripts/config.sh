@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -xo
+set -exo
 
 git submodule update --recursive
 git submodule update --init --recursive

@@ -12,7 +12,7 @@ exports.registerTopic = async function (req, res) {
         clientId: address,
         brokers: global.kafkaBrokers
     })
-    console.log(global.kafkaBrokers)
+    // console.log(global.kafkaBrokers)
     const consumer = kafka.consumer({groupId: address})
     // const consumer = kafka.consumer()
     const consume = async (address, topic) => {
@@ -20,7 +20,7 @@ exports.registerTopic = async function (req, res) {
         await consumer.subscribe({topic})
         await consumer.run({
             eachMessage: ({message}) => {
-                console.log(message.value.toString())
+                // console.log(message.value.toString())
                 global.io.emit(address, message.value.toString())
             },
         })

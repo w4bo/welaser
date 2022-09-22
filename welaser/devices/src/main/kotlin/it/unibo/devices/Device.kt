@@ -38,7 +38,7 @@ val MOSQUITTO_USER = dotenv["MOSQUITTO_USER"]
 val MOSQUITTO_PWD = dotenv["MOSQUITTO_PWD"]
 val MOSQUITTO_IP = dotenv["MOSQUITTO_IP"]
 val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"].toInt()
-
+val CONTENTTYPE = "Content-Type" to "application/json"
 /**
  * Some entity types
  */
@@ -143,12 +143,16 @@ interface IProtocol {
      * @param topic listen to the current topic, if any
      * @param f callback function
      */
-    fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> }) {}
+    fun listen(topic: String = "", f: (commandName: String, payload: String) -> Unit = { _, _ -> }) {
+        // Not all protocols require listeners/consumers
+    }
 
     /**
      * Close the connection, if any
      */
-    fun close() {}
+    fun close() {
+        // Not all protocols require a (to close) connection
+    }
 }
 
 // enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
@@ -208,8 +212,8 @@ class ProtocolMQTT : IProtocol {
             // println("Waiting for client connection")
             Thread.sleep(100)
         }
-        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = { /* connection.disconnect() */ })
-        // khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = {
+        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
+        // khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = {
         //     println(this.text)
         //     khttp.get("${ORION_URL}/v2/entities?id=" + JSONObject(s).getString("id"))
         // })
@@ -247,11 +251,12 @@ class ProtocolMQTT : IProtocol {
 class ProtocolSubscription : IProtocol {
     @Synchronized
     override fun register(s: String) {
+        // It does not require an explicit registration to a server
     }
 
     @Synchronized
     override fun send(payload: String, topic: String) {
-        khttp.async.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf("Content-Type" to "application/json"), data = payload, onResponse = { /* connection.disconnect() */ })
+        khttp.async.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf(CONTENTTYPE), data = payload, onResponse = { /* connection.disconnect() */ })
         // httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 }
@@ -259,11 +264,11 @@ class ProtocolSubscription : IProtocol {
 class ProtocolHTTP : IProtocol {
     @Synchronized
     override fun register(s: String) {
-        val status = JSONObject(s)
+        JSONObject(s) // check if s is a valid json object
         var retry = 3
         while (retry-- >= 0) {
             try {
-                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf("Content-Type" to "application/json"), data = s, onResponse = { /* connection.disconnect() */ })
+                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
             } catch (e: Exception) {
                 if (retry == 0) {
                     e.printStackTrace()
@@ -290,7 +295,7 @@ class ProtocolHTTP : IProtocol {
         }
         khttp.async.patch(
             "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
-            mapOf("Content-Type" to "application/json"),
+            mapOf(CONTENTTYPE),
             data = payloadJSON.toString(),
             onResponse = { /* connection.disconnect() */ }
         )
@@ -333,7 +338,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    open val id: String = if (s == null) { "" } else { getType().toString() } + getId()
+    open val id: String = getType().toString() + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -474,7 +479,7 @@ open class DeviceHTTP(
                     }
                 }
             }.start(wait = false)
-            khttp.post("http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions", mapOf("Content-Type" to "application/json"), data = """
+            khttp.post("http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """
                 {
                     "description": "Notify the entity when it receives a command",
                     "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},

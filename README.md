@@ -1,6 +1,8 @@
 # WeLASER
 
 [![Build](https://github.com/w4bo/welaser/actions/workflows/build.yml/badge.svg)](https://github.com/w4bo/welaser/actions/workflows/build.yml)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=w4bo_welaser&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=w4bo_welaser)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=w4bo_welaser&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=w4bo_welaser)
 
 ## Set up
 

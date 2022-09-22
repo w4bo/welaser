@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -o xtrace
+set -exo
 
 # docker builder prune --all
 docker build -t replay-executor ./service-replay
