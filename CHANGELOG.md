@@ -1,3 +1,15 @@
+## [1.1.20](https://github.com/w4bo/welaser/compare/1.1.19...1.1.20) (2022-09-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.json:json to v20220924 ([1cd2802](https://github.com/w4bo/welaser/commit/1cd28023b54a64e073c33cb7bb79f396c5a0895f))
+
+
+### Dependency updates
+
+* **deps:** update confluentinc/cp-kafkacat docker tag to v7.1.4 ([419bf55](https://github.com/w4bo/welaser/commit/419bf55d690011ca542f0145b6f5c11fe25e50cd))
+
 ## [1.1.19](https://github.com/w4bo/welaser/compare/1.1.18...1.1.19) (2022-09-22)
 
 
