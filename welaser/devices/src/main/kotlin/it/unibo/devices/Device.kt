@@ -28,6 +28,7 @@ val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
 val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}"
 val IOTA_IP = dotenv["IOTA_IP"]
+val DEVICE_IP = dotenv["DEVICE_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"].toInt()
 val KAFKA_IP = dotenv["KAFKA_IP"]
 val KAFKA_PORT_EXT = dotenv["KAFKA_PORT_EXT"].toInt()
@@ -155,50 +156,6 @@ interface IProtocol {
     }
 }
 
-// enum class REQUEST_TYPE {GET, POST, PUT, DELETE, PATCH}
-
-//@Synchronized fun httpRequest(url: String, payload: String? = null, headers: Collection<Pair<String, String>> = listOf(), requestType: REQUEST_TYPE = REQUEST_TYPE.GET, retry: Int = 3): String {
-//    try {
-//        val client: HttpClient = HttpClient.newBuilder().build()
-//        var requestBuilder = HttpRequest.newBuilder().uri(URI.create(url))
-//        if (payload != null) {
-//            requestBuilder =
-//                when(requestType) {
-//                    REQUEST_TYPE.PUT -> requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(payload))
-//                    REQUEST_TYPE.PATCH -> requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(payload))
-//                    else -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload))
-//                }
-//        } else {
-//            requestBuilder =
-//                when(requestType) {
-//                    REQUEST_TYPE.DELETE -> requestBuilder.DELETE()
-//                    else -> requestBuilder.GET()
-//                }
-//        }
-//        headers.forEach {
-//            requestBuilder = requestBuilder.header(it.first, it.second)
-//        }
-//        val response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
-//        if (response.body().contains("error")) {
-//            if (response.body().contains("Already Exists")) {
-//                httpRequest(url.replace("entities", "entities/" + JSONObject(payload!!).getString("id")), requestType = REQUEST_TYPE.DELETE, retry = retry)
-//                httpRequest(url, payload, headers, requestType, retry)
-//            } else {
-//                throw IllegalArgumentException(url + "\n" + payload + "\n" + response.body())
-//            }
-//        }
-//        return response.body()!!
-//    } catch (e: Exception) {
-//        if (retry <= 0) {
-//            e.printStackTrace()
-//            throw IllegalArgumentException(e.message)
-//        } else {
-//            Thread.sleep(100L * retry)
-//            return httpRequest(url, payload, headers, requestType, retry - 1)
-//        }
-//    }
-//}
-
 class ProtocolMQTT : IProtocol {
     var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
@@ -209,18 +166,9 @@ class ProtocolMQTT : IProtocol {
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         client.connect(connOpts)
         while (!client.isConnected) {
-            // println("Waiting for client connection")
             Thread.sleep(100)
         }
         khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
-        // khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = {
-        //     println(this.text)
-        //     khttp.get("${ORION_URL}/v2/entities?id=" + JSONObject(s).getString("id"))
-        // })
-        // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
-        // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getString("id"))
-        // httpRequest("http://${IOTA_IP}:${IOTA_NORTH_PORT}/iot/devices", s, listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
-        // httpRequest("${ORION_URL}/v2/entities/?id=" + JSONObject(s).getJSONArray("devices").getJSONObject(0) .getString("entity_name"), null, listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)))
     }
 
     @Synchronized override fun send(payload: String, topic: String) {
@@ -278,8 +226,6 @@ class ProtocolHTTP : IProtocol {
                 }
             }
         }
-        // httpRequest("${ORION_URL}/v2/entities?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
-        // httpRequest("${ORION_URL}/v2/entities/" + JSONObject(s).getString("id"))
     }
 
     @Synchronized
@@ -299,8 +245,6 @@ class ProtocolHTTP : IProtocol {
             data = payloadJSON.toString(),
             onResponse = { /* connection.disconnect() */ }
         )
-        // httpRequest("$ORION_URL/v2/entities/$id/attrs?options=keyValues",payload.toString(),listOf(Pair("Content-Type", "application/json")),REQUEST_TYPE.PATCH )
-        // httpRequest("${ORION_URL}/v2/op/update?options=keyValues", s, listOf(Pair("Content-Type", "application/json")))
     }
 }
 
@@ -483,8 +427,8 @@ open class DeviceHTTP(
                 {
                     "description": "Notify the entity when it receives a command",
                     "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},
-                    "notification": { "http": { "url": "http://${IOTA_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
-                }""".trimIndent()) // .connection.disconnect()
+                    "notification": { "http": { "url": "http://${DEVICE_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
+                }""".trimIndent())
         }
     }
 
@@ -548,34 +492,6 @@ class DeviceMQTT(
                 "cmd":              ""
             }""".replace("\\s+".toRegex(), " ")
     }
-
-    // override fun getRegister(): String {
-    //     return """{
-    //             "devices":
-    //                 [{
-    //                     "device_id": "$id",
-    //                     "entity_name": "$id",
-    //                     "entity_type": "Thing",
-    //                     "transport": "MQTT",
-    //                     "commands": [
-    //                         {"name": "on", "type": "command"},
-    //                         {"name": "off", "type": "command"}
-    //                     ],
-    //                     "attributes": [
-    //                         {"object_id": "${if (getType() == EntityType.Camera) "img" else "temp"}", "name": "${if (getType() == EntityType.Camera) "image" else "temperature"}", "type": "String"},
-    //                         {"object_id": "stat",  "name": "status",       "type": "Boolean"},
-    //                         {"object_id": "timestamp",  "name": "timestamp",         "type": "Integer"},
-    //                         {"object_id": "lat",   "name": "latitude",     "type": "Float"},
-    //                         {"object_id": "lon",   "name": "longitude",    "type": "Float"},
-    //                         {"object_id": "where", "name": "location",     "type": "String"}
-    //                     ],
-    //                     "static_attributes": [
-    //                         {"name": "mission", "type": "String", "value": "$mission"},
-    //                         {"name": "domain", "type": "String", "value": "$domain"}
-    //                     ]
-    //                 }]
-    //             }""".replace("\\s+".toRegex(), " ")
-    // }
 
     override fun getStatus(): String {
         return """{
