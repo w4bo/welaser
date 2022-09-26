@@ -1,6 +1,8 @@
 **/datamodels/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
+**/mongodb/*
+!**/mongodb/.dummy
 createmission.txt
 createdomain.txt
 flow.xml.gz

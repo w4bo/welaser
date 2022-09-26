@@ -1,7 +1,7 @@
 # When deploying to a production environment, please refer to the Helm Repository
 # for FIWARE Components in order to scale up to a proper architecture:
-#
 # see: https://github.com/FIWARE/helm-charts/
+
 version: "3.9"
 services:
   # Orion is the context broker
@@ -28,10 +28,6 @@ services:
       interval: 5s
       timeout: 10s
 
-  # Iot Agent
-  # Useful sources:
-  # - https://hub.docker.com/r/fiware/iotagent-json/
-  # - https://fiware-iotagent-json.readthedocs.io/en/latest/installationguide/index.html#configuration
   iot-agent:
     restart: always
     build: ./devices
@@ -51,57 +47,6 @@ services:
       interval: 5s
       timeout: 10s
 
-    #  iot-agent:
-    #    image: fiware/iotagent-json:1.17.0-distroless
-    #    hostname: iot-agent
-    #    container_name: iot-agent
-    #    depends_on:
-    #      - mongo-db
-    #      - mosquitto
-    #      - orion
-    #    networks:
-    #      - default
-    #    expose:
-    #      - "${IOTA_NORTH_PORT}"
-    #    ports:
-    #      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}"
-    #      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
-    #    ulimits:
-    #      nofile:
-    #        soft: 65535
-    #        hard: 65535
-    #      core:
-    #        soft: 60000000
-    #        hard: 60000000
-    #      memlock:
-    #        soft: 60000000
-    #        hard: 60000000
-    #    environment:
-    #      - "IOTA_CB_HOST=${ORION_IP}"              # Name of the context broker to update context
-    #      - "IOTA_CB_PORT=${ORION_PORT_EXT}"        # Port the context broker listens on to update context
-    #      - "IOTA_NORTH_PORT=${IOTA_NORTH_PORT}"
-    #      - IOTA_REGISTRY_TYPE=mongo-db             # Whether to hold IoT device info in memory or in a database
-    #      - IOTA_LOG_LEVEL=DEBUG                    # The log level of the IoT Agent
-    #      - IOTA_TIMESTAMP=true                     # Supply timestamp information with each measurement
-    #      - IOTA_CB_NGSI_VERSION=v2                 # Use NGSIv2 when sending updates for active attributes
-    #      - IOTA_AUTOCAST=true                      # Ensure Ultralight number values are read as numbers not strings
-    #      - IOTA_MONGO_HOST=mongo-db                # The host name of MongoDB
-    #      - "IOTA_MONGO_PORT=${MONGO_DB_PERS_PORT_INT}" # The port mongoDB is listening on
-    #      - IOTA_MONGO_DB=iotagentjs                    # The name of the database used in mongoDB
-    #      - "IOTA_MQTT_HOST=${MOSQUITTO_IP}"        # The host name of the MQTT Broker
-    #      - "IOTA_MQTT_PORT=${MOSQUITTO_PORT_EXT}"  # The port the MQTT Broker is listening on to receive topics
-    #      - "IOTA_MQTT_USERNAME=${MOSQUITTO_USER}"  # MQTT username
-    #      - "IOTA_MQTT_PASSWORD=${MOSQUITTO_PWD}"   # MQTT password
-    #      - IOTA_MQTT_CLIENT_ID=iota
-    #      - IOTA_DEFAULT_RESOURCE=                  # Default is blank. I'm using MQTT so I don't need a resource
-    #      - "IOTA_PROVIDER_URL=http://${IOTA_IP}:${IOTA_NORTH_PORT}"
-    #      - NODE_OPTIONS=--max_old_space_size=60000
-    #      - ORION_IN_REQ_PAYLOAD_MAX_SIZE=10000000000
-    #      - IOTA_MULTI_CORE=True
-    #    healthcheck:
-    #      test: curl --fail -s 'http://localhost:4041/iot/about'
-    #      interval: 5s
-
   # Database (ORION)
   mongo-db:
     restart: always
@@ -115,14 +60,13 @@ services:
     networks:
       - default
     volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
-      - mongo-db:/data
+      - ./mongodb:/data/db
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
         mongo --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
       interval: 5s
       timeout: 10s
-
 
   # MQTT Broker
   mosquitto:
@@ -200,7 +144,6 @@ services:
       interval: 5s
       timeout: 10s
 
-
   kafkaproxy:
     restart: always
     hostname: kafkaproxy
@@ -256,9 +199,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
-
-volumes:
-  mongo-db: ~
 
 networks:
   default_net:
