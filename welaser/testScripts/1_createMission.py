@@ -1,12 +1,12 @@
-from kafka import KafkaProducer, KafkaConsumer, TopicPartition
-from dotenv import dotenv_values
-import requests
-import sys
 import random
 import time
 from json import dumps, loads
 from time import sleep
+
 import paho.mqtt.client as mqttClient
+import requests
+from dotenv import dotenv_values
+from kafka import KafkaProducer, KafkaConsumer
 
 conf = dotenv_values("../.env")
 producer = KafkaProducer(
@@ -65,12 +65,13 @@ print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
-assert(responseBody["latitude"] >= -90)
-assert(responseBody["longitude"] >= -180)
-assert(responseBody["status"])
-assert(int(responseBody["temperature"]) >= 0)
+assert (responseBody["latitude"] >= -90)
+assert (responseBody["longitude"] >= -180)
+assert (responseBody["status"])
+assert (int(responseBody["temperature"]) >= 0)
 
 received = False  # global variable for message reception
+
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -114,42 +115,9 @@ print("OK: Robot found")
 
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
 responseBody = loads(response.text)[0]
-assert (response.status_code == 200)
-assert (responseBody["status"] == "active")
-assert (responseBody["notification"]["timesSent"] > 0)
-assert (responseBody["notification"]["lastSuccessCode"] == 200)
+assert (response.status_code == 200, responseBody)
+assert (responseBody["status"] == "active", responseBody)
+assert (responseBody["notification"]["timesSent"] > 0, responseBody)
+assert (responseBody["notification"]["lastSuccessCode"] == 200, responseBody)
 print("OK: Subscription found")
 
-# test domain stream
-# domainStreamTopic = "data.{}.realtime".format(domain)
-# consumerDomainStream = KafkaConsumer(
-#     domainStreamTopic,
-#     bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-#     auto_offset_reset='latest',
-#     enable_auto_commit=True,
-#     group_id='fiware-demo-testing-domain-streaming',
-#     value_deserializer=lambda x: loads(x.decode('utf-8')))
-# domainStreamPartitions = []
-# for partition in consumerDomainStream.partitions_for_topic(domainStreamTopic):
-#     domainStreamPartitions.append(TopicPartition(domainStreamTopic, partition))
-# offsetsDomainStream = consumerDomainStream.end_offsets(domainStreamPartitions)
-# sleep(2)
-# offsetsDomainStream1 = consumerDomainStream.end_offsets(domainStreamPartitions)
-# assert (offsetsDomainStream != offsetsDomainStream1)
-# 
-# # test mission stream
-# missionStreamTopic = "data.{}.realtime.{}".format(domain, mission)
-# consumerMissionStream = KafkaConsumer(
-#     missionStreamTopic,
-#     bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-#     auto_offset_reset='latest',
-#     enable_auto_commit=True,
-#     group_id='fiware-demo-testing-mission-streaming',
-#     value_deserializer=lambda x: loads(x.decode('utf-8')))
-# missionStreamPartitions = []
-# for partition in consumerDomainStream.partitions_for_topic(missionStreamTopic):
-#     missionStreamPartitions.append(TopicPartition(missionStreamTopic, partition))
-# offsetsMissionStream = consumerMissionStream.end_offsets(missionStreamPartitions)
-# sleep(2)
-# offsetsMissionStream1 = consumerMissionStream.end_offsets(missionStreamPartitions)
-# assert (offsetsMissionStream != offsetsMissionStream1)
