@@ -14,6 +14,7 @@ from dotenv import load_dotenv, find_dotenv
 port = random.randint(12346, 13000)
 # load the environment variables
 load_dotenv(find_dotenv())
+content_type = {"Content-Type": "application/json"}
 
 # read the initial status from file
 with open("carob-1.json") as f:
@@ -23,7 +24,7 @@ with open("carob-1.json") as f:
 # register the entity
 r = requests.post(url="http://{}:{}/v2/entities?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT")),
                   data=json.dumps(status),
-                  headers={"Content-Type": "application/json"})
+                  headers=content_type)
 print(r.text)
 
 id = status["id"]
@@ -54,7 +55,7 @@ def run():
         # update the context broker
         r = requests.patch(url="http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
                            data=json.dumps(status),
-                           headers={"Content-Type": "application/json"})
+                           headers=content_type)
         assert (r.status_code == 204)
         i += 1
 
@@ -92,7 +93,7 @@ def server():
         print(re.sub('\\s+', ' ', s))
         r = requests.post(url="http://{}:{}/v2/subscriptions".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT")),
                            data=re.sub('\\s+', ' ', s),
-                           headers={"Content-Type": "application/json"})
+                           headers=content_type)
         assert (r.status_code == 201)
         print("Listening on port: " + str(port))
         server_address = ('0.0.0.0', port)
