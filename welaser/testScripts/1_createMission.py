@@ -114,10 +114,10 @@ assert (len(robots) > 0)
 print("OK: Robot found")
 
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
-responseBody = loads(response.text)[0]
-assert (response.status_code == 200, responseBody)
-assert (responseBody["status"] == "active", responseBody)
-assert (responseBody["notification"]["timesSent"] > 0, responseBody)
-assert (responseBody["notification"]["lastSuccessCode"] == 200, responseBody)
+responseBody = loads(response.text)[-1]
+assert (response.status_code == 200), str(responseBody)
+assert (responseBody["status"] == "active"), str(responseBody)
+assert (responseBody["notification"]["timesSent"] > 0), str(responseBody)
+assert (responseBody["notification"]["lastSuccessCode"] == 200), str(responseBody)
 print("OK: Subscription found")
 
