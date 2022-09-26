@@ -30,7 +30,9 @@ services:
 
   iot-agent:
     restart: always
-    build: ./devices
+    build:
+      context: ./devices
+      dockerfile: iota.Dockerfile
     hostname: iot-agent
     container_name: iot-agent
     depends_on:
@@ -46,6 +48,18 @@ services:
       test: curl --fail -s http://${IOTA_IP}:${IOTA_NORTH_PORT}
       interval: 5s
       timeout: 10s
+
+  mission-simulation:
+    build:
+      context: ./devices
+      dockerfile: devices.Dockerfile
+    hostname: mission-simulation
+    container_name: mission-simulation
+    depends_on:
+      - iot-agent
+      - orion
+    networks:
+      - default
 
   # Database (ORION)
   mongo-db:

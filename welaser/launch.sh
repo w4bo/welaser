@@ -47,7 +47,8 @@ curl -iX POST \
   "subject": { "entities": [{ "idPattern": ".*" }], "condition": { "attrs": [ "cmd" ] }},
   "notification": { "http": { "url": "http://'${IOTA_IP}':'${IOTA_NORTH_PORT}'/" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
 }'
-cd devices
-./gradlew --stacktrace --scan
-./gradlew runMission --stacktrace &>../logs/missionmanager-$(date +%s)-${DOMAIN_NAME}-${MISSION_NAME}-devices.txt &
+
+# cd devices
+# ./gradlew --stacktrace --scan
+# ./gradlew runMission --stacktrace &>../logs/missionmanager-$(date +%s)-${DOMAIN_NAME}-${MISSION_NAME}-devices.txt &
 #java -cp build/libs/devices-all.jar it.unibo.devices.Canaries &>../logs/devices-canaries-$(date +%s).txt &
