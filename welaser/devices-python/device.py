@@ -10,6 +10,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import requests
 from dotenv import load_dotenv, find_dotenv
 
+# Idea:
+# - The robot wakes up, it knows its IP address (from the .env file), and it chooses a random port on which it will
+# listen for commands (i.e., FIWARE notifications)
+# - The robot registers itself as a subscriber of FIWARE notifications (i.e., it tells the OCB the IP and the port on
+# which it is listening to
+# - While the robot is operating (i.e., the run() function), it also listens to commands
+
 # get a random port for the device
 port = random.randint(12346, 13000)
 # load the environment variables
