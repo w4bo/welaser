@@ -45,26 +45,27 @@ del status["cmd"]
 
 # The robot behavior
 def run():
-    # update the entity for a minute
-    i = 0
-    while i < 300:
-        # sleep
-        time.sleep(1)
-        # update the entity status
-        status["status"][2] = time.time()
-        # ... and image
-        with open("img01.png", "rb") as image_file:
-            # You cannot send messages containing "=" to the OCB,
-            # so you need to encode it using its html representation ("%3D")
-            # See the encoding here: https://www.w3schools.com/tags/ref_urlencode.asp
-            status["status"][1] = base64.b64encode(image_file.read()).decode('utf-8').replace("=", "%3D")
-
-        # update the context broker
-        r = requests.patch(url="http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
-                           data=json.dumps(status),
-                           headers=content_type)
-        assert (r.status_code == 204)
-        i += 1
+    path = '.'
+    for file in sorted(os.listdir(os.fsencode(path))):
+        filename = os.fsdecode(file)
+        if filename.endswith(".png") or filename.endswith(".jpg"):
+            # sleep
+            time.sleep(1)
+            # update the entity status
+            status["status"][2] = time.time()
+            # ... and image
+            with open(os.path.join(path, filename), "rb") as image_file:
+            # with open("img01.png", "rb") as image_file:
+                # You cannot send messages containing "=" to the OCB,
+                # so you need to encode it using its html representation ("%3D")
+                # See the encoding here: https://www.w3schools.com/tags/ref_urlencode.asp
+                # urlsafe_b64encode
+                status["status"][1] = base64.b64encode(image_file.read()).decode('utf-8').replace("=", "%3D")
+            # update the context broker
+            r = requests.patch(url="http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
+                               data=json.dumps(status),
+                               headers=content_type)
+            assert (r.status_code == 204)
 
 
 # The server listening to the commands
