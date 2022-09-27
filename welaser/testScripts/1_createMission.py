@@ -114,10 +114,14 @@ assert (len(robots) > 0)
 print("OK: Robot found")
 
 response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
-responseBody = loads(response.text)[-1]
-assert (response.status_code == 200), str(responseBody)
-assert (responseBody["status"] == "active"), str(responseBody)
-assert (responseBody["notification"]["timesSent"] > 0), str(responseBody)
-assert (responseBody["notification"]["lastSuccessCode"] == 200), str(responseBody)
+responses = loads(response.text)
+i = 0
+for responseBody in responses:
+    assert (response.status_code == 200), str(responseBody)
+    assert (responseBody["status"] == "active"), str(responseBody)
+    if "notification" in responseBody and "timeSent" in responseBody["notification"]:
+        assert (responseBody["notification"]["timesSent"] > 0), str(responseBody)
+        assert (responseBody["notification"]["lastSuccessCode"] == 200), str(responseBody)
+        i += 1
+assert i >= 0  # at least one notification should have the timeSent
 print("OK: Subscription found")
-
