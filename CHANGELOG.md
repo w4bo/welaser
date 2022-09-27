@@ -1,3 +1,10 @@
+## [1.1.22](https://github.com/w4bo/welaser/compare/1.1.21...1.1.22) (2022-09-27)
+
+
+### Bug Fixes
+
+* **welaser-datamodels:** update the datamodels ([#235](https://github.com/w4bo/welaser/issues/235)) ([9d4d49e](https://github.com/w4bo/welaser/commit/9d4d49e80b82e79879b486cfbccf61933fb21d7e))
+
 ## [1.1.21](https://github.com/w4bo/welaser/compare/1.1.20...1.1.21) (2022-09-27)
 
 
