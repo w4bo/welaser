@@ -14,8 +14,10 @@ sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 # Devices python
 rm devices-python/carob-1.json || true
 ln welaser-datamodels/AgriRobot/examples/carob-1.json devices-python/carob-1.json
-rm devices-python/img01.png || true
-ln devices/src/main/resources/img01.png devices-python/img01.png
+rm devices-python/*.png || true
+rm devices-python/*.jpg || true
+ln devices/src/main/resources/robotimages/*.jpg devices-python/
+ln devices/src/main/resources/robotimages/*.png devices-python/
 
 # Devices
 rm devices/src/main/resources/datamodels/*.json || true
