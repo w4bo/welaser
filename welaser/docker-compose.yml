@@ -56,8 +56,8 @@ services:
     hostname: mission-simulation
     container_name: mission-simulation
     depends_on:
-      - iot-agent
-      - orion
+      node:
+        condition: service_healthy
     networks:
       - default
 
