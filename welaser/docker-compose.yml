@@ -197,6 +197,8 @@ services:
       - default
     env_file:
       - .env
+    ports:
+      - "12346-13000:12346-13000"
     depends_on:
       node:
         condition: service_healthy

@@ -1,3 +1,23 @@
+## [1.1.22](https://github.com/w4bo/welaser/compare/1.1.21...1.1.22) (2022-09-27)
+
+
+### Bug Fixes
+
+* **welaser-datamodels:** update the datamodels ([#235](https://github.com/w4bo/welaser/issues/235)) ([9d4d49e](https://github.com/w4bo/welaser/commit/9d4d49e80b82e79879b486cfbccf61933fb21d7e))
+
+## [1.1.21](https://github.com/w4bo/welaser/compare/1.1.20...1.1.21) (2022-09-27)
+
+
+### Bug Fixes
+
+* **device-python:** update the robot to receive commands ([#230](https://github.com/w4bo/welaser/issues/230)) ([51e8b9e](https://github.com/w4bo/welaser/commit/51e8b9e3e6626143b10efdcb4924cfa52b673dae))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.1.1 ([55fbd40](https://github.com/w4bo/welaser/commit/55fbd406473c1aeb1592d097aa4cbb3cf93494c3))
+* **deps:** update dependency gradle to v7.5.1 ([e7559a8](https://github.com/w4bo/welaser/commit/e7559a833fc9ea2141302db5902902532eb31136))
+
 ## [1.1.20](https://github.com/w4bo/welaser/compare/1.1.19...1.1.20) (2022-09-25)
 
 
