@@ -83,6 +83,7 @@ task runCanaries(type: JavaExec) {
 }
 
 task runMission(type: JavaExec) {
+    dependsOn check
     description = "Run a mission"
     classpath = sourceSets.main.runtimeClasspath
     main = 'it.unibo.devices.MissionSimulator'
