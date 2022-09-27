@@ -81,10 +81,6 @@ class EntityTest {
             }
             println("Looking for ${d.id} at ${ORION_URL}/v2/entities?id=${d.id}")
             s = khttp.get("${ORION_URL}/v2/entities?id=${d.id}").text
-            // s = httpRequest(
-            //     "${ORION_URL}/v2/entities/?id=${d.id}",
-            //     // listOf(Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            // )
         }
         return s
     }
@@ -102,22 +98,6 @@ class EntityTest {
                     waitFor(d, STATUS.ON)
                 })
             })
-            // httpRequest(
-            //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-            //     """{"cmd": {"off" : {}}}""",
-            //     listOf(Pair("Content-Type", "application/json")),
-            //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            //     REQUEST_TYPE.PATCH
-            // )
-
-            // httpRequest(
-            //     "$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues",
-            //     """{"cmd": {"on" : {}}}""",
-            //     listOf(Pair("Content-Type", "application/json")),
-            //     // listOf(Pair("Content-Type", "application/json"), Pair("fiware-service", FIWARE_SERVICE), Pair("fiware-servicepath", FIWARE_SERVICEPATH)),
-            //     REQUEST_TYPE.PATCH
-            // )
-
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
