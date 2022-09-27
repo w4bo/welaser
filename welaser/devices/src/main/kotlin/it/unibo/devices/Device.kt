@@ -304,7 +304,6 @@ abstract class Device(
      * Execute a command
      */
     override fun exec(commandName: String, payload: String) {
-        // println("$commandName $payload")
         status = if (commandName == "on") STATUS.ON else STATUS.OFF
     }
 
