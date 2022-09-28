@@ -1,3 +1,10 @@
+## [1.1.26](https://github.com/w4bo/welaser/compare/1.1.25...1.1.26) (2022-09-28)
+
+
+### Bug Fixes
+
+* **mongodb:** add script to dump the database ([#240](https://github.com/w4bo/welaser/issues/240)) ([250fb3d](https://github.com/w4bo/welaser/commit/250fb3d86fb112fbc18eb35e3e149a1ecf07fa4a))
+
 ## [1.1.25](https://github.com/w4bo/welaser/compare/1.1.24...1.1.25) (2022-09-28)
 
 
