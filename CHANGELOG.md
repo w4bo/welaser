@@ -1,3 +1,10 @@
+## [1.1.27](https://github.com/w4bo/welaser/compare/1.1.26...1.1.27) (2022-09-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.3 ([446bedf](https://github.com/w4bo/welaser/commit/446bedf99b6e6b151ff25f26387046eb711574cf))
+
 ## [1.1.26](https://github.com/w4bo/welaser/compare/1.1.25...1.1.26) (2022-09-28)
 
 
