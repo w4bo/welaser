@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -o xtrace
+set -exo
 
 if [ -f .env ]; then
   export $(echo $(cat .env | sed 's/#.*//g' | xargs) | envsubst)
