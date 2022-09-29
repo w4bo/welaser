@@ -1,3 +1,10 @@
+## [1.1.29](https://github.com/w4bo/welaser/compare/1.1.28...1.1.29) (2022-09-29)
+
+
+### Bug Fixes
+
+* **mongo-db:** import the dumped database ([#242](https://github.com/w4bo/welaser/issues/242)) ([8f77b97](https://github.com/w4bo/welaser/commit/8f77b97c948450f82d049216533db0b7b2a610ba))
+
 ## [1.1.28](https://github.com/w4bo/welaser/compare/1.1.27...1.1.28) (2022-09-29)
 
 
