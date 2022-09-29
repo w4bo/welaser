@@ -1,3 +1,31 @@
+## [1.1.28](https://github.com/w4bo/welaser/compare/1.1.27...1.1.28) (2022-09-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.3.0 ([ef81b8e](https://github.com/w4bo/welaser/commit/ef81b8e9a1cb15ca7b56889b2526a4b96a17e6da))
+
+## [1.1.27](https://github.com/w4bo/welaser/compare/1.1.26...1.1.27) (2022-09-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.3 ([446bedf](https://github.com/w4bo/welaser/commit/446bedf99b6e6b151ff25f26387046eb711574cf))
+
+## [1.1.26](https://github.com/w4bo/welaser/compare/1.1.25...1.1.26) (2022-09-28)
+
+
+### Bug Fixes
+
+* **mongodb:** add script to dump the database ([#240](https://github.com/w4bo/welaser/issues/240)) ([250fb3d](https://github.com/w4bo/welaser/commit/250fb3d86fb112fbc18eb35e3e149a1ecf07fa4a))
+
+## [1.1.25](https://github.com/w4bo/welaser/compare/1.1.24...1.1.25) (2022-09-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.3 ([b49a6a7](https://github.com/w4bo/welaser/commit/b49a6a73ac6dda7de13e526c560870275f6eb0ec))
+
 ## [1.1.24](https://github.com/w4bo/welaser/compare/1.1.23...1.1.24) (2022-09-27)
 
 
