@@ -1,3 +1,15 @@
+## [1.1.30](https://github.com/w4bo/welaser/compare/1.1.29...1.1.30) (2022-09-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.1.2 ([640f626](https://github.com/w4bo/welaser/commit/640f626bd33428a1a8d05a06908f87098ba5070e))
+
+
+### Dependency updates
+
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.20 ([8c5ae3b](https://github.com/w4bo/welaser/commit/8c5ae3b326f502ff0e924fb636e217fac5ef0248))
+
 ## [1.1.29](https://github.com/w4bo/welaser/compare/1.1.28...1.1.29) (2022-09-29)
 
 
