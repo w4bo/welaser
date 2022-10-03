@@ -1,3 +1,10 @@
+## [1.1.33](https://github.com/w4bo/welaser/compare/1.1.32...1.1.33) (2022-10-03)
+
+
+### Bug Fixes
+
+* **container:** update the java image ([#251](https://github.com/w4bo/welaser/issues/251)) ([15a8099](https://github.com/w4bo/welaser/commit/15a8099d6c7ea56d117c7aadeddd367a19d27c3e))
+
 ## [1.1.32](https://github.com/w4bo/welaser/compare/1.1.31...1.1.32) (2022-10-03)
 
 
