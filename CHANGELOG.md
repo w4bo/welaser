@@ -1,3 +1,10 @@
+## [1.1.32](https://github.com/w4bo/welaser/compare/1.1.31...1.1.32) (2022-10-03)
+
+
+### Bug Fixes
+
+* **container:** containers can receive signals from the host ([#250](https://github.com/w4bo/welaser/issues/250)) ([a530af3](https://github.com/w4bo/welaser/commit/a530af31764e167d80c847fa2e6d1d61103edabe))
+
 ## [1.1.31](https://github.com/w4bo/welaser/compare/1.1.30...1.1.31) (2022-09-30)
 
 
