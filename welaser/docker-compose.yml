@@ -6,6 +6,7 @@ version: "3.9"
 services:
   # Orion is the context broker
   orion:
+    init: true
     restart: always
     image: fiware/orion:3.7.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
@@ -29,6 +30,7 @@ services:
       timeout: 10s
 
   iot-agent:
+    init: true
     restart: always
     build: ./devices
     hostname: iot-agent
@@ -49,6 +51,7 @@ services:
 
   # Database (ORION)
   mongo-db:
+    init: true
     restart: always
     image: mongo:6.0
     hostname: mongo-db
@@ -70,6 +73,7 @@ services:
 
   # MQTT Broker
   mosquitto:
+    init: true
     image: eclipse-mosquitto:2.0.11
     hostname: mosquitto
     container_name: mosquitto
@@ -87,6 +91,7 @@ services:
 
   # Web server
   node:
+    init: true
     restart: always
     hostname: node
     container_name: node
@@ -108,6 +113,7 @@ services:
       timeout: 10s
 
   etl:
+    init: true
     restart: always
     hostname: etl
     build: ./etl
@@ -127,6 +133,7 @@ services:
       timeout: 10s
 
   missionplanner:
+    init: true
     hostname: missionplanner
     build: ./service-missionplanner
     container_name: missionplanner
@@ -145,6 +152,7 @@ services:
       timeout: 10s
 
   kafkaproxy:
+    init: true
     restart: always
     hostname: kafkaproxy
     container_name: kafkaproxy
@@ -162,6 +170,7 @@ services:
         condition: service_healthy
 
   writetomongo:
+    init: true
     hostname: writetomongo
     build: ./service-writetomongo
     container_name: writetomongo
@@ -176,6 +185,7 @@ services:
         condition: service_healthy
 
   device-python:
+    init: true
     hostname: device-python
     build: ./devices-python
     container_name: device-python
@@ -190,6 +200,7 @@ services:
         condition: service_healthy
 
   missionmanager:
+    init: true
     hostname: missionmanager
     build: service-manager
     container_name: missionmanager
