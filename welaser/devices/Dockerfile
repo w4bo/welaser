@@ -1,5 +1,6 @@
-FROM gradle:7.5.1-jdk11
+# FROM gradle:7.5.1-jdk11
+FROM openjdk:11
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 # CMD ["./gradlew", "runIotAgent", "--stacktrace"]
-CMD ["gradle", "runIotAgent", "--stacktrace", "--scan"]
+CMD ["./gradlew", "runIotAgent", "--stacktrace", "--scan"]
