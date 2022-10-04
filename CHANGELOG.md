@@ -1,3 +1,21 @@
+## [1.1.35](https://github.com/w4bo/welaser/compare/1.1.34...1.1.35) (2022-10-04)
+
+
+### Bug Fixes
+
+* **dataflow:** too many messages were generated ([03a5ab9](https://github.com/w4bo/welaser/commit/03a5ab989057213f14673b5338566bc2c9ae2a4c))
+
+
+### Dependency updates
+
+* **deps:** update openjdk docker tag to v12 ([798a5f2](https://github.com/w4bo/welaser/commit/798a5f2aa6c7c3ecdedb9374f286321d0bfa7e4c))
+* **deps:** update openjdk docker tag to v13 ([abc18d9](https://github.com/w4bo/welaser/commit/abc18d91e91e9e9d3e0a7347f25ed2202022ff5e))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.1.0 ([1805694](https://github.com/w4bo/welaser/commit/18056946af538d2c3a320538cb8171edf9f92679))
+
 ## [1.1.34](https://github.com/w4bo/welaser/compare/1.1.33...1.1.34) (2022-10-03)
 
 
