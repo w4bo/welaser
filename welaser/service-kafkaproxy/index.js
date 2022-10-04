@@ -6,52 +6,44 @@ const env = require('dotenv')
 const io = require('socket.io')(server);
 const {Kafka, logLevel} = require("kafkajs")
 const uuid = require('uuid');
-const routes = require('./src/routes/routes')
 app.use(cors({origin: '*'}))
 app.use(express.json())
-routes(app)
 env.config() // load the environment variables
-// set some global variables
-const kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]
-// global.kafkaBrokers = kafkaBrokers
-// global.io = io
-// set the kafka producer
-const kafka = new Kafka({
+const kafka = new Kafka({ // create the Kafka client
     clientId: "kafka-proxy." + uuid.v4(),
-    brokers: kafkaBrokers,
+    brokers: [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT],
     logLevel: logLevel.ERROR
 })
-
-const producerKafka = kafka.producer()
-producerKafka.connect()
-// global.producerKafka = producerKafka
-
-io.on("connection", function (socket) {
-    let consumer = undefined
+const producer = kafka.producer({allowAutoTopicCreation: true}) // create a Kafka producer
+producer.connect() // ... and connect it
+io.on("connection", function (socket) { // when a new socket.io connects...
+    let consumer = undefined // set up a dummy Kafka consumer
     socket.on("publish", function (data) { // when the socket receives a message with topic "publish"
-        producerKafka.send({topic: data.topic, messages: [{value: JSON.stringify(data.data)}]}) // send it to kafka
+        producer.send({topic: data.topic, messages: [{value: JSON.stringify(data.data)}]}) // send it to kafka through the producer
+        console.log("Sending: " + data.topic + " " + JSON.stringify(data.data))
     })
-    socket.on("newtopic", function (topic) { // when the socket receives a message with topic "newtopic"
-        if (typeof consumer !== "undefined") { // when changing the topic, remove the previous Kafka client (if any)
+    socket.on("newtopic", function (topic) { // when the socket receives a message with topic "newtopic" (i.e., when changing the topic)
+        if (typeof consumer !== "undefined") { // ... remove the previous Kafka client (if any)
             console.log('Kafka client disconnected');
             consumer.disconnect() // disconnect the kafka consumer
         }
         console.log("Received a new topic: " + topic)
-        const groupId = topic + ".group." + uuid.v4()
+        const groupId = topic + ".group." + uuid.v4() // create a unique groupId for the consumer
         console.log("Registering a new Kafka consumer with group: " + groupId)
-        consumer = kafka.consumer({groupId})
+        consumer = kafka.consumer({groupId}) // ... and register it
         const consume = async (topic) => {
             await consumer.connect() // connect a Kafka client
             const p = {topic}
             p.fromBeginning = false
             await consumer.subscribe(p) // subscribe to the topic
-            const admin = kafka.admin()
+            const admin = kafka.admin() // need to be admin to reset the offset
             await admin.connect()
             await admin.resetOffsets({ groupId, topic }) // rest the offset to "latest"
             await admin.disconnect()
-            // await
+            console.log("Listening to: " + topic)
             consumer.run({
                 eachMessage: ({message}) => { // forward the message to the socket
+                    console.log("Received: " + JSON.stringify(message))
                     socket.emit(topic, message.value.toString())
                 }
             })
