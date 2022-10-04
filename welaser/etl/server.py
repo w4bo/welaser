@@ -1,44 +1,54 @@
 import json
 import os
+import requests
 import time
 from datetime import datetime
+from dotenv import load_dotenv
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-
 from kafka import KafkaProducer
+
+path = "../.env"
+if os.path.isfile(path):
+    load_dotenv('../.env')
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = int(os.getenv("KAFKA_PORT_EXT"))
 DRACO_PORT = int(os.getenv("DRACO_PORT_EXT"))
 DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
-
-producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)],
-                         value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+ORION_PORT_EXT = int(os.getenv("ORION_PORT_EXT"))
+ORION_IP = os.getenv("ORION_IP")
+ORION_URL = "http://" + ORION_IP + ":" + str(ORION_PORT_EXT) + "/v2"
+producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
 
 class S(BaseHTTPRequestHandler):
-    def log_request(self, code='-', size='-'):
-        return
 
-    def _set_response(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(bytes("", "utf-8"))
+    def do_register_subscription(self, data):
+        r = requests.get(url=ORION_URL + "/subscriptions?limit=1000")
+        subscriptions = json.loads(r.text)
+        new_description = data["description"]
+        new_url = data["notification"]["http"]["url"]
+        for subscription in subscriptions:
+            old_id = subscription["id"]
+            old_description = subscription["description"] if "description" in subscription else ""
+            old_url = subscription["notification"]["http"]["url"]
+            # if ((new_description == "ETL" or new_description == "IoTAgent") and new_description == old_description)
+            if new_description == old_description or new_url == old_url:  # the subscription already existed
+                x = requests.delete(url=ORION_URL + "/subscriptions/" + old_id)  # delete it
+                print("Replacing subscription:")
+                print("--- Old: " + str(subscription))
+                print("--- New: " + str(data))
+                assert x.status_code == 204
+        x = requests.post(url=ORION_URL + "/subscriptions", data=json.dumps(data), headers={'Content-type': 'application/json'})
+        assert x.status_code == 201
 
-    def do_GET(self):
-        self._set_response()
-
-    def do_POST(self):
-        self._set_response()
-        content_length = int(self.headers['Content-Length'])  # Get the size of data
-        post_data = self.rfile.read(content_length)  # Get the data itself
-        subscription = json.loads(post_data.decode('utf-8'))  # get the subscription
+    def do_etl(self, data):
         now = datetime.now()
-        if "heartbeat" in subscription:
+        if "heartbeat" in data:
             print("Alive at " + now.strftime("%m/%d/%Y, %H:%M:%S"))
             return
         # print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
-        data = subscription["data"]  # get the data from the subscription
+        data = data["data"]  # get the data from the subscription
         for d in data:  # data can be more than one item, do some preprocessing
             def get(k, domain):
                 if k in d:
@@ -61,8 +71,33 @@ class S(BaseHTTPRequestHandler):
             d["mission"] = mission
             d["timestamp_subscription"] = time.time()
             producer.send('data.' + domain + ".realtime", value=d)
-            producer.send('data.' + domain + ".realtime." + mission, value=d)
+            # producer.send('data.' + domain + ".realtime." + mission, value=d)
             producer.send(DRACO_RAW_TOPIC, value=d)
+
+
+    def log_request(self, code='-', size='-'):
+        return
+
+    def _set_response(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        self.wfile.write(bytes("", "utf-8"))
+
+    def do_GET(self):
+        self._set_response()
+
+    def do_POST(self):
+        self._set_response()
+        content_length = int(self.headers['Content-Length'])  # Get the size of data
+        post_data = self.rfile.read(content_length)  # Get the data itself
+        post_data = json.loads(post_data.decode('utf-8'))  # get the subscription
+
+        if self.path == '/v2/subscriptions':
+            self.do_register_subscription(post_data)
+        else:
+            self.do_etl(post_data)
+
         # print("Done at " + datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 
 

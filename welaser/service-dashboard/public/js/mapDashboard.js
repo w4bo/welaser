@@ -6,10 +6,10 @@ const mapDashboard = {
           <!--     <v-switch v-model="satelliteVisibility" label='Show Satellite' v-on:click="toggleSatellite"></v-switch>-->
           <!--   </div>-->
           <!-- </v-row>-->
-          <!-- <v-row align="center" justify="center">-->
-          <!--     <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>-->
-          <!--     <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>-->
-          <!-- </v-row>-->
+          <v-row align="center" justify="center">
+              <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
+              <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
+          </v-row>
           <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 100%; height: 400px"></div></v-col></v-row>
           <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
           <v-row align="center" justify="center">
@@ -45,7 +45,6 @@ const mapDashboard = {
             devices: {},
             collisions: {},
             remoteSocket: null,
-            localSocket: null,
             topicName: "",
             socketName: "",
             deviceLocationMap: {},
@@ -58,7 +57,7 @@ const mapDashboard = {
             map: "",
             satelliteVisibility: true,
             hideDetails: true,
-            topics: [],
+            topics: ["data.canary.realtime"],
             selectedTopic: "data.canary.realtime",
             colors: ["#5778a4", "#e49444", "#d1615d", "#85b6b2", "#6a9f58", "#e7ca60", "#a87c9f", "#f1a2a9", "#967662", "#b8b0ac"]
         }
@@ -164,18 +163,22 @@ const mapDashboard = {
             this.collisionLocationMap = {}
             this.updateDevicePoints()
             this.updateCollisionPoints()
-            axios
-                .get(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`)
-                .then(response => {
-                    this.remoteSocket.removeAllListeners(this.socketName)
-                    this.socketName = response.data.socket
-                    this.remoteSocket.on(this.socketName, data => {
-                        this.handleRemoteSocketData(JSON.parse(data))
-                    })
-                }).catch(err => {
-                    console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
-                    console.log(err)
-                });
+            // axios
+            //     .get(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`)
+            //     .then(response => {
+            //         this.remoteSocket.removeAllListeners(this.socketName)
+            //         this.socketName = response.data.socket
+            //         this.remoteSocket.on(this.socketName, data => {
+            //             this.handleRemoteSocketData(JSON.parse(data))
+            //         })
+            //     }).catch(err => {
+            //         console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
+            //         console.log(err)
+            //     });
+            this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
+            this.socketName = this.selectedTopic // update the topic name
+            this.remoteSocket.emit("newtopic", this.selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
+            this.remoteSocket.on(this.socketName, data => { console.log("Message"); this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
         },
         handleRemoteSocketData(data) {
             switch (data.type) {
@@ -236,7 +239,7 @@ const mapDashboard = {
         loadMap() {
             this.deviceLayer = new ol.layer.Vector({
                 features: this.devicePoints,
-                style: function (feature, resolution) {
+                style: function (feature, resolultion) {
                     return new ol.style.Style({
                         image: new ol.style.Circle({
                             radius: 5,
@@ -280,9 +283,7 @@ const mapDashboard = {
                 }),
                 layers: [
                     // Basemap
-                    new ol.layer.Tile({
-                        source: new ol.source.OSM()
-                    }),
+                    new ol.layer.Tile({ source: new ol.source.OSM() }),
                     // satellite layer
                     this.worldImagery,
                     this.deviceLayer,
@@ -290,32 +291,30 @@ const mapDashboard = {
                 ]
             })
         },
-
         toggleSatellite() {
             this.worldImagery.setVisible(this.satelliteVisibility)
             this.worldImagery.changed()
         },
-        loadTopics() {
-            axios
-                .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`)
-                .then(response => {
-                    this.topics = response.data.map(e => {
-                        return {id: `${e.kind}: ${e.id}`, topic: `${e.topic}`}
-                    })
-                    this.topics.push({'id': 'collision', 'topic': 'data.collision'})
-                    this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
-                })
-                .catch(err => {
-                    console.log(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`);
-                    console.log(err)
-                });
-        },
+        // loadTopics() {
+        //     axios
+        //         .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`)
+        //         .then(response => {
+        //             this.topics = response.data.map(e => {
+        //                 return {id: `${e.kind}: ${e.id}`, topic: `${e.topic}`}
+        //             })
+        //             this.topics.push({'id': 'collision', 'topic': 'data.collision'})
+        //             this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
+        //         })
+        //         .catch(err => {
+        //             console.log(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`);
+        //             console.log(err)
+        //         });
+        // },
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
-            this.localSocket = io.connect(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}`)
+            console.log("Connect to socket.io")
             this.loadMap()
-            this.loadTopics()
-            this.localSocket.on("updateTopic", data => this.loadTopics())
+            // this.loadTopics()
             this.listenTopic()
         }
     },

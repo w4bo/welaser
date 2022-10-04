@@ -94,12 +94,12 @@ def server():
 
     def run(server_class=ThreadingHTTPServer, handler_class=S, port=port):
         # register the device to receive notifications/commands from the OCB
-        s = """{ "description": "Notify the entity when it receives a command",
+        s = """{ "description": "Notify """ + '"' + id + """" for commands",
                  "subject": { "entities": [{ "id" : """ + '"' + id + """" }], "condition": { "attrs": [ "cmd" ] }},
                  "notification": { "http": { "url": "http://""" + os.environ.get("DEVICE_IP") + """:""" + str(port) + """" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
                 }"""
         print(re.sub('\\s+', ' ', s))
-        r = requests.post(url="http://{}:{}/v2/subscriptions".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT")),
+        r = requests.post(url="http://{}:{}/v2/subscriptions".format(os.environ.get("DRACO_IP"), os.environ.get("DRACO_PORT_EXT")),
                            data=re.sub('\\s+', ' ', s),
                            headers=content_type)
         assert (r.status_code == 201)
