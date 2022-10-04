@@ -15,7 +15,7 @@ MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 
 consumer = KafkaConsumer(
     DRACO_RAW_TOPIC,
-    group_id=str(uuid.uuid1()),
+    group_id="writetomongo." + str(uuid.uuid1()),
     bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )

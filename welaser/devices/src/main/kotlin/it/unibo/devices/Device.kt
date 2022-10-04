@@ -1,4 +1,5 @@
 package it.unibo.devices
+
 import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.network.sockets.*
 import io.ktor.server.application.*
@@ -17,8 +18,11 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json.JSONObject
 import java.net.ServerSocket
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
+
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
@@ -333,6 +337,12 @@ abstract class Device(
         }
     }
 
+    fun curDate(): String {
+        val date = Calendar.getInstance().time
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
+        return dateFormat.format(date)
+    }
+
     /**
      * Control loop
      */
@@ -343,7 +353,7 @@ abstract class Device(
         // println("$id - listening to $listenTopic")
         var i = 0
         while (i++ < times) {
-            // println("$id - iterating")
+            // println("${curDate()} $id - iterating")
             Thread.sleep(timeoutMs.toLong())
             val payload = getStatus()
             // println("$id - $payload")
@@ -422,9 +432,9 @@ open class DeviceHTTP(
                     }
                 }
             }.start(wait = false)
-            khttp.post("http://${ORION_IP}:${ORION_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """
+            khttp.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """
                 {
-                    "description": "Notify the entity when it receives a command",
+                    "description": "Notify $id for commands",
                     "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},
                     "notification": { "http": { "url": "http://${DEVICE_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
                 }""".trimIndent())
