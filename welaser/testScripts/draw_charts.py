@@ -3,11 +3,12 @@
 
 import json
 import math
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pymongo
-import sys
 from dotenv import dotenv_values
 
 conf = dotenv_values("../.env")
@@ -55,9 +56,9 @@ for collection in collections:
     for timestamp in ["$timestamp.value", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota.value"]:
         print(" - " + timestamp)
         if timestamp in ["$timestamp.value", "$timestamp_iota.value"]:  # these timestamps are in ms
-            data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 1000 * 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
+            data = pd.DataFrame(list(database[collection].aggregate([{"$group": {"_id": {"$multiply": [{"$round": [{"$divide": [timestamp, 1000 * 10]}, 0]}, 1000 * 10]}, "count": {"$sum": 1}}}])))
         else:  # these timestamps are in s, I need to round them in second and to transform them in ms
-            data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
+            data = pd.DataFrame(list(database[collection].aggregate([{"$group": {"_id": {"$multiply": [{"$round": [{"$divide": [timestamp, 10]}, 0]}, 1000 * 10]}, "count": {"$sum": 1}}}])))
         # drop the null values
         data = data.dropna()
         # get the parameters from the collection's name
