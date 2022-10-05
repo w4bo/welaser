@@ -6,10 +6,8 @@ const env = require('dotenv')
 const io = require('socket.io')(server);
 const {Kafka, logLevel} = require("kafkajs")
 const uuid = require('uuid');
-const routes = require('./src/routes/routes')
 app.use(cors({origin: '*'}))
 app.use(express.json())
-routes(app)
 env.config() // load the environment variables
 // set some global variables
 const kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]

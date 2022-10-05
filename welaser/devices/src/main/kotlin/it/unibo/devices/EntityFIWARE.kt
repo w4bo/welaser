@@ -6,6 +6,7 @@ import org.json.JSONObject
 
 object EntityFactory {
     fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
+        println(fileName)
         val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
         val initStatus = JSONObject(lines)
         return when (initStatus.getString("type")) {

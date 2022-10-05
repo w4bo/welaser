@@ -10,7 +10,7 @@ const mapDashboard = {
               <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
               <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
           </v-row>
-          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="width: 100%; height: 400px"></div></v-col></v-row>
+          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px"></div></v-col></v-row>
           <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
           <v-row align="center" justify="center">
               <template v-for="device in Object.values(devices)">
@@ -40,6 +40,9 @@ const mapDashboard = {
         return {
             ORION_URL: `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`,
             headers: {'Content-Type': 'application/json'},
+            layerBoundary: null,
+            layerStream: null,
+
             devices: {},
             collisions: {},
             remoteSocket: null,
@@ -55,46 +58,9 @@ const mapDashboard = {
             map: "",
             satelliteVisibility: true,
             hideDetails: true,
-            administrativeBoundaries: [{
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "type": "Feature",
-                        "properties": {},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [
-                                    [
-                                        -3.681771755218506,
-                                        40.41983472557369
-                                    ],
-                                    [
-                                        -3.68715763092041,
-                                        40.41816843049694
-                                    ],
-                                    [
-                                        -3.685762882232666,
-                                        40.41119241388577
-                                    ],
-                                    [
-                                        -3.67891788482666,
-                                        40.41316929764821
-                                    ],
-                                    [
-                                        -3.681771755218506,
-                                        40.41983472557369
-                                    ]
-                                ]
-                            ]
-                        }
-                    }
-                ]
-            }],
             topics: ["data.canary.realtime"],
             selectedTopic: "data.canary.realtime",
             colors: d3.schemeTableau10
-            // colors: ["#5778a4", "#e49444", "#d1615d", "#85b6b2", "#6a9f58", "#e7ca60", "#a87c9f", "#f1a2a9", "#967662", "#b8b0ac"]
         }
     },
     methods: {
@@ -197,33 +163,33 @@ const mapDashboard = {
             }
         },
         handleDeviceData(data) {
-            data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
-            if (!Object.keys(this.devices).includes(data.id)) { // if the device is unkown
-                this.$set(this.devices, data.id, {
-                    'id': data.id,
-                    'data': data,
-                    'color': this.getRandomColor(data.type)
-                })
-            }
-            const device = this.devices[data.id]
-            device.data = data
-            this.updateDevicePoints()
+            // data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
+            // if (!Object.keys(this.devices).includes(data.id)) { // if the device is unkown
+            //     this.$set(this.devices, data.id, {
+            //         'id': data.id,
+            //         'data': data,
+            //         'color': this.getRandomColor(data.type)
+            //     })
+            // }
+            // const device = this.devices[data.id]
+            // device.data = data
+            // this.updateDevicePoints()
         },
         handleCollisionData(data) {
-            this.$set(this.collisions, data.id, data)
-            this.collisionLocationMap[data.id] = [data.Device1_longitude.value, data.Device1_latitude.value]
-            this.updateCollisionPoints()
+            // this.$set(this.collisions, data.id, data)
+            // this.collisionLocationMap[data.id] = [data.Device1_longitude.value, data.Device1_latitude.value]
+            // this.updateCollisionPoints()
         },
         updateDevicePoints() {
-            this.devicePoints = []
-            let i = 0
-            for (const [key, value] of Object.entries(this.deviceLocationMap)) {
-                this.devicePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
-                this.devicePoints[i].set('color', value[2])
-                i++
-            }
-            this.deviceLayer.setSource(new ol.source.Vector({features: this.devicePoints}))
-            this.deviceLayer.changed()
+            // this.devicePoints = []
+            // let i = 0
+            // for (const [key, value] of Object.entries(this.deviceLocationMap)) {
+            //     this.devicePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
+            //     this.devicePoints[i].set('color', value[2])
+            //     i++
+            // }
+            // this.deviceLayer.setSource(new ol.source.Vector({features: this.devicePoints}))
+            // this.deviceLayer.changed()
         },
         updateCollisionPoints() {
             // this.collisionPoints = []
@@ -236,33 +202,47 @@ const mapDashboard = {
             // this.collisionLayer.changed()
         },
         loadMap() {
-            this.administrativeBoundariesLayer = new ol.layer.Vector({ features: (new ol.format.GeoJSON()).readFeatures(this.administrativeBoundaries) })
-            this.deviceLayer = new ol.layer.Vector({
-                features: this.devicePoints,
-                style: function (feature, resolultion) {
-                    return new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: 5,
-                            stroke: new ol.style.Stroke({ color: '#fff' }),
-                            fill: new ol.style.Fill({ color: feature.get("color") })
-                        })
-                    })
-                }
-            })
-            this.worldImagery = new ol.layer.Tile({ // Satellite layer
-                source: new ol.source.XYZ({ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', maxZoom: 23 }),
-                visible: this.satelliteVisibility
-            })
-            this.map = new ol.Map({
-                target: 'map',
-                view: new ol.View({ center: ol.proj.fromLonLat([-3.482, 40.31255]), zoom: 18 }),
-                layers: [
-                    new ol.layer.Tile({ source: new ol.source.OSM() }), // Basemap
-                    this.worldImagery, // Satellite layer
-                    this.deviceLayer,
-                    this.administrativeBoundariesLayer
-                ]
-            })
+            // this.administrativeBoundariesLayer = new ol.layer.Vector({ features: (new ol.format.GeoJSON()).readFeatures(this.administrativeBoundaries) })
+            // this.deviceLayer = new ol.layer.Vector({
+            //     features: this.devicePoints,
+            //     style: function (feature, resolultion) {
+            //         return new ol.style.Style({
+            //             image: new ol.style.Circle({
+            //                 radius: 5,
+            //                 stroke: new ol.style.Stroke({ color: '#fff' }),
+            //                 fill: new ol.style.Fill({ color: feature.get("color") })
+            //             })
+            //         })
+            //     }
+            // })
+            // this.worldImagery = new ol.layer.Tile({ // Satellite layer
+            //     source: new ol.source.XYZ({ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', maxZoom: 23 }),
+            //     visible: this.satelliteVisibility
+            // })
+            // this.map = new ol.Map({
+            //     target: 'map',
+            //     view: new ol.View({ center: ol.proj.fromLonLat([-3.482, 40.31255]), zoom: 18 }),
+            //     layers: [
+            //         new ol.layer.Tile({ source: new ol.source.OSM() }), // Basemap
+            //         this.worldImagery, // Satellite layer
+            //         this.deviceLayer,
+            //         this.administrativeBoundariesLayer
+            //     ]
+            // })
+            this.layerBoundary = L.layerGroup([]);
+            const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+            const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+            this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary]})
+            const map = this.map
+            const baseMaps = {
+                "Satellite": satellite,
+                "OpenStreetMap": osm,
+            };
+            const overlayMaps = {
+                "Boundaries": this.layerBoundary
+            };
+            const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+            //
         },
         toggleSatellite() {
             this.worldImagery.setVisible(this.satelliteVisibility)
@@ -271,7 +251,9 @@ const mapDashboard = {
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
             const ORION_URL = this.ORION_URL
-            const administrativeBoundaries = this.administrativeBoundaries
+            this.loadMap()
+            const layerBoundary = this.layerBoundary
+            const map = this.map
             axios // get the agrifarms
                 .get(ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
                 .then(agrifarms => {
@@ -281,15 +263,37 @@ const mapDashboard = {
                             agrifarm[attr].forEach(function (id, index) {
                                 axios
                                     .get(ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
-                                    .then(loc => { administrativeBoundaries.push(loc.data.location) })
+                                    .then(loc => {
+                                        let color = "#ff7800"
+                                        const type = loc.data.type
+                                        if (type === "AgriParcel") {
+                                            color = d3.schemeCategory10[2]
+                                        } else if (type === "RestrictedTrafficArea") {
+                                            color = d3.schemeCategory10[3]
+                                        } else if (type === "RoadSegment") {
+                                            color = d3.schemeCategory10[0]
+                                        } else if (type === "Building") {
+                                            color = d3.schemeCategory10[0]
+                                        }
+                                        const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
+                                        const geojson =
+                                            {
+                                                "type": "Feature",
+                                                "properties": {},
+                                                "geometry": {
+                                                    "type": loc.data.location.type,
+                                                    "coordinates": loc.data.location.coordinates
+                                                }
+                                            }
+                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(layerBoundary);
+                                    })
                             })
                         })
                     })
                     // this.administrativeBoundariesLayer.setSource(new ol.source.Vector({features: administrativeBoundaries}))
                     // this.administrativeBoundariesLayer.changed()
-                    console.log(administrativeBoundaries)
                 })
-            this.loadMap()
+
             this.listenTopic()
         }
     },
