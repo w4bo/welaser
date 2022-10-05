@@ -21,18 +21,14 @@ const mapDashboard = {
                           <v-card-actions>
                               <!-- Commands from IoT Agent -->
                               <template v-for="(value, key) in device.data">
-                                  <v-btn v-if="value.type=='commandResult'" v-on:click="execute(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
+                                  <v-btn v-if="value.type=='commandResult'" v-on:click="sendCommand(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
                               </template>
                               <!-- Commands from the AgriRobot -->
                               <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
                                   <template v-for="cmd in device.data.cmdList.value">
-                                      <v-btn v-on:click="execute(device.id, cmd)"> {{cmd}} </v-btn>
+                                      <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
                                   </template>
                               </div>
-                              <!-- Hard-coded commands from the old robot version -->
-                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Stop')"> Stop </v-btn>
-                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Running')"> Running </v-btn>
-                              <v-btn v-if="device.data.type=='ROBOT'" v-on:click="executeRobot(device.id, 'Resume')"> Resume </v-btn>
                           </v-card-actions>
                       </v-card-title>
                   </v-card>
@@ -42,6 +38,8 @@ const mapDashboard = {
       </div>`,
     data() {
         return {
+            ORION_URL: `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`,
+            headers: {'Content-Type': 'application/json'},
             devices: {},
             collisions: {},
             remoteSocket: null,
@@ -57,9 +55,46 @@ const mapDashboard = {
             map: "",
             satelliteVisibility: true,
             hideDetails: true,
+            administrativeBoundaries: [{
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        -3.681771755218506,
+                                        40.41983472557369
+                                    ],
+                                    [
+                                        -3.68715763092041,
+                                        40.41816843049694
+                                    ],
+                                    [
+                                        -3.685762882232666,
+                                        40.41119241388577
+                                    ],
+                                    [
+                                        -3.67891788482666,
+                                        40.41316929764821
+                                    ],
+                                    [
+                                        -3.681771755218506,
+                                        40.41983472557369
+                                    ]
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            }],
             topics: ["data.canary.realtime"],
             selectedTopic: "data.canary.realtime",
-            colors: ["#5778a4", "#e49444", "#d1615d", "#85b6b2", "#6a9f58", "#e7ca60", "#a87c9f", "#f1a2a9", "#967662", "#b8b0ac"]
+            colors: d3.schemeTableau10
+            // colors: ["#5778a4", "#e49444", "#d1615d", "#85b6b2", "#6a9f58", "#e7ca60", "#a87c9f", "#f1a2a9", "#967662", "#b8b0ac"]
         }
     },
     methods: {
@@ -116,34 +151,17 @@ const mapDashboard = {
             }
             return html + `</table>`
         },
-        execute(deviceId, command) {
+        sendCommand(deviceId, command) {
             const inner = {}
             inner[command] = {}
             axios
                 .patch(
-                    `http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${deviceId}/attrs?options=keyValues`,
+                    this.ORION_URL + `/entities/${deviceId}/attrs?options=keyValues`,
                     {"cmd": inner},
-                    {headers: {'Content-Type': 'application/json'}}
+                    {headers: this.headers}
                 )
-                .then(response => {
-                    console.log("response");
-                    console.log(response)
-                })
-                .catch(err => {
-                    console.log("error");
-                    console.log(err)
-                });
-        },
-        executeRobot(robotId, command) {
-            const offsetTime = Math.round((Date.now() / 1000)) + 1000
-            const data = JSON.stringify({
-                "cmd": {
-                    "metadata": {},
-                    "value": `{%27firosstamp%27: ${offsetTime}, %27data%27: %27${command}%27}`,
-                    "type": "std_msgs.msg.String"
-                }, "COMMAND": { "type": "COMMAND", "value": ["cmd"] }
-            });
-            axios.put(`http://${this.IP}:${this.ORION_PORT_EXT}/v2/entities/${robotId}/attrs`, data, { headers: { 'Content-Type': 'application/json' } }).then((response) = {})
+                .then(response => { console.log(response) })
+                .catch(err => { console.log(err) })
         },
         hashCode(s) {
             if (s) {
@@ -163,18 +181,6 @@ const mapDashboard = {
             this.collisionLocationMap = {}
             this.updateDevicePoints()
             this.updateCollisionPoints()
-            // axios
-            //     .get(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`)
-            //     .then(response => {
-            //         this.remoteSocket.removeAllListeners(this.socketName)
-            //         this.socketName = response.data.socket
-            //         this.remoteSocket.on(this.socketName, data => {
-            //             this.handleRemoteSocketData(JSON.parse(data))
-            //         })
-            //     }).catch(err => {
-            //         console.log(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}/api/register/${this.selectedTopic}`);
-            //         console.log(err)
-            //     });
             this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
             this.socketName = this.selectedTopic // update the topic name
             this.remoteSocket.emit("newtopic", this.selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
@@ -201,13 +207,6 @@ const mapDashboard = {
             }
             const device = this.devices[data.id]
             device.data = data
-            if (data.type === "ROBOT" && data.gnss && data.gnss.value) {
-                this.deviceLocationMap[data.id] = [data.gnss.value.data.longitude, data.gnss.value.data.latitude, device.color]
-            } else if (data.longitude && data.latitude && data.latitude.value && data.longitude.value) {
-                this.deviceLocationMap[data.id] = [data.longitude.value, data.latitude.value, device.color]
-            } else if (data.location && data.location.value && data.location.value.coordinates) {
-                this.deviceLocationMap[data.id] = [data.location.value.coordinates[0], data.location.value.coordinates[1], device.color]
-            }
             this.updateDevicePoints()
         },
         handleCollisionData(data) {
@@ -217,7 +216,7 @@ const mapDashboard = {
         },
         updateDevicePoints() {
             this.devicePoints = []
-            var i = 0
+            let i = 0
             for (const [key, value] of Object.entries(this.deviceLocationMap)) {
                 this.devicePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
                 this.devicePoints[i].set('color', value[2])
@@ -227,67 +226,41 @@ const mapDashboard = {
             this.deviceLayer.changed()
         },
         updateCollisionPoints() {
-            this.collisionPoints = []
-            var i = 0
-            for (const [key, value] of Object.entries(this.collisionLocationMap)) {
-                this.collisionPoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
-                i++
-            }
-            this.collisionLayer.setSource(new ol.source.Vector({features: this.collisionPoints}))
-            this.collisionLayer.changed()
+            // this.collisionPoints = []
+            // var i = 0
+            // for (const [key, value] of Object.entries(this.collisionLocationMap)) {
+            //     this.collisionPoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
+            //     i++
+            // }
+            // this.collisionLayer.setSource(new ol.source.Vector({features: this.collisionPoints}))
+            // this.collisionLayer.changed()
         },
         loadMap() {
+            this.administrativeBoundariesLayer = new ol.layer.Vector({ features: (new ol.format.GeoJSON()).readFeatures(this.administrativeBoundaries) })
             this.deviceLayer = new ol.layer.Vector({
                 features: this.devicePoints,
                 style: function (feature, resolultion) {
                     return new ol.style.Style({
                         image: new ol.style.Circle({
                             radius: 5,
-                            stroke: new ol.style.Stroke({
-                                color: '#fff'
-                            }),
-                            fill: new ol.style.Fill({
-                                color: feature.get("color")
-                            })
+                            stroke: new ol.style.Stroke({ color: '#fff' }),
+                            fill: new ol.style.Fill({ color: feature.get("color") })
                         })
                     })
                 }
             })
-
-            this.collisionLayer = new ol.layer.Vector({
-                features: this.collisionPoints,
-                style: new ol.style.Style({
-                    image: new ol.style.RegularShape({
-                        fill: new ol.style.Fill({color: 'red'}),
-                        stroke: new ol.style.Stroke({color: 'black', width: 2}),
-                        points: 4,
-                        radius: 10,
-                        angle: Math.PI / 4
-                    })
-                })
-            })
-
-            this.worldImagery = new ol.layer.Tile({
-                source: new ol.source.XYZ({
-                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                    maxZoom: 23
-                }),
+            this.worldImagery = new ol.layer.Tile({ // Satellite layer
+                source: new ol.source.XYZ({ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', maxZoom: 23 }),
                 visible: this.satelliteVisibility
             })
-
             this.map = new ol.Map({
                 target: 'map',
-                view: new ol.View({
-                    center: ol.proj.fromLonLat([-3.4808443373094113, 40.31275148286198]),
-                    zoom: 17
-                }),
+                view: new ol.View({ center: ol.proj.fromLonLat([-3.482, 40.31255]), zoom: 18 }),
                 layers: [
-                    // Basemap
-                    new ol.layer.Tile({ source: new ol.source.OSM() }),
-                    // satellite layer
-                    this.worldImagery,
+                    new ol.layer.Tile({ source: new ol.source.OSM() }), // Basemap
+                    this.worldImagery, // Satellite layer
                     this.deviceLayer,
-                    this.collisionLayer
+                    this.administrativeBoundariesLayer
                 ]
             })
         },
@@ -295,26 +268,28 @@ const mapDashboard = {
             this.worldImagery.setVisible(this.satelliteVisibility)
             this.worldImagery.changed()
         },
-        // loadTopics() {
-        //     axios
-        //         .get(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`)
-        //         .then(response => {
-        //             this.topics = response.data.map(e => {
-        //                 return {id: `${e.kind}: ${e.id}`, topic: `${e.topic}`}
-        //             })
-        //             this.topics.push({'id': 'collision', 'topic': 'data.collision'})
-        //             this.topics.push({'id': 'canary', 'topic': 'data.canary.realtime'})
-        //         })
-        //         .catch(err => {
-        //             console.log(`http://${this.IP}:${this.WEB_SERVER_PORT_EXT}/api/topic`);
-        //             console.log(err)
-        //         });
-        // },
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
-            console.log("Connect to socket.io")
+            const ORION_URL = this.ORION_URL
+            const administrativeBoundaries = this.administrativeBoundaries
+            axios // get the agrifarms
+                .get(ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
+                .then(agrifarms => {
+                    agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
+                        const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
+                        attrs.forEach(function (attr, index) {
+                            agrifarm[attr].forEach(function (id, index) {
+                                axios
+                                    .get(ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
+                                    .then(loc => { administrativeBoundaries.push(loc.data.location) })
+                            })
+                        })
+                    })
+                    // this.administrativeBoundariesLayer.setSource(new ol.source.Vector({features: administrativeBoundaries}))
+                    // this.administrativeBoundariesLayer.changed()
+                    console.log(administrativeBoundaries)
+                })
             this.loadMap()
-            // this.loadTopics()
             this.listenTopic()
         }
     },
