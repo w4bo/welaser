@@ -79,7 +79,7 @@ const mapDashboard = {
                 if (this.hideDetails && [
                         "id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
                         "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
-                        "hasFarm", "hasDevice", "hitch", "refRobotModel"
+                        "hasFarm", "hasDevice", "hitch", "refRobotModel", "areaServed"
                     ].includes(key)) {
                 } else {
                     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
