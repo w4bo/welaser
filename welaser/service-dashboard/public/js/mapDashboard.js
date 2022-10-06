@@ -7,7 +7,7 @@ const mapDashboard = {
           </v-row>
           <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px"></div></v-col></v-row>
           <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
-          <v-row align="center" justify="center">
+          <v-row align="top" justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
