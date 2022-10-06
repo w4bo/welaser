@@ -24,13 +24,13 @@ fun main(args: Array<String>) {
                 robot,
                 // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31308266787424, -3.4804348644627585, domain, mission, RandomSensor()),
                 // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31285012589443, -3.4811514708229670, domain, mission, RandomSensor()),
-                DeviceMQTT(STATUS.ON, timeout, false, 40.31184130935516, -3.4810637987225532, domain, mission, RandomSensor()),
+                DeviceMQTT(STATUS.ON, timeout, false, 40.3120984,-3.481554, domain, mission, RandomSensor()),
                 // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31231176524012, -3.4810422377848910, domain, mission, Camera()),
                 EntityFactory.createFromFile("$folder/weatherstation-1.json", timeout),
                 EntityFactory.createFromFile("$folder/camera-1.json", timeout * 3),
                 EntityFactory.createFromFile("$folder/camera-2.json", timeout * 3),
                 // EntityFactory.createFromFile("$folder/camera-3.json", timeout * 3)
             )
-    ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
+    ).forEach { d -> executor.submit { d.run() } }
     executor.shutdown()
 }

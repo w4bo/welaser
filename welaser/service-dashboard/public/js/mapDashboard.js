@@ -154,14 +154,14 @@ const mapDashboard = {
                 this.$set(this.devices, data.id, { 'id': data.id, 'data': data, 'color': this.getRandomColor(data.type) })
                 if (hasLocation) {
                     const coordinates = data.location.value.coordinates
-                    this.$set(this.devicesLocation, data.id, L.marker(L.latLng(coordinates[1], coordinates[0])).bindPopup(data.id).addTo(this.layerStream))
+                    this.$set(this.devicesLocation, data.id, L.circle(L.latLng(coordinates[1], coordinates[0]), 3, {"color": this.getRandomColor(data.type)}).bindPopup(data.id).addTo(this.layerStream))
                 }
             }
             const device = this.devices[data.id]
             device.data = data
             if (hasLocation) {
                 const coordinates = data.location.value.coordinates
-                this.devicesLocation[data.id].setLatLng(L.latLng(coordinates[1], coordinates[0])).update()
+                this.devicesLocation[data.id].setLatLng(L.latLng(coordinates[1], coordinates[0])) // .update()
             }
         },
         loadMap() {

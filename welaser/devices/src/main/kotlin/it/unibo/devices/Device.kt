@@ -380,9 +380,13 @@ class DeviceSubscription(
                 ${updateSensor()},
                 "status":          "$status",                      
                 "timestamp":       ${System.currentTimeMillis()},
-                "latitude":        $latitude,                    
-                "location":        "foo",                        
-                "longitude":       $longitude,                   
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        $longitude,
+                        $latitude
+                    ]
+                },                
                 "mission":         "$mission",                   
                 "domain":          "$domain",                    
             }]}""".replace("\\s+".toRegex(), " ")
@@ -448,8 +452,13 @@ open class DeviceHTTP(
                 ${updateSensor()}, 
                 "status":          "$status",                      
                 "timestamp":       ${System.currentTimeMillis()},
-                "latitude":        $latitude,                    
-                "longitude":       $longitude,                   
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        $longitude,
+                        $latitude
+                    ]
+                },               
                 "mission":         "$mission",                    
                 "domain":          "$domain",
                 "cmdList":         ["on", "off"],
@@ -493,8 +502,13 @@ class DeviceMQTT(
                 ${updateSensor()}, 
                 "status":           "$status",                      
                 "timestamp":        ${System.currentTimeMillis()},
-                "latitude":         $latitude,                    
-                "longitude":        $longitude,                   
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        $longitude,
+                        $latitude
+                    ]
+                },                
                 "mission":          "$mission",                    
                 "domain":           "$domain",
                 "cmdList":          ["on", "off"],
@@ -507,8 +521,13 @@ class DeviceMQTT(
                 ${updateSensor()},
                 "status":          "$status",
                 "timestamp":       ${System.currentTimeMillis()},
-                "latitude":        ${latitude},
-                "longitude":       ${longitude}
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        $longitude,
+                        $latitude
+                    ]
+                }
             }""".replace("\\s+".toRegex(), " ")
     }
 }
