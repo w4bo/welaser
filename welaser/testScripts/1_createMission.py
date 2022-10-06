@@ -1,12 +1,11 @@
-import random
-import time
-from json import dumps, loads
-from time import sleep
-
 import paho.mqtt.client as mqttClient
+import random
 import requests
+import time
 from dotenv import dotenv_values
+from json import dumps, loads
 from kafka import KafkaProducer, KafkaConsumer
+from time import sleep
 
 conf = dotenv_values("../.env")
 producer = KafkaProducer(
