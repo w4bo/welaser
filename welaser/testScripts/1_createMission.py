@@ -58,15 +58,15 @@ while i < 50 and len(responseBody) == 0:
         sleep(2)
     response = requests.request("GET", "http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) #, headers=headers, data={}
     assert (response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["domain"] == domain and x["mission"] == mission and x["latitude"] is not None]
+    responseBody = [x for x in loads(response.text) if x["domain"] == domain and x["mission"] == mission and x["location"] is not None]
     i += 1
 assert (len(responseBody) > 0)
 print("OK: Thermometer found")
 responseBody = responseBody[0]
 thermometer_id = responseBody["id"]
 assert (len(thermometer_id) > 0)
-assert (responseBody["latitude"] >= -90)
-assert (responseBody["longitude"] >= -180)
+assert (responseBody["location"]["coordinates"][0] >= -180)  # longitude
+assert (responseBody["location"]["coordinates"][1] >= -90)  # latitude
 assert (responseBody["status"])
 assert (int(responseBody["temperature"]) >= 0)
 
