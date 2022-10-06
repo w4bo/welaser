@@ -1,11 +1,6 @@
 const mapDashboard = {
     template: `
       <div style="padding: 2%">
-          <!-- <v-row justify="center" align="center">-->
-          <!--   <div>-->
-          <!--     <v-switch v-model="satelliteVisibility" label='Show Satellite' v-on:click="toggleSatellite"></v-switch>-->
-          <!--   </div>-->
-          <!-- </v-row>-->
           <v-row align="center" justify="center">
               <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
               <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
@@ -40,23 +35,19 @@ const mapDashboard = {
         return {
             ORION_URL: `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`,
             headers: {'Content-Type': 'application/json'},
+
             layerBoundary: null,
             layerStream: null,
+            map: null,
 
             devices: {},
-            collisions: {},
+            devicesLocation: {},
             remoteSocket: null,
             topicName: "",
             socketName: "",
-            deviceLocationMap: {},
-            collisionLocationMap: {},
             devicePoints: [],
-            collisionPoints: [],
             deviceLayer: "",
-            collisionPayer: "",
-            worldImagery: "",
-            map: "",
-            satelliteVisibility: true,
+
             hideDetails: true,
             topics: ["data.canary.realtime"],
             selectedTopic: "data.canary.realtime",
@@ -122,7 +113,7 @@ const mapDashboard = {
             inner[command] = {}
             axios
                 .patch(
-                    this.ORION_URL + `/entities/${deviceId}/attrs?options=keyValues`,
+                    this.ORION_URL + `entities/${deviceId}/attrs?options=keyValues`,
                     {"cmd": inner},
                     {headers: this.headers}
                 )
@@ -143,110 +134,49 @@ const mapDashboard = {
         },
         listenTopic() {
             this.devices = {}
-            this.deviceLocationMap = {}
-            this.collisionLocationMap = {}
-            this.updateDevicePoints()
-            this.updateCollisionPoints()
+            this.devicesLocation = {}
             this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
             this.socketName = this.selectedTopic // update the topic name
             this.remoteSocket.emit("newtopic", this.selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
-            this.remoteSocket.on(this.socketName, data => { console.log("Message"); this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
+            this.remoteSocket.on(this.socketName, data => { this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
         },
         handleRemoteSocketData(data) {
+            console.log("Message")
             switch (data.type) {
-                case 'Analytics:Collision':
-                    this.handleCollisionData(data)
-                    break;
                 default:
-                    this.handleDeviceData(data)
+                    this.handleStreamData(data)
                     break;
             }
         },
-        handleDeviceData(data) {
-            // data = JSON.parse(JSON.stringify(data).replaceAll("%27", '"').replaceAll('"{', '{').replaceAll('}"', '}'))
-            // if (!Object.keys(this.devices).includes(data.id)) { // if the device is unkown
-            //     this.$set(this.devices, data.id, {
-            //         'id': data.id,
-            //         'data': data,
-            //         'color': this.getRandomColor(data.type)
-            //     })
-            // }
-            // const device = this.devices[data.id]
-            // device.data = data
-            // this.updateDevicePoints()
-        },
-        handleCollisionData(data) {
-            // this.$set(this.collisions, data.id, data)
-            // this.collisionLocationMap[data.id] = [data.Device1_longitude.value, data.Device1_latitude.value]
-            // this.updateCollisionPoints()
-        },
-        updateDevicePoints() {
-            // this.devicePoints = []
-            // let i = 0
-            // for (const [key, value] of Object.entries(this.deviceLocationMap)) {
-            //     this.devicePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
-            //     this.devicePoints[i].set('color', value[2])
-            //     i++
-            // }
-            // this.deviceLayer.setSource(new ol.source.Vector({features: this.devicePoints}))
-            // this.deviceLayer.changed()
-        },
-        updateCollisionPoints() {
-            // this.collisionPoints = []
-            // var i = 0
-            // for (const [key, value] of Object.entries(this.collisionLocationMap)) {
-            //     this.collisionPoints[i] = new ol.Feature({ geometry: new ol.geom.Point(new ol.proj.transform([value[0], value[1]], 'EPSG:4326', 'EPSG:3857')) })
-            //     i++
-            // }
-            // this.collisionLayer.setSource(new ol.source.Vector({features: this.collisionPoints}))
-            // this.collisionLayer.changed()
+        handleStreamData(data) {
+            const hasLocation = Object.keys(data).includes("location")
+            if (!Object.keys(this.devices).includes(data.id)) { // if the device is unknown
+                this.$set(this.devices, data.id, { 'id': data.id, 'data': data, 'color': this.getRandomColor(data.type) })
+                if (hasLocation) {
+                    const coordinates = data.location.value.coordinates
+                    this.$set(this.devicesLocation, data.id, L.marker(L.latLng(coordinates[1], coordinates[0])).bindPopup(data.id).addTo(this.layerStream))
+                }
+            }
+            const device = this.devices[data.id]
+            device.data = data
+            if (hasLocation) {
+                const coordinates = data.location.value.coordinates
+                this.devicesLocation[data.id].setLatLng(L.latLng(coordinates[1], coordinates[0])).update()
+            }
         },
         loadMap() {
-            // this.administrativeBoundariesLayer = new ol.layer.Vector({ features: (new ol.format.GeoJSON()).readFeatures(this.administrativeBoundaries) })
-            // this.deviceLayer = new ol.layer.Vector({
-            //     features: this.devicePoints,
-            //     style: function (feature, resolultion) {
-            //         return new ol.style.Style({
-            //             image: new ol.style.Circle({
-            //                 radius: 5,
-            //                 stroke: new ol.style.Stroke({ color: '#fff' }),
-            //                 fill: new ol.style.Fill({ color: feature.get("color") })
-            //             })
-            //         })
-            //     }
-            // })
-            // this.worldImagery = new ol.layer.Tile({ // Satellite layer
-            //     source: new ol.source.XYZ({ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', maxZoom: 23 }),
-            //     visible: this.satelliteVisibility
-            // })
-            // this.map = new ol.Map({
-            //     target: 'map',
-            //     view: new ol.View({ center: ol.proj.fromLonLat([-3.482, 40.31255]), zoom: 18 }),
-            //     layers: [
-            //         new ol.layer.Tile({ source: new ol.source.OSM() }), // Basemap
-            //         this.worldImagery, // Satellite layer
-            //         this.deviceLayer,
-            //         this.administrativeBoundariesLayer
-            //     ]
-            // })
+            // creating the layers
             this.layerBoundary = L.layerGroup([]);
+            this.layerStream = L.layerGroup([]);
             const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-            this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary]})
+            // creating the map
+            this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary, this.layerStream]})
             const map = this.map
-            const baseMaps = {
-                "Satellite": satellite,
-                "OpenStreetMap": osm,
-            };
-            const overlayMaps = {
-                "Boundaries": this.layerBoundary
-            };
-            const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
-            //
-        },
-        toggleSatellite() {
-            this.worldImagery.setVisible(this.satelliteVisibility)
-            this.worldImagery.changed()
+            // add the layers to the group
+            const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
+            const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream };
+            const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map)
         },
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
@@ -276,24 +206,17 @@ const mapDashboard = {
                                             color = d3.schemeCategory10[0]
                                         }
                                         const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
-                                        const geojson =
-                                            {
+                                        const geojson = {
                                                 "type": "Feature",
                                                 "properties": {},
-                                                "geometry": {
-                                                    "type": loc.data.location.type,
-                                                    "coordinates": loc.data.location.coordinates
-                                                }
+                                                "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
                                             }
                                         L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(layerBoundary);
                                     })
                             })
                         })
                     })
-                    // this.administrativeBoundariesLayer.setSource(new ol.source.Vector({features: administrativeBoundaries}))
-                    // this.administrativeBoundariesLayer.changed()
                 })
-
             this.listenTopic()
         }
     },
