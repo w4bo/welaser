@@ -1,5 +1,6 @@
 package it.unibo.devices
 
+import it.unibo.DATAMODEL_FOLDER
 import it.unibo.ROBOT_CMD_PAUSE
 import it.unibo.ROBOT_CMD_RESUME
 import it.unibo.ROBOT_CMD_START
@@ -12,7 +13,7 @@ import java.util.*
 
 @TestMethodOrder(MethodOrderer.MethodName::class)
 class EntityTest {
-    val folder = "/datamodels"
+    val folder = DATAMODEL_FOLDER
 
     @Test
     fun testScalability() {
@@ -53,9 +54,9 @@ class EntityTest {
             val r = EntityFactory.createFromFile("$folder/carob-1.json", 1, times = 1000)
             r.exec(ROBOT_CMD_START, "mission-123")
             r.run()
-            khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
+            khttp.async.patch("${ORION_URL}entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
                 waitFor(r, STATUS.OFF)
-                khttp.async.patch("$ORION_URL/v2/entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
+                khttp.async.patch("${ORION_URL}entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
                     waitFor(r, STATUS.ON)
                 })
             })
@@ -66,7 +67,7 @@ class EntityTest {
     }
 
     fun init(): Device {
-        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "foo", "bar", RandomSensor(), times = 2)
+        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "fake-agrifarm", RandomSensor(), times = 2)
         d.run()
         return d
     }
@@ -79,8 +80,8 @@ class EntityTest {
             if (i > 1) {
                 Thread.sleep(100)
             }
-            println("Looking for ${d.id} at ${ORION_URL}/v2/entities?id=${d.id}")
-            s = khttp.get("${ORION_URL}/v2/entities?id=${d.id}").text
+            println("Looking for ${d.id} at ${ORION_URL}entities?id=${d.id}")
+            s = khttp.get("${ORION_URL}entities?id=${d.id}").text
         }
         return s
     }
@@ -92,9 +93,9 @@ class EntityTest {
             val s = waitDevice(d)
             assertTrue(s.contains(d.id))
             assertTrue(d.status == STATUS.ON)
-            khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"off" : {}}}""", onResponse = {
+            khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"off" : {}}}""", onResponse = {
                 waitFor(d, STATUS.OFF)
-                khttp.async.patch("$ORION_URL/v2/entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"on" : {}}}""", onResponse = {
+                khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"on" : {}}}""", onResponse = {
                     waitFor(d, STATUS.ON)
                 })
             })

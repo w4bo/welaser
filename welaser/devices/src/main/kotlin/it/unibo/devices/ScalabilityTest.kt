@@ -2,6 +2,9 @@
 
 package it.unibo.devices
 
+import it.unibo.DOMAIN
+import it.unibo.FARM_LATITUDE
+import it.unibo.FARM_LONGITUDE
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
@@ -25,11 +28,8 @@ fun scalability(duration: Int, devices: Int, frequency: Int, payload: Int) {
                     val executor = Executors.newCachedThreadPool()
                     val periodMs = 1000 / frequency
                     (1..devices)
-                        .map {
-                            DeviceMQTT(STATUS.ON, periodMs, false, 40.31308266787424, -3.4804348644627585, DOMAIN, mission, RandomSensor(), times = duration / periodMs)
-                        }.forEach {
-                            d -> executor.submit { d.run() }
-                        }
+                        .map { DeviceMQTT(STATUS.ON, periodMs, false, FARM_LATITUDE, FARM_LONGITUDE, DOMAIN, RandomSensor(), times = duration / periodMs) }
+                        .forEach { d -> executor.submit { d.run() } }
                     executor.shutdown()
                     executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)
                     println("Done. $mission")
@@ -45,14 +45,10 @@ fun main(args: Array<String>) {
     val defaultDevices = 100
     val defaultFrequency = 1
     val defaultPayload = 0
-    val duration by parser.option(ArgType.Int, shortName = "duration", description = "duration (ms)")
-        .default(defaultDuration)
-    val devices by parser.option(ArgType.Int, shortName = "devices", description = "devices")
-        .default(defaultDevices)
-    val frequency by parser.option(ArgType.Int, shortName = "frequency", description = "frequency")
-        .default(defaultFrequency)
-    val payload by parser.option(ArgType.Int, shortName = "payload", description = "payload (B)")
-        .default(defaultPayload)
+    val duration by parser.option(ArgType.Int, shortName = "duration", description = "duration (ms)").default(defaultDuration)
+    val devices by parser.option(ArgType.Int, shortName = "devices", description = "devices").default(defaultDevices)
+    val frequency by parser.option(ArgType.Int, shortName = "frequency", description = "frequency").default(defaultFrequency)
+    val payload by parser.option(ArgType.Int, shortName = "payload", description = "payload (B)").default(defaultPayload)
     parser.parse(args)
     scalability(duration, devices, frequency, payload)
 }

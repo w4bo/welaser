@@ -59,21 +59,12 @@ class S(BaseHTTPRequestHandler):
                 else:
                     return domain
 
-            domain = "canary"
-            domain = get("Domain", domain)
-            domain = get("domain", domain)
-
-            mission = "dummy"
-            mission = get("Mission", mission)
-            mission = get("mission", mission)
-
+            domain = "undefined-domain"
+            domain = get("areaServed", domain)
+            domain = get("hasFarm", domain)
             d["domain"] = domain
-            d["mission"] = mission
             d["timestamp_subscription"] = time.time()
-            producer.send('data.' + domain + ".realtime", value=d)
-            # producer.send('data.' + domain + ".realtime." + mission, value=d)
-            producer.send(DRACO_RAW_TOPIC, value=d)
-
+            producer.send(DRACO_RAW_TOPIC + '.' + domain, value=d)
 
     def log_request(self, code='-', size='-'):
         return

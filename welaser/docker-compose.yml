@@ -199,20 +199,6 @@ services:
       node:
         condition: service_healthy
 
-  missionmanager:
-    init: true
-    hostname: missionmanager
-    build: service-manager
-    container_name: missionmanager
-    networks:
-      - default
-    volumes:
-      # - ~/.ssh:/root/.ssh:ro
-      - "${CODE_FOLDER}:${CODE_FOLDER}"
-      - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      - .env
-
 networks:
   default_net:
     ipam:

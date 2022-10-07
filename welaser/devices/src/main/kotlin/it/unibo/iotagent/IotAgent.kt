@@ -1,4 +1,5 @@
 @file:JvmName("IotAgent")
+
 package it.unibo.iotagent
 
 import io.ktor.server.application.*
@@ -37,7 +38,6 @@ class IOTA {
     }
 
     val client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
-    // val client2: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
     val mutex = Mutex()
     var server: NettyApplicationEngine? = null
@@ -61,7 +61,6 @@ class IOTA {
                         val payload = JSONObject(call.receive<String>())
                         payload.getJSONArray("data").forEach {
                             val o = JSONObject(it.toString())
-                            // println("Subscription: /$FIWARE_API_KEY/${o.getString("id")}/cmd")
                             client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
                         }
                     }
@@ -80,28 +79,21 @@ class IOTA {
         client.connect(connOpts)
         // subscribe to all mqtt messages
         client.subscribe("#", 0) { topic, message ->
-            // synchronized(this) {
-                if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
-                    try {
-                        val deviceid = topic.split("/")[2]
-                        val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
-                        payload.put("timestamp_iota", System.currentTimeMillis())
-                        // println("Sending from $topic")
-                        khttp.async.patch("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues",
-                            mapOf("Content-Type" to "application/json"),
-                            // onResponse = {
-                            //     logger.debug { "Sending from $topic" }
-                            // },
-                            data = payload.toString().replace("=", "%3D")
-                        )
-                        // httpRequest("$ORION_URL/v2/entities/$deviceid/attrs?options=keyValues", payload, listOf(Pair("Content-Type", "application/json")), REQUEST_TYPE.PATCH)
-                        // println("Done")
-                    } catch (e: Exception) {
-                        println(e.message)
-                        e.printStackTrace()
-                    }
+            if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
+                try {
+                    val deviceid = topic.split("/")[2]
+                    val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
+                    payload.put("timestamp_iota", System.currentTimeMillis())
+                    khttp.async.patch(
+                        "${ORION_URL}entities/$deviceid/attrs?options=keyValues",
+                        mapOf("Content-Type" to "application/json"),
+                        data = payload.toString().replace("=", "%3D")
+                    )
+                } catch (e: Exception) {
+                    println(e.message)
+                    e.printStackTrace()
                 }
-            // }
+            }
         }
     }
 }

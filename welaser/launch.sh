@@ -1,12 +1,7 @@
 #!/bin/bash
 set -exo
 
-if [ -f .env ]; then
-    export $(echo $(cat .env | sed 's/#.*//g' | xargs) | envsubst)
-else
-    echo "Could not find the .env file"
-    exit 1
-fi
+. ./scripts/loadEnv.sh
 
 if [ -f mosquitto/pwfile ]; then
     echo "pwfile ok"
@@ -16,7 +11,9 @@ else
 fi
 
 ./stop.sh
-./scripts/setupAll.sh
+./scripts/build.sh
+./scripts/setupKafka.sh
+./scripts/setupFiware.sh
 
 curl -iX POST \
     "http://${DRACO_IP}:${DRACO_PORT_EXT}/v2/subscriptions" \
@@ -24,7 +21,7 @@ curl -iX POST \
     -d '{
   "description": "ETL",
   "subject": { "entities": [{ "idPattern": ".*" } ] },
-  "notification": { "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" } }
+  "notification": { "http": { "url": "http://'${DRACO_IP}':'${DRACO_PORT_EXT}'/v2/notify" }, "attrsFormat" : "keyValues" }
 }'
 
 curl -iX POST \
@@ -37,4 +34,4 @@ curl -iX POST \
 }'
 cd devices
 ./gradlew --stacktrace --scan
-./gradlew runMission --stacktrace &>../logs/missionmanager-$(date +%s)-${DOMAIN_NAME}-${MISSION_NAME}-devices.txt &
+./gradlew runMission --stacktrace &>../logs/missionmanager-$(date +%s)-devices.txt &

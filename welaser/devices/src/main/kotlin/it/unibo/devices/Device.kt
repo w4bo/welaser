@@ -8,6 +8,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.*
 import mu.KotlinLogging
 import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -30,7 +31,7 @@ val DRACO_IP = dotenv["DRACO_IP"]
 val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"].toInt()
 val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
-val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}"
+val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}/v2/"
 val IOTA_IP = dotenv["IOTA_IP"]
 val DEVICE_IP = dotenv["DEVICE_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"].toInt()
@@ -44,6 +45,7 @@ val MOSQUITTO_PWD = dotenv["MOSQUITTO_PWD"]
 val MOSQUITTO_IP = dotenv["MOSQUITTO_IP"]
 val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"].toInt()
 val CONTENTTYPE = "Content-Type" to "application/json"
+
 /**
  * Some entity types
  */
@@ -78,8 +80,15 @@ class Camera(val onBoard: Boolean = true) : ISensor {
     /**
      * @return get an image from src/main/resources, the image is encoded in Base64
      */
-    @Synchronized override fun sense(): String {
-        val inputstream = Camera::class.java.getResourceAsStream(if (onBoard) { "/img0" } else { "/field0" } + Random.nextInt(1, 4) + ".png")
+    @Synchronized
+    override fun sense(): String {
+        val inputstream = Camera::class.java.getResourceAsStream(
+            if (onBoard) {
+                "/img0"
+            } else {
+                "/field0"
+            } + Random.nextInt(1, 4) + ".png"
+        )
         return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream)).replace("=", "%3D")
     }
 }
@@ -164,7 +173,8 @@ class ProtocolMQTT : IProtocol {
     var client: IMqttClient = MqttClient("tcp://$MOSQUITTO_IP:$MOSQUITTO_PORT_EXT", UUID.randomUUID().toString(), MemoryPersistence())
     val connOpts = MqttConnectOptions()
 
-    @Synchronized override fun register(s: String) {
+    @Synchronized
+    override fun register(s: String) {
         connOpts.isCleanSession = true
         connOpts.userName = MOSQUITTO_USER
         connOpts.password = MOSQUITTO_PWD.toCharArray()
@@ -172,20 +182,22 @@ class ProtocolMQTT : IProtocol {
         while (!client.isConnected) {
             Thread.sleep(100)
         }
-        khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
+        khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
     }
 
-    @Synchronized override fun send(payload: String, topic: String) {
+    @Synchronized
+    override fun send(payload: String, topic: String) {
         client.publish(topic, payload.toByteArray(), 0, false)
     }
 
-    @Synchronized override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
+    @Synchronized
+    override fun listen(topic: String, f: (commandName: String, payload: String) -> Unit) {
         client.subscribe(topic) { _, message ->
             val s = String(message!!.payload)
             JSONObject(s).getJSONArray("data").forEach {
                 var o = JSONObject(it.toString())
-                if (o.has("cmd") && o.get("cmd").toString().isNotEmpty()) {
-                    o = o.getJSONObject("cmd")
+                if (o.has(CMD) && o.get(CMD).toString().isNotEmpty()) {
+                    o = o.getJSONObject(CMD)
                     val commandName = o.keys().next()!!
                     f(commandName, o.getJSONObject(commandName).toString())
                 }
@@ -194,7 +206,8 @@ class ProtocolMQTT : IProtocol {
         }
     }
 
-    @Synchronized override fun close() {
+    @Synchronized
+    override fun close() {
         client.disconnectForcibly()
         client.close()
     }
@@ -209,7 +222,6 @@ class ProtocolSubscription : IProtocol {
     @Synchronized
     override fun send(payload: String, topic: String) {
         khttp.async.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/", mapOf(CONTENTTYPE), data = payload, onResponse = { /* connection.disconnect() */ })
-        // httpRequest("http://${DRACO_IP}:${DRACO_PORT_EXT}/", payload, listOf(Pair("Content-Type", "application/json")))
     }
 }
 
@@ -220,7 +232,7 @@ class ProtocolHTTP : IProtocol {
         var retry = 3
         while (retry-- >= 0) {
             try {
-                khttp.async.post("${ORION_URL}/v2/entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
+                khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
             } catch (e: Exception) {
                 if (retry == 0) {
                     e.printStackTrace()
@@ -237,14 +249,14 @@ class ProtocolHTTP : IProtocol {
         val payloadJSON = JSONObject(payload)
         val id = payloadJSON.get("id")
         payloadJSON.remove("id")
-        if (payloadJSON.has("type")) {
-            payloadJSON.remove("type")
+        if (payloadJSON.has("$TYPE")) {
+            payloadJSON.remove("$TYPE")
         }
-        if (payloadJSON.has("cmd")) {
-            payloadJSON.remove("cmd")
+        if (payloadJSON.has(CMD)) {
+            payloadJSON.remove(CMD)
         }
         khttp.async.patch(
-            "$ORION_URL/v2/entities/$id/attrs?options=keyValues",
+            "${ORION_URL}entities/$id/attrs?options=keyValues",
             mapOf(CONTENTTYPE),
             data = payloadJSON.toString(),
             onResponse = { /* connection.disconnect() */ }
@@ -255,6 +267,7 @@ class ProtocolHTTP : IProtocol {
 class ProtocolKafka : IProtocol {
     val props = Properties()
     var producer: KafkaProducer<String, String>? = null
+
     @Synchronized
     override fun register(s: String) {
         props["bootstrap.servers"] = "$KAFKA_IP:$KAFKA_PORT_EXT"
@@ -281,7 +294,6 @@ abstract class Device(
     var latitude: Double,
     var longitude: Double,
     val domain: String,
-    val mission: String,
     open val s: ISensor,
     val p: IProtocol,
     val times: Int = 1000
@@ -327,10 +339,10 @@ abstract class Device(
      * Update sensor value
      */
     open fun updateSensor(): String {
-        return when(status) {
+        return when (status) {
             STATUS.ON -> {
                 updatePosition()
-                sensedValue = if (getType() == EntityType.Camera) { """"image"""" } else { """"temperature"""" } + """: "${s.sense()}""""
+                sensedValue = if (getType() == EntityType.Camera) { "\"$IMAGE\"" } else { "\"$TEMPERATURE\"" } + ": \"${s.sense()}\""
                 sensedValue
             }
             else -> sensedValue
@@ -370,25 +382,23 @@ class DeviceSubscription(
     latitude: Double,
     longitude: Double,
     domain: String,
-    mission: String,
     s: ISensor
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolSubscription()) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolSubscription()) {
     override fun getStatus(): String {
         return """{"data": [{
                 "id":              "$id",
-                "type":            "Sub-${getType()}",
+                "$TYPE":            "Sub-${getType()}",
                 ${updateSensor()},
                 "status":          "$status",                      
-                "timestamp":       ${System.currentTimeMillis()},
-                "location": {
+                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
                         $longitude,
                         $latitude
                     ]
                 },                
-                "mission":         "$mission",                   
-                "domain":          "$domain",                    
+                "areaServed":      "$domain",                    
             }]}""".replace("\\s+".toRegex(), " ")
     }
 }
@@ -400,11 +410,10 @@ open class DeviceHTTP(
     latitude: Double,
     longitude: Double,
     domain: String,
-    mission: String,
     s: ISensor,
     p: IProtocol = ProtocolHTTP(),
     times: Int = 1000
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, p, times) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, p, times) {
     var server: NettyApplicationEngine? = null
 
     fun getIpPort(): Pair<String, Int> {
@@ -416,7 +425,7 @@ open class DeviceHTTP(
 
     override fun register(s: String) {
         super.register(s)
-        if (JSONObject(s).has("cmdList")) {
+        if (JSONObject(s).has("$CMDLIST")) {
             val socket = getIpPort()
             server = embeddedServer(Netty, port = socket.second, host = "0.0.0.0") {
                 routing {
@@ -426,8 +435,8 @@ open class DeviceHTTP(
                     post("/") {
                         JSONObject(call.receive<String>()).getJSONArray("data").forEach {
                             var o = JSONObject(it.toString())
-                            if (o.has("cmd") && o.get("cmd").toString().isNotEmpty()) {
-                                o = o.getJSONObject("cmd")
+                            if (o.has(CMD) && o.get(CMD).toString().isNotEmpty()) {
+                                o = o.getJSONObject(CMD)
                                 val commandName = o.keys().next()!!
                                 exec(commandName, o.getJSONObject(commandName).toString())
                             }
@@ -436,33 +445,33 @@ open class DeviceHTTP(
                     }
                 }
             }.start(wait = false)
-            khttp.post("http://${DRACO_IP}:${DRACO_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """
-                {
+            khttp.post(
+                "http://${DRACO_IP}:${DRACO_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """{
                     "description": "Notify $id for commands",
-                    "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "cmd" ] }},
-                    "notification": { "http": { "url": "http://${DEVICE_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
-                }""".trimIndent())
+                    "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "$CMD" ] }},
+                    "notification": { "http": { "url": "http://${DEVICE_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["$CMD"] }
+                }""".trimIndent()
+            )
         }
     }
 
     override fun getStatus(): String {
         return """{
                 "id":              "$id",
-                "type":            "OCB-${getType()}",
+                "$TYPE":            "OCB-${getType()}",
                 ${updateSensor()}, 
                 "status":          "$status",                      
-                "timestamp":       ${System.currentTimeMillis()},
-                "location": {
+                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
                         $longitude,
                         $latitude
                     ]
                 },               
-                "mission":         "$mission",                    
-                "domain":          "$domain",
-                "cmdList":         ["on", "off"],
-                "cmd":             ""               
+                "areaServed":      "$domain",
+                "$CMDLIST":         ["on", "off"],
+                "$CMD":             ""               
             }""".replace("\\s+".toRegex(), " ")
     }
 }
@@ -474,9 +483,8 @@ class DeviceKafka(
     latitude: Double,
     longitude: Double,
     domain: String,
-    mission: String,
     s: ISensor
-) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolKafka()) {
+) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolKafka()) {
     override fun sense(): String = super.sense().replace("OCB", "KAFKA")
 }
 
@@ -487,10 +495,9 @@ class DeviceMQTT(
     latitude: Double,
     longitude: Double,
     domain: String,
-    mission: String,
     s: ISensor,
     times: Int = 1000
-) : Device(status, timeoutMs, moving, latitude, longitude, domain, mission, s, ProtocolMQTT(), times = times) {
+) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolMQTT(), times = times) {
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
     override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
@@ -498,21 +505,20 @@ class DeviceMQTT(
     override fun getRegister(): String {
         return """{
                 "id":              "$id",
-                "type":            "MQTT-${getType()}",
+                "$TYPE":            "MQTT-${getType()}",
                 ${updateSensor()}, 
                 "status":           "$status",                      
-                "timestamp":        ${System.currentTimeMillis()},
-                "location": {
+                "$TIMESTAMP":        ${System.currentTimeMillis()},
+                "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
                         $longitude,
                         $latitude
                     ]
                 },                
-                "mission":          "$mission",                    
-                "domain":           "$domain",
+                "areaServed":       "$domain",
                 "cmdList":          ["on", "off"],
-                "cmd":              ""
+                "$CMD":              ""
             }""".replace("\\s+".toRegex(), " ")
     }
 
@@ -520,8 +526,8 @@ class DeviceMQTT(
         return """{
                 ${updateSensor()},
                 "status":          "$status",
-                "timestamp":       ${System.currentTimeMillis()},
-                "location": {
+                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
                         $longitude,

@@ -1,73 +1,48 @@
 import paho.mqtt.client as mqttClient
-import random
 import requests
 import time
 from dotenv import dotenv_values
-from json import dumps, loads
-from kafka import KafkaProducer, KafkaConsumer
+from json import loads
 from time import sleep
 
 conf = dotenv_values("../.env")
-producer = KafkaProducer(
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    value_serializer=lambda x: dumps(x).encode('utf-8')
-)
-consumer = KafkaConsumer(
-    conf["MISSION_MANAGER_TOPIC"],
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    value_deserializer=lambda x: loads(x.decode('utf-8'))
-)
-domain = "foo"
-with open("createdomain.txt", "r") as f:
-    domain = f.read()
-mission = "m" + str(random.randrange(1000000) + 10)
-with open("createmission.txt", "w") as f:
-    f.write(mission)
-command = {
-    "type": "request",
-    "command": "start",
-    "mission": mission,
-    "domain": domain
-}
-producer.send(conf["MISSION_MANAGER_TOPIC"], command)
-for msg in consumer:
-    assert "type" in msg.value, "No type: " + str(msg)
-    # assert "domain" in msg.value, "No domain: " + str(msg)
-    assert "mission" in msg.value, "No mission: " + str(msg)
+orion_url = "http://{}:{}/v2/".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
+options = "&options=keyValues&limit=1000"
+url_farm = orion_url + "entities?type=AgriFarm" + options
+url_therm = orion_url + "entities?type=MQTT-Thermometer" + options
+url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
-    if msg.value["type"] == "response" and msg.value["status"] == "created" and msg.value["domain"] == domain and msg.value["mission"] == mission:
-        assert (msg.value["domain_topic"] == "data.{}.realtime".format(domain))
-        assert (msg.value["mission_topic"] == "data.{}.realtime.{}".format(domain, mission))
-        print("OK: Mission created.")
-        break
 
-headers = {
-#    'fiware-service': conf["FIWARE_SERVICE"],
-#    'fiware-servicepath': conf["FIWARE_SERVICEPATH"]
-}
+def wait_for(description, url):
+    print(description + url, end="")
+    responseBody = []
+    i = 0
+    while i < 50 and len(responseBody) == 0:
+        if i > 0:
+            sleep(1)
+        response = requests.get(url)
+        assert (response.status_code == 200)
+        responseBody = [x for x in loads(response.text) if x["domain"] == domain]
+        i += 1
+    assert (len(responseBody) > 0)
+    print(". Found " + responseBody["id"])
+    return responseBody[0]
 
-responseBody = []
-robots = []
-i = 0
-print("Looking for thermometer at: http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-while i < 50 and len(responseBody) == 0:
-    if i > 0:
-        sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) #, headers=headers, data={}
-    assert (response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["domain"] == domain and x["mission"] == mission and x["location"] is not None]
-    i += 1
-assert (len(responseBody) > 0)
-print("OK: Thermometer found")
-responseBody = responseBody[0]
-thermometer_id = responseBody["id"]
+
+domain = wait_for("Looking for farm at: ", url_farm)["id"]
+thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm)
+thermometer_id = thermometer["id"]
 assert (len(thermometer_id) > 0)
-assert (responseBody["location"]["coordinates"][0] >= -180)  # longitude
-assert (responseBody["location"]["coordinates"][1] >= -90)  # latitude
-assert (responseBody["status"])
-assert (int(responseBody["temperature"]) >= 0)
+assert (thermometer["location"]["coordinates"][0] >= -180)  # longitude
+assert (thermometer["location"]["coordinates"][1] >= -90)  # latitude
+assert (thermometer["status"])
+assert (int(thermometer["temperature"]) >= 0)
+wait_for("Looking for AgriRobot: ", url_agrirobot)
+wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyValues&limit=1000")
+
+###############################################################################
+# Testing MQTT
+###############################################################################
 
 received = False  # global variable for message reception
 
@@ -100,19 +75,11 @@ print("OK: MQTT message received.")
 client.disconnect()
 client.loop_stop()
 
-print("Looking for robot at: http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-i = 0
-while i < 300 and len(robots) == 0:
-    if i > 0:
-        sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-    assert (response.status_code == 200)
-    robots = [x for x in loads(response.text) if "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
-    i += 1
-assert (len(robots) > 0)
-print("OK: Robot found")
+###############################################################################
+# End of MQTT tests
+###############################################################################
 
-response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
+response = requests.get(orion_url + "subscriptions")
 responses = loads(response.text)
 i = 0
 for responseBody in responses:
