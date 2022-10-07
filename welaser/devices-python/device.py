@@ -102,7 +102,7 @@ def server():
         r = requests.post(url="http://{}:{}/v2/subscriptions".format(os.environ.get("DRACO_IP"), os.environ.get("DRACO_PORT_EXT")),
                            data=re.sub('\\s+', ' ', s),
                            headers=content_type)
-        assert (r.status_code == 201)
+        assert (r.status_code == 200)
         print("Listening on port: " + str(port))
         server_address = ('0.0.0.0', port)
         httpd = server_class(server_address, handler_class)
