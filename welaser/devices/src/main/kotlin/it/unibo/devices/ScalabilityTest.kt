@@ -23,16 +23,16 @@ fun scalability(duration: Int, devices: Int, frequency: Int, payload: Int) {
         listOf(devices).forEach { devices -> /* #devices */
             listOf(frequency).forEach { frequency -> /* #mgs/s */
                 listOf(payload).forEach { payload -> /* bytes of additional payload */
-                    val mission = "TEST--dev-$devices--freq-$frequency--pay-$payload--dur-$duration"
-                    println("Start. $mission")
+                    val domain = "TEST--dev-$devices--freq-$frequency--pay-$payload--dur-$duration"
+                    println("Start. $domain")
                     val executor = Executors.newCachedThreadPool()
                     val periodMs = 1000 / frequency
                     (1..devices)
-                        .map { DeviceMQTT(STATUS.ON, periodMs, false, FARM_LATITUDE, FARM_LONGITUDE, DOMAIN, RandomSensor(), times = duration / periodMs) }
+                        .map { DeviceMQTT(STATUS.ON, periodMs, false, FARM_LATITUDE, FARM_LONGITUDE, domain, RandomSensor(), times = duration / periodMs) }
                         .forEach { d -> executor.submit { d.run() } }
                     executor.shutdown()
                     executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)
-                    println("Done. $mission")
+                    println("Done. $domain")
                 }
             }
         }
