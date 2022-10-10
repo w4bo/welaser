@@ -4,6 +4,7 @@ import time
 from dotenv import dotenv_values
 from json import loads
 from time import sleep
+from pymongo import MongoClient
 
 conf = dotenv_values("../.env")
 orion_url = "http://{}:{}/v2/".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
@@ -43,7 +44,6 @@ wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyVa
 ###############################################################################
 # Testing MQTT
 ###############################################################################
-
 received = False  # global variable for message reception
 
 
@@ -67,21 +67,17 @@ client.connect(conf["MOSQUITTO_IP"], port=int(conf["MOSQUITTO_PORT_EXT"]))  # co
 client.loop_start()  # start the loop
 print("Listening to: " + "/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
 client.subscribe("/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
-
 i = 0
 while i < 50 and not received:
     time.sleep(1)
     i += 1
-
-print("OK: MQTT message received.")
-
 client.disconnect()
 client.loop_stop()
+assert received, "No MQTT message received"
 
 ###############################################################################
-# End of MQTT tests
+# Check subscriptions
 ###############################################################################
-
 response = requests.get(orion_url + "subscriptions")
 responses = loads(response.text)
 i = 0
@@ -98,11 +94,11 @@ print("OK: Subscription found")
 ###############################################################################
 # Check mongodb persistence
 ###############################################################################
-MONGO_IP = os.getenv("MONGO_DB_PERS_IP")
-MONGO_PORT = os.getenv("MONGO_DB_PERS_PORT_EXT")
+MONGO_IP = conf["MONGO_DB_PERS_IP"]
+MONGO_PORT = conf["MONGO_DB_PERS_PORT_EXT"]
 MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
-count1 = client[os.getenv("DRACO_RAW_TOPIC") + "." + domain].count({})
+count1 = client[conf["MONGO_DB_PERS_DB"]].get_collection(conf["DRACO_RAW_TOPIC"] + "." + domain).count({})
 sleep(5)
-count2 = client[os.getenv("DRACO_RAW_TOPIC") + "." + domain].count({})
-assert count2 > count1
+count2 = client[conf["MONGO_DB_PERS_DB"]].get_collection(conf["DRACO_RAW_TOPIC"] + "." + domain).count({})
+assert count2 > count1, "No new document found"
