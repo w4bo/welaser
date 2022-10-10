@@ -104,8 +104,9 @@ client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
 count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
 # count2 = count1
 i = 0
-while i < 50 and count1 > 0:
+while i < 50 and count1 == 0:
     time.sleep(1)
     # count2 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
-assert count2 > count1, "No new document found"
+# assert count2 > count1, "No new document found"
+assert count1 > 0, "No new document found"
