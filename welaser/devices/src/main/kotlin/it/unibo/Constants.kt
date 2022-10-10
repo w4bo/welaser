@@ -1,11 +1,12 @@
 package it.unibo
 
+val AGRIROBOT = "AgriRobot"
 val ROBOT_CMD_START = "executemission"
 val ROBOT_CMD_PAUSE = "pause"
 val ROBOT_CMD_RESUME = "resume"
 val ROBOT_CMD_STOP = "stop"
 val HEARTBEAT = "heartbeat"
-val DOMAIN = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
+val DOMAIN = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055-test"
 val LOCATION = "location"
 val COORDINATES = "coordinates"
 val TYPE = "type"

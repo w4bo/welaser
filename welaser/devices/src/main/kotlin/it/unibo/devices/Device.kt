@@ -232,7 +232,11 @@ class ProtocolHTTP : IProtocol {
         var retry = 3
         while (retry-- >= 0) {
             try {
-                khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s, onResponse = { /* connection.disconnect() */ })
+                khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s) {
+                    if (text.contains("BadRequest")) {
+                        throw IllegalArgumentException(JSONObject(s).getString("id") + ": $text")
+                    }
+                }
             } catch (e: Exception) {
                 if (retry == 0) {
                     e.printStackTrace()
@@ -425,7 +429,7 @@ open class DeviceHTTP(
 
     override fun register(s: String) {
         super.register(s)
-        if (JSONObject(s).has("$CMDLIST")) {
+        if (JSONObject(s).has(CMDLIST)) {
             val socket = getIpPort()
             server = embeddedServer(Netty, port = socket.second, host = "0.0.0.0") {
                 routing {

@@ -13,7 +13,7 @@ url_therm = orion_url + "entities?type=MQTT-Thermometer" + options
 url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
 
-def wait_for(description, url):
+def wait_for(description, url, check_domain=True):
     print(description + url, end="")
     responseBody = []
     i = 0
@@ -22,14 +22,14 @@ def wait_for(description, url):
             sleep(1)
         response = requests.get(url)
         assert (response.status_code == 200)
-        responseBody = [x for x in loads(response.text) if x["domain"] == domain]
+        responseBody = [x for x in loads(response.text) if check_domain or (x["domain"] == domain)]
         i += 1
     assert (len(responseBody) > 0)
     print(". Found " + responseBody["id"])
     return responseBody[0]
 
 
-domain = wait_for("Looking for farm at: ", url_farm)["id"]
+domain = wait_for("Looking for farm at: ", url_farm, check_domain=False)["id"]
 thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm)
 thermometer_id = thermometer["id"]
 assert (len(thermometer_id) > 0)

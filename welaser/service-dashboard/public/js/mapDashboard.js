@@ -37,6 +37,7 @@ const mapDashboard = {
             headers: {'Content-Type': 'application/json'},
             layerBoundary: null,
             layerStream: null,
+            layerControl: null,
             map: null,
             devices: {},
             devicesLocation: {},
@@ -162,21 +163,18 @@ const mapDashboard = {
         },
         loadMap() {
             // creating the layers
-            this.layerBoundary = L.layerGroup([]);
-            this.layerStream = L.layerGroup([]);
-            const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
-            const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+            this.layerBoundary = L.layerGroup([]) // empty layer
+            this.layerStream = L.layerGroup([]) // empty layer
+            const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
+            const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
             // creating the map
             this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary, this.layerStream]})
-            const map = this.map
             // add the layers to the group
             const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
-            const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream };
-            const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map)
+            const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream }
+            this.layerControl = L.control.layers(baseMaps, overlayMaps).addTo(this.map)
         },
-        init() {
-            this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
-            this.loadMap()
+        loadAgriFarms() {
             const tis = this
             axios // get the agrifarms
                 .get(tis.ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
@@ -184,36 +182,58 @@ const mapDashboard = {
                     agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
                         tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
                         tis.selectedTopic = agrifarm.id
-                        const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
-                        attrs.forEach(function (attr, index) {
-                            agrifarm[attr].forEach(function (id, index) {
-                                axios
-                                    .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
-                                    .then(loc => {
-                                        let color = "#ff7800"
-                                        const type = loc.data.type
-                                        if (type === "AgriParcel") {
-                                            color = d3.schemeCategory10[2]
-                                        } else if (type === "RestrictedTrafficArea") {
-                                            color = d3.schemeCategory10[3]
-                                        } else if (type === "RoadSegment") {
-                                            color = d3.schemeCategory10[0]
-                                        } else if (type === "Building") {
-                                            color = d3.schemeCategory10[0]
-                                        }
-                                        const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
-                                        const geojson = {
-                                                "type": "Feature",
-                                                "properties": {},
-                                                "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
-                                            }
-                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
-                                    })
-                            })
+                    })
+                    tis.updateAgriFarm()
+                })
+        },
+        updateAgriFarm() {
+            const tis = this
+            this.layerControl.removeLayer(this.layerBoundary) // clean the existing layers
+            this.layerControl.removeLayer(this.layerStream) // clean the existing layers
+            this.layerBoundary = L.layerGroup([]) // add the layer to the layer group
+            this.layerStream = L.layerGroup([]) // add the layer to the layer group
+            this.layerControl.addOverlay(this.layerBoundary, "Boundaries")  // add the new layer
+            this.layerControl.addOverlay(this.layerStream, "Stream")  // add the new layer
+            this.layerBoundary.addTo(this.map) // make the layer visible
+            this.layerStream.addTo(this.map) // make the layer visible
+            axios // get the selected agrifarm
+                .get(tis.ORION_URL + `entities/${tis.selectedTopic}?options=keyValues`)
+                .then(agrifarm => {
+                    agrifarm = agrifarm.data
+                    const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
+                    attrs.forEach(function (attr, index) {
+                        agrifarm[attr].forEach(function (id, index) {
+                            axios
+                                .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
+                                .then(loc => {
+                                    let color = "#ff7800"
+                                    const type = loc.data.type
+                                    if (type === "AgriParcel") {
+                                        color = d3.schemeCategory10[2]
+                                    } else if (type === "RestrictedTrafficArea") {
+                                        color = d3.schemeCategory10[3]
+                                    } else if (type === "RoadSegment") {
+                                        color = d3.schemeCategory10[0]
+                                    } else if (type === "Building") {
+                                        color = d3.schemeCategory10[0]
+                                    }
+                                    const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
+                                    const geojson = {
+                                        "type": "Feature",
+                                        "properties": {},
+                                        "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
+                                    }
+                                    L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
+                                })
                         })
                     })
                     tis.listenTopic()
                 })
+        },
+        init() {
+            this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+            this.loadMap() // create the map
+            this.loadAgriFarms() // populate the map with the selected agrifarm
         }
     },
     mounted() {
