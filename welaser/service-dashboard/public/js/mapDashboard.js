@@ -1,12 +1,13 @@
 const mapDashboard = {
     template: `
-      <div style="padding: 2%">
+      <div style="padding: 0%">
           <v-row align="center" justify="center">
-              <v-col cols=9><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic"></v-select></v-col>
+              <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>
               <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
+              <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>
+              <!-- <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>-->
           </v-row>
-          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px"></div></v-col></v-row>
-          <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
+          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px; z-index: 11"></div></v-col></v-row>
           <v-row justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
@@ -135,6 +136,7 @@ const mapDashboard = {
                 this.socketName = selectedTopic // update the topic name
                 this.remoteSocket.emit("newtopic", selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
                 this.remoteSocket.on(this.socketName, data => { this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
+                this.updateAgriFarm(false)
             }
         },
         handleRemoteSocketData(data) {
@@ -186,8 +188,10 @@ const mapDashboard = {
                     tis.updateAgriFarm()
                 })
         },
-        updateAgriFarm() {
+        updateAgriFarm(listenTopic=true) {
             const tis = this
+            this.map.removeLayer(this.layerBoundary) // remove the layer, do not plot it twice
+            this.map.removeLayer(this.layerStream) // remove the layer, do not plot it twice
             this.layerControl.removeLayer(this.layerBoundary) // clean the existing layers
             this.layerControl.removeLayer(this.layerStream) // clean the existing layers
             this.layerBoundary = L.layerGroup([]) // add the layer to the layer group
@@ -200,34 +204,37 @@ const mapDashboard = {
                 .get(tis.ORION_URL + `entities/${tis.selectedTopic}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
+                    console.log(agrifarm)
                     const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
                     attrs.forEach(function (attr, index) {
-                        agrifarm[attr].forEach(function (id, index) {
-                            axios
-                                .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
-                                .then(loc => {
-                                    let color = "#ff7800"
-                                    const type = loc.data.type
-                                    if (type === "AgriParcel") {
-                                        color = d3.schemeCategory10[2]
-                                    } else if (type === "RestrictedTrafficArea") {
-                                        color = d3.schemeCategory10[3]
-                                    } else if (type === "RoadSegment") {
-                                        color = d3.schemeCategory10[0]
-                                    } else if (type === "Building") {
-                                        color = d3.schemeCategory10[0]
-                                    }
-                                    const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
-                                    const geojson = {
-                                        "type": "Feature",
-                                        "properties": {},
-                                        "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
-                                    }
-                                    L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
-                                })
-                        })
+                        if (agrifarm[attr]) {
+                            agrifarm[attr].forEach(function (id, index) {
+                                axios
+                                    .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
+                                    .then(loc => {
+                                        let color = "#ff7800"
+                                        const type = loc.data.type
+                                        if (type === "AgriParcel") {
+                                            color = d3.schemeCategory10[2]
+                                        } else if (type === "RestrictedTrafficArea") {
+                                            color = d3.schemeCategory10[3]
+                                        } else if (type === "RoadSegment") {
+                                            color = d3.schemeCategory10[0]
+                                        } else if (type === "Building") {
+                                            color = d3.schemeCategory10[0]
+                                        }
+                                        const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
+                                        const geojson = {
+                                            "type": "Feature",
+                                            "properties": {},
+                                            "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
+                                        }
+                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
+                                    })
+                            })
+                        }
                     })
-                    tis.listenTopic()
+                    if (listenTopic) tis.listenTopic()
                 })
         },
         init() {
