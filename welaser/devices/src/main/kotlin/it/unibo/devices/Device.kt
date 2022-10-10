@@ -302,7 +302,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    open val id: String = getType().toString() + getId()
+    open val id: String = "urn:ngsi-ld:" + getType().toString() + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -391,10 +391,10 @@ class DeviceSubscription(
     override fun getStatus(): String {
         return """{"data": [{
                 "id":              "$id",
-                "$TYPE":            "Sub-${getType()}",
+                "$TYPE":           "Sub-${getType()}",
                 ${updateSensor()},
                 "status":          "$status",                      
-                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "$TIMESTAMP":      ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
@@ -402,7 +402,7 @@ class DeviceSubscription(
                         $latitude
                     ]
                 },                
-                "areaServed":      "$domain",                    
+                "$AREASERVED":     "$domain",                    
             }]}""".replace("\\s+".toRegex(), " ")
     }
 }
@@ -462,10 +462,10 @@ open class DeviceHTTP(
     override fun getStatus(): String {
         return """{
                 "id":              "$id",
-                "$TYPE":            "OCB-${getType()}",
+                "$TYPE":           "OCB-${getType()}",
                 ${updateSensor()}, 
                 "status":          "$status",                      
-                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "$TIMESTAMP":      ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
@@ -473,9 +473,9 @@ open class DeviceHTTP(
                         $latitude
                     ]
                 },               
-                "areaServed":      "$domain",
-                "$CMDLIST":         ["on", "off"],
-                "$CMD":             ""               
+                "$AREASERVED":     "$domain",
+                "$CMDLIST":        ["on", "off"],
+                "$CMD":            ""               
             }""".replace("\\s+".toRegex(), " ")
     }
 }
@@ -509,10 +509,10 @@ class DeviceMQTT(
     override fun getRegister(): String {
         return """{
                 "id":              "$id",
-                "$TYPE":            "MQTT-${getType()}",
+                "$TYPE":           "MQTT-${getType()}",
                 ${updateSensor()}, 
-                "status":           "$status",                      
-                "$TIMESTAMP":        ${System.currentTimeMillis()},
+                "status":          "$status",                      
+                "$TIMESTAMP":      ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
@@ -520,9 +520,9 @@ class DeviceMQTT(
                         $latitude
                     ]
                 },                
-                "areaServed":       "$domain",
-                "cmdList":          ["on", "off"],
-                "$CMD":              ""
+                "$AREASERVED":     "$domain",
+                "$CMDLIST":        ["on", "off"],
+                "$CMD":            ""
             }""".replace("\\s+".toRegex(), " ")
     }
 
