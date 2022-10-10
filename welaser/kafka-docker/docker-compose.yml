@@ -14,6 +14,6 @@ services:
       DOCKER_API_VERSION: 1.22
       KAFKA_ADVERTISED_HOST_NAME: "${KAFKA_IP}"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "${DRACO_RAW_TOPIC},${MISSION_MANAGER_TOPIC},${DOMAIN_MANAGER_TOPIC},${REPLAY_MANAGER_TOPIC}"
+      KAFKA_CREATE_TOPICS: "${DRACO_RAW_TOPIC}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
