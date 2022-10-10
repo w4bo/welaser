@@ -3,8 +3,8 @@ import requests
 import time
 from dotenv import dotenv_values
 from json import loads
-from time import sleep
 from pymongo import MongoClient
+from time import sleep
 
 conf = dotenv_values("../.env")
 orion_url = "http://{}:{}/v2/".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
@@ -102,10 +102,10 @@ MONGO_PORT = conf["MONGO_DB_PERS_PORT_EXT"]
 MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
 count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
-count2 = count1
+# count2 = count1
 i = 0
-while i < 50 and count1 == count2:
+while i < 50 and count1 > 0:
     time.sleep(1)
-    count2 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
+    # count2 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
 assert count2 > count1, "No new document found"

@@ -2,7 +2,6 @@
 
 package it.unibo.devices
 
-import it.unibo.DOMAIN
 import it.unibo.FARM_LATITUDE
 import it.unibo.FARM_LONGITUDE
 import kotlinx.cli.ArgParser
