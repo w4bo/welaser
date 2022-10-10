@@ -105,8 +105,6 @@ count2 = count1
 i = 0
 while i < 50 and count1 == count2:
     time.sleep(1)
-    print(conf["MONGO_DB_PERS_DB"])
-    print(domain)
     count2 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
 assert count2 > count1, "No new document found"
