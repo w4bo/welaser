@@ -13,7 +13,7 @@ url_therm = orion_url + "entities?type=MQTT-Thermometer" + options
 url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
 
-def wait_for(description, url, check_domain=True):
+def wait_for(description, url, attr_dom_name="foo", domain="bar", check_domain=True):
     print(description + url, end="")
     responseBody = []
     i = 0
@@ -22,23 +22,23 @@ def wait_for(description, url, check_domain=True):
             sleep(1)
         response = requests.get(url)
         assert (response.status_code == 200)
-        responseBody = [x for x in loads(response.text) if not check_domain or (x["domain"] == domain)]
+        responseBody = [x for x in loads(response.text) if not check_domain or (attr_dom_name in x and x[attr_dom_name] == domain)]
         i += 1
     assert (len(responseBody) > 0)
-    print(". Found " + responseBody["id"])
+    print(". Found " + responseBody[0]["id"])
     return responseBody[0]
 
 
 domain = wait_for("Looking for farm at: ", url_farm, check_domain=False)["id"]
-thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm)
+thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm, attr_dom_name="areaServed", domain=domain)
 thermometer_id = thermometer["id"]
 assert (len(thermometer_id) > 0)
 assert (thermometer["location"]["coordinates"][0] >= -180)  # longitude
 assert (thermometer["location"]["coordinates"][1] >= -90)  # latitude
 assert (thermometer["status"])
 assert (int(thermometer["temperature"]) >= 0)
-wait_for("Looking for AgriRobot: ", url_agrirobot)
-wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyValues&limit=1000")
+wait_for("Looking for AgriRobot: ", url_agrirobot, attr_dom_name="hasFarm", domain=domain)
+wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyValues&limit=1000", attr_dom_name="hasFarm", domain=domain)
 
 ###############################################################################
 # Testing MQTT
@@ -91,3 +91,15 @@ for responseBody in responses:
         i += 1
 assert i >= 0  # at least one notification should have the timeSent
 print("OK: Subscription found")
+
+###############################################################################
+# Check mongodb persistence
+###############################################################################
+MONGO_IP = os.getenv("MONGO_DB_PERS_IP")
+MONGO_PORT = os.getenv("MONGO_DB_PERS_PORT_EXT")
+MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
+client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
+count1 = client[os.getenv("DRACO_RAW_TOPIC") + "." + domain].count({})
+sleep(5)
+count2 = client[os.getenv("DRACO_RAW_TOPIC") + "." + domain].count({})
+assert count2 > count1
