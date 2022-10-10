@@ -100,11 +100,13 @@ MONGO_IP = conf["MONGO_DB_PERS_IP"]
 MONGO_PORT = conf["MONGO_DB_PERS_PORT_EXT"]
 MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
 client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
-count1 = client[conf["MONGO_DB_PERS_DB"]].get_collection(conf["DRACO_RAW_TOPIC"] + "." + domain).find().count()
+count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
 count2 = count1
 i = 0
 while i < 50 and count1 == count2:
     time.sleep(1)
-    count2 = client[conf["MONGO_DB_PERS_DB"]].get_collection(conf["DRACO_RAW_TOPIC"] + "." + domain).find().count()
+    print(conf["MONGO_DB_PERS_DB"])
+    print(domain)
+    count2 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
 assert count2 > count1, "No new document found"
