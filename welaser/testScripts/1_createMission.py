@@ -68,8 +68,10 @@ client.loop_start()  # start the loop
 print("Listening to: " + "/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
 client.subscribe("/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
 
-while not received:
+i = 0
+while i < 50 and not received:
     time.sleep(1)
+    i += 1
 
 print("OK: MQTT message received.")
 
