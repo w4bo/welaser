@@ -1,9 +1,6 @@
 package it.unibo.devices
 
-import it.unibo.DATAMODEL_FOLDER
-import it.unibo.ROBOT_CMD_PAUSE
-import it.unibo.ROBOT_CMD_RESUME
-import it.unibo.ROBOT_CMD_START
+import it.unibo.*
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.MethodOrderer
@@ -67,7 +64,7 @@ class EntityTest {
     }
 
     fun init(): Device {
-        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, "fake-agrifarm", RandomSensor(), times = 2)
+        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, DOMAIN, RandomSensor(), times = 2)
         d.run()
         return d
     }

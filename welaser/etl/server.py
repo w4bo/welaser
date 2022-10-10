@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 import time
 from datetime import datetime
@@ -64,7 +65,7 @@ class S(BaseHTTPRequestHandler):
             domain = get("hasFarm", domain)
             d["domain"] = domain
             d["timestamp_subscription"] = time.time()
-            producer.send(DRACO_RAW_TOPIC + '.' + domain, value=d)
+            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"\.|_|-|:", "", domain), value=d)
 
     def log_request(self, code='-', size='-'):
         return

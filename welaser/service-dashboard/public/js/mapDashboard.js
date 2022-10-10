@@ -2,12 +2,12 @@ const mapDashboard = {
     template: `
       <div style="padding: 2%">
           <v-row align="center" justify="center">
-              <v-col cols=9><v-select :items="topics" item-text="id" item-value="topic" label="Topic" v-model="selectedTopic"></v-select></v-col>
+              <v-col cols=9><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic"></v-select></v-col>
               <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
           </v-row>
           <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px"></div></v-col></v-row>
           <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>
-          <v-row align="top" justify="center">
+          <v-row justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
@@ -20,7 +20,7 @@ const mapDashboard = {
                               </template>
                               <!-- Commands from the AgriRobot -->
                               <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
-                                  <template v-for="cmd in device.data.cmdList.value">
+                                  <template v-for="cmd in device.data.cmdList">
                                       <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
                                   </template>
                               </div>
@@ -35,22 +35,16 @@ const mapDashboard = {
         return {
             ORION_URL: `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`,
             headers: {'Content-Type': 'application/json'},
-
             layerBoundary: null,
             layerStream: null,
             map: null,
-
             devices: {},
             devicesLocation: {},
             remoteSocket: null,
-            topicName: "",
             socketName: "",
-            devicePoints: [],
-            deviceLayer: "",
-
             hideDetails: true,
-            topics: ["data.canary.realtime"],
-            selectedTopic: "data.canary.realtime",
+            topics: [],
+            selectedTopic: "",
             colors: d3.schemeTableau10
         }
     },
@@ -75,7 +69,6 @@ const mapDashboard = {
                     ].includes(key)) {
                 } else {
                     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-                    if (typeof value.value !== "undefined" || value.value === "") { value = value.value }
                     let th = `<th style="border: 1pt solid black">${key}</th>`
                     if (Array.isArray(data)) { th = "" }
                     html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
@@ -133,12 +126,15 @@ const mapDashboard = {
             return this.colors[this.hashCode(type) % this.colors.length]
         },
         listenTopic() {
-            this.devices = {}
-            this.devicesLocation = {}
-            this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
-            this.socketName = this.selectedTopic // update the topic name
-            this.remoteSocket.emit("newtopic", this.selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
-            this.remoteSocket.on(this.socketName, data => { this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
+            if (this.selectedTopic && this.selectedTopic !== "") {
+                this.devices = {}
+                this.devicesLocation = {}
+                this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
+                const selectedTopic = config.DRACO_RAW_TOPIC + "." + this.selectedTopic.replaceAll(/\.|-|_|:/g, "")
+                this.socketName = selectedTopic // update the topic name
+                this.remoteSocket.emit("newtopic", selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
+                this.remoteSocket.on(this.socketName, data => { this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
+            }
         },
         handleRemoteSocketData(data) {
             console.log("Message")
@@ -153,14 +149,14 @@ const mapDashboard = {
             if (!Object.keys(this.devices).includes(data.id)) { // if the device is unknown
                 this.$set(this.devices, data.id, { 'id': data.id, 'data': data, 'color': this.getRandomColor(data.type) })
                 if (hasLocation) {
-                    const coordinates = data.location.value.coordinates
+                    const coordinates = data.location.coordinates
                     this.$set(this.devicesLocation, data.id, L.circle(L.latLng(coordinates[1], coordinates[0]), 3, {"color": this.getRandomColor(data.type)}).bindPopup(data.id).addTo(this.layerStream))
                 }
             }
             const device = this.devices[data.id]
             device.data = data
             if (hasLocation) {
-                const coordinates = data.location.value.coordinates
+                const coordinates = data.location.coordinates
                 this.devicesLocation[data.id].setLatLng(L.latLng(coordinates[1], coordinates[0])) // .update()
             }
         },
@@ -180,19 +176,19 @@ const mapDashboard = {
         },
         init() {
             this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
-            const ORION_URL = this.ORION_URL
             this.loadMap()
-            const layerBoundary = this.layerBoundary
-            const map = this.map
+            const tis = this
             axios // get the agrifarms
-                .get(ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
+                .get(tis.ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
                 .then(agrifarms => {
                     agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
+                        tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
+                        tis.selectedTopic = agrifarm.id
                         const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
                         attrs.forEach(function (attr, index) {
                             agrifarm[attr].forEach(function (id, index) {
                                 axios
-                                    .get(ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
+                                    .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
                                     .then(loc => {
                                         let color = "#ff7800"
                                         const type = loc.data.type
@@ -211,13 +207,13 @@ const mapDashboard = {
                                                 "properties": {},
                                                 "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
                                             }
-                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(layerBoundary);
+                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
                                     })
                             })
                         })
                     })
+                    tis.listenTopic()
                 })
-            this.listenTopic()
         }
     },
     mounted() {
