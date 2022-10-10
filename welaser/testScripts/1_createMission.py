@@ -22,7 +22,7 @@ def wait_for(description, url, check_domain=True):
             sleep(1)
         response = requests.get(url)
         assert (response.status_code == 200)
-        responseBody = [x for x in loads(response.text) if check_domain or (x["domain"] == domain)]
+        responseBody = [x for x in loads(response.text) if not check_domain or (x["domain"] == domain)]
         i += 1
     assert (len(responseBody) > 0)
     print(". Found " + responseBody["id"])
