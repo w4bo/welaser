@@ -26,6 +26,7 @@ def wait_for(description, url, attr_dom_name="foo", domain="bar", check_domain=T
         responseBody = [x for x in loads(response.text) if not check_domain or (attr_dom_name in x and x[attr_dom_name] == domain)]
         i += 1
     assert (len(responseBody) > 0)
+    responseBody = [x for x in responseBody if "test" not in x["id"]]
     print(". Found " + responseBody[0]["id"])
     return responseBody[0]
 

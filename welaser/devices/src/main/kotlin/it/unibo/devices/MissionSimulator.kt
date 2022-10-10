@@ -21,17 +21,13 @@ fun main(args: Array<String>) {
     robot.exec(ROBOT_CMD_START, "mission-123")
     val executor = Executors.newCachedThreadPool()
     (
-            listOf(
-                robot,
-                // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31308266787424, -3.4804348644627585, domain, RandomSensor()),
-                // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31285012589443, -3.4811514708229670, domain, RandomSensor()),
-                DeviceMQTT(STATUS.ON, timeout, false, 40.3120984, -3.481554, domain, RandomSensor()),
-                // DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31231176524012, -3.4810422377848910, domain, Camera()),
-                EntityFactory.createFromFile("$folder/weatherstation-1.json", timeout),
-                EntityFactory.createFromFile("$folder/camera-1.json", timeout * 3),
-                EntityFactory.createFromFile("$folder/camera-2.json", timeout * 3),
-                // EntityFactory.createFromFile("$folder/camera-3.json", timeout * 3)
-            )
-            ).forEach { d -> executor.submit { d.run() } }
+        listOf(
+            robot,
+            DeviceMQTT(STATUS.ON, timeout, false, 40.3120984, -3.481554, domain, RandomSensor()),
+            EntityFactory.createFromFile("$folder/weatherstation-1.json", timeout),
+            EntityFactory.createFromFile("$folder/camera-1.json", timeout * 3),
+            EntityFactory.createFromFile("$folder/camera-2.json", timeout * 3),
+        )
+    ).forEach { d -> executor.submit { d.run() } }
     executor.shutdown()
 }
