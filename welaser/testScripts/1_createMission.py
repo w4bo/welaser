@@ -65,8 +65,10 @@ client.on_connect = on_connect
 client.on_message = on_message
 client.connect(conf["MOSQUITTO_IP"], port=int(conf["MOSQUITTO_PORT_EXT"]))  # connect to broker
 client.loop_start()  # start the loop
-print("Listening to: " + "/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
-client.subscribe("/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs")
+# topic = "/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs"
+topic = "/" + conf["FIWARE_API_KEY"] + "/#"
+print("Listening to: " + topic)
+client.subscribe(topic)
 i = 0
 while i < 50 and not received:
     time.sleep(1)
