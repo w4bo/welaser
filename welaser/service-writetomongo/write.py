@@ -5,6 +5,7 @@ import uuid
 from kafka import KafkaConsumer
 from pymongo import MongoClient
 
+time.sleep(30)  # sleep for kafka
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
 DRACO_PORT = os.getenv("DRACO_PORT_EXT")
@@ -17,11 +18,13 @@ consumer = KafkaConsumer(  # create a Kafka consumer
     bootstrap_servers=[KAFKA_IP + ":" + KAFKA_PORT],
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
-consumer.subscribe(pattern="^" + DRACO_RAW_TOPIC + "*")  # register to all topics beginning with DRACO_RAW_TOPIC
+topic = "^" + DRACO_RAW_TOPIC + "*"
+print("Subscribing to: " + topic)
+consumer.subscribe(pattern=topic)  # register to all topics beginning with DRACO_RAW_TOPIC
 client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
+print("Connected to mongo at: " + MONGO_CONNECTION_STR)
 for message in consumer:
     message = message.value
     message["timestamp_kafka"] = time.time()
     # create a collection for every domain (e.g., Agrifarm)
-    collection = client[os.getenv("MONGO_DB_PERS_DB")].get_collection(message["domain"])
-    collection.insert_one(message)
+    client[os.getenv("MONGO_DB_PERS_DB")].get_collection(message["domain"]).insert_one(message)

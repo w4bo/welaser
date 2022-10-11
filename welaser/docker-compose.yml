@@ -49,7 +49,7 @@ services:
       interval: 5s
       timeout: 10s
 
-  # Database (ORION)
+  # Database (orion + persistence)
   mongo-db:
     init: true
     restart: always
@@ -62,8 +62,8 @@ services:
       - "${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}" # 27017
     networks:
       - default
-    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
-      - ./mongodb:/data/db
+    # volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
+    #   - ./mongodb:/data/db
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
@@ -108,7 +108,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_INT} #
+      test: curl --fail -s http://localhost:${WEB_SERVER_PORT_INT}
       interval: 5s
       timeout: 10s
 
@@ -179,9 +179,7 @@ services:
     env_file:
       - .env
     depends_on:
-      orion:
-        condition: service_healthy
-      etl:
+      mongo-db:
         condition: service_healthy
 
   device-python:
@@ -196,7 +194,7 @@ services:
     ports:
       - "12346-13000:12346-13000"
     depends_on:
-      node:
+      orion:
         condition: service_healthy
 
 networks:

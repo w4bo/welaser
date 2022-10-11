@@ -34,4 +34,4 @@ curl -iX POST \
 }'
 cd devices
 ./gradlew --stacktrace --scan
-./gradlew runMission --stacktrace &>../logs/missionmanager-$(date +%s)-devices.txt &
+./gradlew runMission --stacktrace &>../logs/mission-$(date +%s)-devices.txt &
