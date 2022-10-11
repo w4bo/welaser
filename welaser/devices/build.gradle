@@ -104,4 +104,4 @@ if (hasProperty('buildScan')) {
     }
 }
 
-defaultTasks 'clean', 'build', 'check', 'shadowJar'
+defaultTasks 'clean', 'build', 'check' // , 'shadowJar'
