@@ -15,11 +15,6 @@ const mapDashboard = {
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
                           <v-card-text class="flex"><div v-html="renderJSON(device.data)"></div></v-card-text>
                           <v-card-actions>
-                              <!-- Commands from IoT Agent -->
-                              <template v-for="(value, key) in device.data">
-                                  <v-btn v-if="value.type=='commandResult'" v-on:click="sendCommand(device.id, key.split('_')[0])"> {{key.split("_")[0]}} </v-btn>
-                              </template>
-                              <!-- Commands from the AgriRobot -->
                               <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
                                   <template v-for="cmd in device.data.cmdList">
                                       <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
