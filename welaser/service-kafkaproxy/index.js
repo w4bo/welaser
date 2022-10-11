@@ -9,27 +9,23 @@ const uuid = require('uuid');
 app.use(cors({origin: '*'}))
 app.use(express.json())
 env.config() // load the environment variables
-// set some global variables
 const kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]
-// global.kafkaBrokers = kafkaBrokers
-// global.io = io
-// set the kafka producer
 const kafka = new Kafka({
     clientId: "kafka-proxy." + uuid.v4(),
     brokers: kafkaBrokers,
     logLevel: logLevel.ERROR
 })
-
 const producerKafka = kafka.producer()
 producerKafka.connect()
-// global.producerKafka = producerKafka
-
 io.on("connection", function (socket) {
     let consumer = undefined
+    let prevTopic = undefined
     socket.on("publish", function (data) { // when the socket receives a message with topic "publish"
         producerKafka.send({topic: data.topic, messages: [{value: JSON.stringify(data.data)}]}) // send it to kafka
     })
     socket.on("newtopic", function (topic) { // when the socket receives a message with topic "newtopic"
+        if (topic == prevTopic) return // if the topic is the same as before do nothing
+        prevTopic = topic
         if (typeof consumer !== "undefined") { // when changing the topic, remove the previous Kafka client (if any)
             console.log('Kafka client disconnected');
             consumer.disconnect() // disconnect the kafka consumer
@@ -47,22 +43,21 @@ io.on("connection", function (socket) {
             await admin.connect()
             await admin.resetOffsets({ groupId, topic }) // rest the offset to "latest"
             await admin.disconnect()
-            // await
             consumer.run({
                 eachMessage: ({message}) => { // forward the message to the socket
                     socket.emit(topic, message.value.toString())
                 }
             })
         }
-        consume(topic).catch((err) => { console.error("Error in consumer: ", err) })
+        consume(topic).catch((err) => { console.error(err) })
     })
-    // socket.on('disconnect', function() {
-    //     console.log('Socket disconnected');
-    //     if (typeof consumer !== "undefined") { // when changing the topic, remove the previous Kafka client (if any)
-    //         console.log('Kafka client disconnected');
-    //         consumer.disconnect() // disconnect the kafka consumer
-    //     }
-    // });
+    socket.on('disconnect', function() {
+        console.log('Socket disconnected')
+        if (typeof consumer !== "undefined") { // when changing the topic, remove the previous Kafka client (if any)
+            console.log('Kafka client disconnected')
+            consumer.disconnect() // disconnect the kafka consumer
+        }
+    })
 })
 server.listen(process.env.PROXY_SERVER_PORT_INT, process.env.PROXY_SERVER_ADDRESS, function () {
     console.log('Node Server listening on port ' + process.env.PROXY_SERVER_PORT_INT)
