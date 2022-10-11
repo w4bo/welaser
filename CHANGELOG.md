@@ -1,3 +1,15 @@
+## [1.1.36](https://github.com/w4bo/welaser/compare/1.1.35...1.1.36) (2022-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.2 ([3d4db92](https://github.com/w4bo/welaser/commit/3d4db92c2e6793c0d9406fde2d98d7ddf0834882))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.1 ([6d9c786](https://github.com/w4bo/welaser/commit/6d9c786005b50c4676f2f1f88d7b0f5bfe42e1f9))
+
 ## [1.1.35](https://github.com/w4bo/welaser/compare/1.1.34...1.1.35) (2022-10-04)
 
 
