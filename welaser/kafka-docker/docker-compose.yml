@@ -4,9 +4,9 @@ services:
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
+
   kafka:
-    # image: wurstmeister/kafka
-    build: .
+    image: wurstmeister/kafka
     depends_on:
       - zookeeper
     ports:
