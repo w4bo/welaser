@@ -28,13 +28,13 @@ i = 0
 
 
 def label(timestamp):
-    if timestamp == "$timestamp.value":
+    if timestamp == "$timestamp":
         return "Device"
     if timestamp == "$timestamp_subscription":
         return "OCB-Sub"
     if timestamp == "$timestamp_kafka":
         return "Kafka"
-    if timestamp == "$timestamp_iota.value":
+    if timestamp == "$timestamp_iota":
         return "IoTA"
 
 
@@ -52,20 +52,21 @@ for collection in collections:
 
     mint = -1
     maxt = -1
-    for timestamp in ["$timestamp.value", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota.value"]:
+    for timestamp in ["$timestamp", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota"]:
         print(" - " + timestamp)
-        if timestamp in ["$timestamp.value", "$timestamp_iota.value"]:  # these timestamps are in ms
+        if timestamp in ["$timestamp", "$timestamp_iota"]:  # these timestamps are in ms
             data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 1000 * 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
         else:  # these timestamps are in s, I need to round them in second and to transform them in ms
             data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
         # drop the null values
         data = data.dropna()
         # get the parameters from the collection's name
-        setup = json.loads('{"' + collection.replace("mission_TEST--", "").replace("--", '","').replace("-", '":"') + '"}')
+        setup = json.loads('{"' + collection.replace("TEST--", "").replace("--", '","').replace("-", '":"') + '"}')
         # this is the timestamp from devices
-        if timestamp == "$timestamp.value":
+        if timestamp == "$timestamp":
             # get the first timestamp
             mint = data["_id"].min()
+
             # plot the optimal value (if no message is lost)
             x = np.linspace(0, np.log(int(setup["dur"]) / 1000), num=100)
             y = [step * int(setup["freq"]) * int(setup["dev"]) for step in x]
