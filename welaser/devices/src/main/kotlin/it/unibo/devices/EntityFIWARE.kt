@@ -8,8 +8,8 @@ object EntityFactory {
     fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
         val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
         val initStatus = JSONObject(lines)
-        return when (initStatus.getString("type")) {
-            "AgriRobot" -> Robot(fileName, timeoutMs, times)
+        return when (initStatus.getString(TYPE)) {
+            AGRIROBOT -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
         }
     }
@@ -20,14 +20,11 @@ object EntityFactory {
             .readLines()
             .filter { it.endsWith("json") }
             .sorted()
-            .map {
-                createFromFile("$folder/$it", 1, times = 1)
-            }
+            .map { createFromFile("$folder/$it", 1, times = 1) }
     }
 }
 
-class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
-    EntityFIWARE(fileName, timeoutMs, times) {
+class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(fileName, timeoutMs, times) {
 
     val c = Camera(onBoard = true)
     val h = Heartbeat()
@@ -59,12 +56,10 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
         when (commandName) {
             ROBOT_CMD_START -> {
                 status = STATUS.ON
-                // TODO should be val mission: String = khttp.get("$ORION_URL/v2/entities/${payload}/?options=keyValues").jsonObject.toString()
-                val mission: String = khttp.get("$ORION_URL/v2/entities/mission-123/?options=keyValues").jsonObject.toString()
-                // val mission: String = httpRequest("$ORION_URL/v2/entities/${payload}/?options=keyValues")
+                // TODO should be val mission: String = khttp.get("${ORION_URL}entities/${payload}/?options=keyValues").jsonObject.toString()
+                val mission: String = khttp.get("${ORION_URL}entities/mission-123/?options=keyValues").jsonObject.toString()
                 missionPlan = JSONObject(mission)
-                coords = missionPlan.getJSONObject("actualLocation").getJSONArray("coordinates").toList()
-                // println("Update coords")
+                coords = missionPlan.getJSONObject("actualLocation").getJSONArray(COORDINATES).toList()
             }
             ROBOT_CMD_STOP -> reset()
             ROBOT_CMD_RESUME -> status = STATUS.ON
@@ -75,9 +70,8 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) :
     @Synchronized
     override fun updatePosition() {
         if (coords.isNotEmpty()) {
-            // println("Update")
             val c = coords.removeAt(0)
-            initStatus.getJSONObject("location").put("coordinates", c)
+            initStatus.getJSONObject(LOCATION).put(COORDINATES, c)
         } else {
             reset()
         }
@@ -92,20 +86,20 @@ fun find(initStatus: JSONObject, key: String, value: Any, prop: String = "contro
 }
 
 open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
-    DeviceHTTP(STATUS.OFF, timeoutMs, false, -1.0, -1.0, DOMAIN, MISSION, DummySensor(), times = times) {
+    DeviceHTTP(STATUS.OFF, timeoutMs, false, -1.0, -1.0, DOMAIN, DummySensor(), times = times) {
 
     val initStatus = JSONObject(this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b })
-    val type: String = initStatus.getString("type")
+    val type: String = initStatus.getString(TYPE)
     override val id: String = initStatus.getString("id")
     val sensors: Map<String, ISensor> =
         if (initStatus.has("controlledProperty")) {
             initStatus.getJSONArray("controlledProperty").map {
                 it.toString() to when (it.toString()) {
                     HEARTBEAT -> Heartbeat()
-                    "temperature" -> RandomSensor()
-                    "humidity" -> RandomSensor(0, 100)
-                    "camera" -> Camera(onBoard = false)
-                    "image" -> Camera(onBoard = false)
+                    TEMPERATURE -> RandomSensor()
+                    HUMIDITY -> RandomSensor(0, 100)
+                    CAMERA -> Camera(onBoard = false)
+                    IMAGE -> Camera(onBoard = false)
                     else -> throw java.lang.IllegalArgumentException("Unknown controlledProperty: $it")
                 }
             }.toMap()
@@ -122,19 +116,19 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
 
     @Synchronized
     override fun getStatus(): String {
-        when (initStatus.getString("type")) {
+        when (initStatus.getString(TYPE)) {
             "Device" -> sensors.forEach { s -> find(initStatus, s.key, s.value.sense()) }
         }
-        initStatus.put("timestamp", System.currentTimeMillis())
+        initStatus.put(TIMESTAMP, System.currentTimeMillis())
         return initStatus.toString()
     }
 
     override fun updatePosition() {
-        if (moving && initStatus.has("location")) {
-            val coord = initStatus.getJSONObject("location").getJSONArray("coordinates")
+        if (moving && initStatus.has(LOCATION)) {
+            val coord = initStatus.getJSONObject(LOCATION).getJSONArray(COORDINATES)
             val latitude = java.lang.Double.parseDouble(coord.get(0).toString()) + (r.nextDouble() - 0.5) / 100000
             val longitude = java.lang.Double.parseDouble(coord.get(1).toString()) + (r.nextDouble() - 0.5) / 100000
-            initStatus.getJSONObject("location").put("coordinates", arrayListOf(latitude, longitude))
+            initStatus.getJSONObject(LOCATION).put(COORDINATES, arrayListOf(latitude, longitude))
         }
     }
 }

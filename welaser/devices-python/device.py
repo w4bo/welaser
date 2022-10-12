@@ -55,11 +55,9 @@ def run():
             status["status"][2] = time.time()
             # ... and image
             with open(os.path.join(path, filename), "rb") as image_file:
-            # with open("img01.png", "rb") as image_file:
                 # You cannot send messages containing "=" to the OCB,
                 # so you need to encode it using its html representation ("%3D")
                 # See the encoding here: https://www.w3schools.com/tags/ref_urlencode.asp
-                # urlsafe_b64encode
                 status["status"][1] = base64.b64encode(image_file.read()).decode('utf-8').replace("=", "%3D")
             # update the context broker
             r = requests.patch(url="http://{}:{}/v2/entities/{}/attrs?options=keyValues".format(os.environ.get("ORION_IP"), os.environ.get("ORION_PORT_EXT"), id),
@@ -102,7 +100,7 @@ def server():
         r = requests.post(url="http://{}:{}/v2/subscriptions".format(os.environ.get("DRACO_IP"), os.environ.get("DRACO_PORT_EXT")),
                            data=re.sub('\\s+', ' ', s),
                            headers=content_type)
-        assert (r.status_code == 201)
+        assert (r.status_code == 200)
         print("Listening on port: " + str(port))
         server_address = ('0.0.0.0', port)
         httpd = server_class(server_address, handler_class)

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 import time
 from datetime import datetime
@@ -7,9 +8,9 @@ from dotenv import load_dotenv
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from kafka import KafkaProducer
 
-path = "../.env"
-if os.path.isfile(path):
-    load_dotenv('../.env')
+path1 = "../.env"
+if os.path.isfile(path1):
+    load_dotenv(path1)
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = int(os.getenv("KAFKA_PORT_EXT"))
@@ -59,21 +60,12 @@ class S(BaseHTTPRequestHandler):
                 else:
                     return domain
 
-            domain = "canary"
-            domain = get("Domain", domain)
-            domain = get("domain", domain)
-
-            mission = "dummy"
-            mission = get("Mission", mission)
-            mission = get("mission", mission)
-
+            domain = "undefined-domain"
+            domain = get("areaServed", domain)
+            domain = get("hasFarm", domain)
             d["domain"] = domain
-            d["mission"] = mission
-            d["timestamp_subscription"] = time.time()
-            producer.send('data.' + domain + ".realtime", value=d)
-            # producer.send('data.' + domain + ".realtime." + mission, value=d)
-            producer.send(DRACO_RAW_TOPIC, value=d)
-
+            d["timestamp_subscription"] = round(time.time() * 1000)  # time in ms
+            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"\.|_|-|:", "", domain), value=d)
 
     def log_request(self, code='-', size='-'):
         return

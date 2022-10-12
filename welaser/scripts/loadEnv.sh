@@ -1,7 +1,10 @@
+#!/bin/bash
+set -exo
+
 if [ -f .env ]; then
-    # Load Environment Variables
-    export $(cat .env | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
+    # export $(echo $(cat .env | sed 's/#.*//g' | xargs) | envsubst)
+    export $(cat .env | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}')
 else
-    echo "Not found"
+    echo "Could not find the .env file"
     exit 1
 fi

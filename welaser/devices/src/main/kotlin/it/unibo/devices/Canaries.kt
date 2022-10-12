@@ -1,15 +1,16 @@
 @file:JvmName("Canaries")
+
 package it.unibo.devices
 
+import it.unibo.DATAMODEL_FOLDER
+import it.unibo.DOMAIN
+import it.unibo.FARM_LATITUDE
+import it.unibo.FARM_LONGITUDE
 import java.lang.Math.pow
 import java.util.*
 import java.util.concurrent.Executors
 
 val r = Random(42)
-val DOMAIN = "canary"
-val MISSION = "dummy"
-val latitude = 40.3123117652
-val longitude = -3.481042237784
 
 fun timeStamp(): Int {
     return Math.max(300.0, r.nextDouble() * 1000).toInt()
@@ -25,17 +26,16 @@ fun main() {
 
     val executor = Executors.newCachedThreadPool()
     (
-        EntityFactory.createAll("/datamodels") +
-        listOf(
-            DeviceHTTP(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceHTTP(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            DeviceMQTT(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceMQTT(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            DeviceSubscription(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceSubscription(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2),
-            // DeviceKafka(STATUS.ON, timeStamp(), true, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s1),
-            DeviceKafka(STATUS.ON, timeStamp(), false, rnd(latitude, 6), rnd(longitude, 6), DOMAIN, MISSION, s2)
-        )
-    ).forEach { d -> executor.submit { d.run() } } //.forEach { d -> d.run() } //
+        EntityFactory.createAll(DATAMODEL_FOLDER) +
+            listOf(
+                DeviceHTTP(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
+                DeviceHTTP(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
+                DeviceMQTT(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
+                DeviceMQTT(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
+                DeviceSubscription(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
+                DeviceSubscription(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
+                DeviceKafka(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2)
+            )
+        ).forEach { d -> executor.submit { d.run() } }
     executor.shutdown()
 }
