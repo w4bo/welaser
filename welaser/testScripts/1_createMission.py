@@ -16,19 +16,19 @@ url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
 def wait_for(description, url, attr_dom_name="foo", domain="bar", check_domain=True):
     print(description + url, end="")
-    responseBody = []
+    response_body = []
     i = 0
-    while i < 50 and len(responseBody) == 0:
+    while i < 50 and len(response_body) == 0:
         if i > 0:
             sleep(1)
         response = requests.get(url)
         assert (response.status_code == 200)
-        responseBody = [x for x in loads(response.text) if not check_domain or (attr_dom_name in x and x[attr_dom_name] == domain)]
+        response_body = [x for x in loads(response.text) if not check_domain or (attr_dom_name in x and x[attr_dom_name] == domain)]
         i += 1
-    assert (len(responseBody) > 0)
-    responseBody = [x for x in responseBody if "test" not in x["id"]]
-    print(". Found " + responseBody[0]["id"])
-    return responseBody[0]
+    assert (len(response_body) > 0)
+    response_body = [x for x in response_body if "test" not in x["id"]]
+    print(". Found " + response_body[0]["id"])
+    return response_body[0]
 
 
 domain = wait_for("Looking for farm at: ", url_farm, check_domain=False)["id"]
@@ -84,12 +84,12 @@ assert received, "No MQTT message received"
 response = requests.get(orion_url + "subscriptions")
 responses = loads(response.text)
 i = 0
-for responseBody in responses:
-    assert (response.status_code == 200), str(responseBody)
-    assert (responseBody["status"] == "active"), str(responseBody)
-    if "notification" in responseBody and "timeSent" in responseBody["notification"]:
-        assert (responseBody["notification"]["timesSent"] > 0), str(responseBody)
-        assert (responseBody["notification"]["lastSuccessCode"] == 200), str(responseBody)
+for response_body in responses:
+    assert (response.status_code == 200), str(response_body)
+    assert (response_body["status"] == "active"), str(response_body)
+    if "notification" in response_body and "timeSent" in response_body["notification"]:
+        assert (response_body["notification"]["timesSent"] > 0), str(response_body)
+        assert (response_body["notification"]["lastSuccessCode"] == 200), str(response_body)
         i += 1
 assert i >= 0  # at least one notification should have the timeSent
 print("OK: Subscription found")
