@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from kafka import KafkaProducer
 
-path = "../.env"
-if os.path.isfile(path):
-    load_dotenv('../.env')
+path1 = "../.env"
+if os.path.isfile(path1):
+    load_dotenv(path1)
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = int(os.getenv("KAFKA_PORT_EXT"))

@@ -3,8 +3,16 @@ import os
 import sys
 import time
 import uuid
+from dotenv import load_dotenv
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
+
+path1 = "../.env"
+path2 = ".env"
+if os.path.isfile(path1):
+    load_dotenv(path1)
+elif os.path.isfile(path2):
+    load_dotenv(path2)
 
 KAFKA_IP = os.getenv('KAFKA_IP')
 KAFKA_PORT = os.getenv('KAFKA_PORT_EXT')
