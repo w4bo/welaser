@@ -25,6 +25,6 @@ client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
 print("Connected to mongo at: " + MONGO_CONNECTION_STR)
 for message in consumer:
     message = message.value
-    message["timestamp_kafka"] = time.time()
+    message["timestamp_kafka"] = round(time.time() * 1000)  # time in ms
     # create a collection for every domain (e.g., Agrifarm)
     client[os.getenv("MONGO_DB_PERS_DB")].get_collection(message["domain"]).insert_one(message)
