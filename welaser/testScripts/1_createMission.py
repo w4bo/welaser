@@ -107,4 +107,4 @@ while i < 50 and count1 == 0:
     time.sleep(1)
     count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
-assert count1 > 0, "No new document found"
+assert count1 > 0, "No document found"
