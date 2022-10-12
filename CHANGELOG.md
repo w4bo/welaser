@@ -1,3 +1,10 @@
+## [1.1.37](https://github.com/w4bo/welaser/compare/1.1.36...1.1.37) (2022-10-12)
+
+
+### Bug Fixes
+
+* **demo:** Feature demo ([#271](https://github.com/w4bo/welaser/issues/271)) ([4ad6146](https://github.com/w4bo/welaser/commit/4ad6146e131492f455387862bb9f6ad77ca168dd))
+
 ## [1.1.36](https://github.com/w4bo/welaser/compare/1.1.35...1.1.36) (2022-10-11)
 
 
