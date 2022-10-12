@@ -1,11 +1,15 @@
 version: "3.9"
 services:
   zookeeper:
+    init: true
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   kafka:
+    init: true
     image: wurstmeister/kafka
     depends_on:
       - zookeeper
