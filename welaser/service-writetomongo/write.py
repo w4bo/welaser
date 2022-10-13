@@ -3,6 +3,11 @@ import os
 import time
 from kafka import KafkaConsumer
 from pymongo import MongoClient
+from dotenv import load_dotenv
+
+path1 = "../.env"
+if os.path.isfile(path1):
+    load_dotenv(path1)
 
 KAFKA_IP = os.getenv("KAFKA_IP")
 KAFKA_PORT = os.getenv("KAFKA_PORT_EXT")
@@ -23,8 +28,25 @@ print("Subscribing to: " + topic)
 consumer.subscribe(pattern=topic)  # register to all topics beginning with DRACO_RAW_TOPIC
 client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
 print("Connected to mongo at: " + MONGO_CONNECTION_STR)
+messages = []
+message = {}
+start = round(time.time() * 1000)
+while len(messages) == 0:
+    messages = consumer.poll(timeout_ms=1000, max_records=1)
+    if len(messages) == 0:
+        consumer.unsubscribe()
+        consumer.subscribe(pattern=topic)
+        print("Resubscribing to: " + topic)
+    else:
+        received_message = True
+        assert len(messages) == 1
+        for x, v in messages.items():
+            message = v[0].value
+print("First message received in", round(time.time() * 1000) - start)
+collection = client[os.getenv("MONGO_DB_PERS_DB")].get_collection(message["domain"])
+collection.insert_one(message)
 for message in consumer:
     message = message.value
     message["timestamp_kafka"] = round(time.time() * 1000)  # time in ms
     # create a collection for every domain (e.g., Agrifarm)
-    client[os.getenv("MONGO_DB_PERS_DB")].get_collection(message["domain"]).insert_one(message)
+    collection.insert_one(message)
