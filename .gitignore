@@ -1,4 +1,4 @@
-**/datamodels/*.json
+**/datamodels/**/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
 **/mongodb/*

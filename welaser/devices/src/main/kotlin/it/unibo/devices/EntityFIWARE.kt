@@ -6,10 +6,11 @@ import org.json.JSONObject
 
 object EntityFactory {
     fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
+        println(fileName)
         val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
         val initStatus = JSONObject(lines)
         return when (initStatus.getString(TYPE)) {
-            AGRIROBOT -> Robot(fileName, timeoutMs, times)
+            AGRI_ROBOT -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
         }
     }
@@ -86,7 +87,7 @@ fun find(initStatus: JSONObject, key: String, value: Any, prop: String = "contro
 }
 
 open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
-    DeviceHTTP(STATUS.OFF, timeoutMs, false, -1.0, -1.0, DOMAIN, DummySensor(), times = times) {
+    DeviceHTTP(STATUS.OFF, timeoutMs, false, -1.0, -1.0, AGRI_FARM, DummySensor(), times = times) {
 
     val initStatus = JSONObject(this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b })
     val type: String = initStatus.getString(TYPE)
@@ -120,6 +121,7 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
             "Device" -> sensors.forEach { s -> find(initStatus, s.key, s.value.sense()) }
         }
         initStatus.put(TIMESTAMP, System.currentTimeMillis())
+        initStatus.put(DOMAIN, AGRI_FARM)
         return initStatus.toString()
     }
 

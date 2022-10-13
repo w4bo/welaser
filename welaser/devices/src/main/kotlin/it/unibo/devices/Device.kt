@@ -402,7 +402,7 @@ class DeviceSubscription(
                         $latitude
                     ]
                 },                
-                "$AREASERVED":     "$domain",                    
+                "$AREA_SERVED":     "$domain",
             }]}""".replace("\\s+".toRegex(), " ")
     }
 }
@@ -429,7 +429,7 @@ open class DeviceHTTP(
 
     override fun register(s: String) {
         super.register(s)
-        if (JSONObject(s).has(CMDLIST)) {
+        if (JSONObject(s).has(CMD_LIST)) {
             val socket = getIpPort()
             server = embeddedServer(Netty, port = socket.second, host = "0.0.0.0") {
                 routing {
@@ -473,8 +473,8 @@ open class DeviceHTTP(
                         $latitude
                     ]
                 },               
-                "$AREASERVED":     "$domain",
-                "$CMDLIST":        ["on", "off"],
+                "$AREA_SERVED":     "$domain",
+                "$CMD_LIST":        ["on", "off"],
                 "$CMD":            ""               
             }""".replace("\\s+".toRegex(), " ")
     }
@@ -520,8 +520,8 @@ class DeviceMQTT(
                         $latitude
                     ]
                 },                
-                "$AREASERVED":     "$domain",
-                "$CMDLIST":        ["on", "off"],
+                "$AREA_SERVED":     "$domain",
+                "$CMD_LIST":        ["on", "off"],
                 "$CMD":            ""
             }""".replace("\\s+".toRegex(), " ")
     }

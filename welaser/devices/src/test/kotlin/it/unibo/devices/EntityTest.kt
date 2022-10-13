@@ -10,7 +10,7 @@ import java.util.*
 
 @TestMethodOrder(MethodOrderer.MethodName::class)
 class EntityTest {
-    val folder = DATAMODEL_FOLDER
+    val folder = DATA_MODEL_FOLDER
 
     @Test
     fun testScalability() {
@@ -64,7 +64,7 @@ class EntityTest {
     }
 
     fun init(): Device {
-        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, DOMAIN, RandomSensor(), times = 2)
+        val d = DeviceMQTT(STATUS.ON, timeStamp(), false, 40.31184130935516, -3.4810637987225532, AGRI_FARM, RandomSensor(), times = 2)
         d.run()
         return d
     }

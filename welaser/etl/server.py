@@ -52,20 +52,11 @@ class S(BaseHTTPRequestHandler):
         data = data["data"]  # get the data from the subscription
         for d in data:  # data can be more than one item, do some preprocessing
             def get(k, domain):
-                if k in d:
-                    if "value" in d[k]:
-                        return d[k]["value"]  # this is filled by an IoT Sensor
-                    else:
-                        return d[k]  # this is filled by the robot
-                else:
-                    return domain
+                return d[k] if k in d else domain
 
-            domain = "undefined-domain"
-            domain = get("areaServed", domain)
-            domain = get("hasFarm", domain)
-            d["domain"] = domain
+            d["domain"] = get("domain", get("areaServed", get("hasFarm", "undefined-domain")))
             d["timestamp_subscription"] = round(time.time() * 1000)  # time in ms
-            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"\.|_|-|:", "", domain), value=d)
+            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"\.|_|-|:", "", d["domain"]), value=d)
 
     def log_request(self, code='-', size='-'):
         return
