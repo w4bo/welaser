@@ -32,7 +32,7 @@ messages = []
 message = {}
 start = round(time.time() * 1000)
 while len(messages) == 0:
-    messages = consumer.poll(timeout_ms=1000, max_records=1)
+    messages = consumer.poll(timeout_ms=5000, max_records=1)
     if len(messages) == 0:
         consumer.unsubscribe()
         consumer.subscribe(pattern=topic)
