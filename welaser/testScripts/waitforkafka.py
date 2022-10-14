@@ -21,9 +21,9 @@ producer = KafkaProducer(
     bootstrap_servers=[KAFKA_IP + ':' + KAFKA_PORT],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')
 )
-for e in range(100):
+for e in range(50):
     producer.send(topic, {})
-    print('Message:', e)
+    # print('Message:', e)
     time.sleep(0.5)
 consumer = KafkaConsumer(  # create a Kafka consumer
     group_id=topic + str(uuid.uuid1()),

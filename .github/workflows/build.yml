@@ -30,9 +30,6 @@ jobs:
           pip install -r testScripts/requirements.txt
           scripts/runTests.sh
           scripts/mongodb-dump.sh
-      - name: Stop
-        run: |
-          cd welaser
           ./stop.sh
   release:
     needs:

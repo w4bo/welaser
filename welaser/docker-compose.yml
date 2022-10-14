@@ -32,7 +32,9 @@ services:
   iot-agent:
     init: true
     restart: always
-    build: ./devices
+    build:
+      context: ./devices
+      dockerfile: iota.Dockerfile
     hostname: iot-agent
     container_name: iot-agent
     depends_on:
@@ -171,8 +173,12 @@ services:
 
   writetomongo:
     init: true
+    restart: always
     hostname: writetomongo
-    build: ./service-writetomongo
+    # build: ./service-writetomongo
+    build:
+      context: ./devices
+      dockerfile: writetomongo.Dockerfile
     container_name: writetomongo
     networks:
       - default

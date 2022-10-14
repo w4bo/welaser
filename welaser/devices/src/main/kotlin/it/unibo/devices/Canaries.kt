@@ -2,8 +2,8 @@
 
 package it.unibo.devices
 
-import it.unibo.DATAMODEL_FOLDER
-import it.unibo.DOMAIN
+import it.unibo.DATA_MODEL_FOLDER
+import it.unibo.AGRI_FARM
 import it.unibo.FARM_LATITUDE
 import it.unibo.FARM_LONGITUDE
 import java.lang.Math.pow
@@ -23,18 +23,17 @@ fun rnd(d: Double, p: Int): Double {
 fun main() {
     val s1: ISensor = Camera()
     val s2: ISensor = RandomSensor()
-
     val executor = Executors.newCachedThreadPool()
     (
-        EntityFactory.createAll(DATAMODEL_FOLDER) +
+        EntityFactory.createAll(DATA_MODEL_FOLDER) +
             listOf(
-                DeviceHTTP(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
-                DeviceHTTP(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
-                DeviceMQTT(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
-                DeviceMQTT(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
-                DeviceSubscription(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s1),
-                DeviceSubscription(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2),
-                DeviceKafka(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), DOMAIN, s2)
+                DeviceHTTP(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s1),
+                DeviceHTTP(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s2),
+                DeviceMQTT(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s1),
+                DeviceMQTT(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s2),
+                DeviceSubscription(STATUS.ON, timeStamp(), true, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s1),
+                DeviceSubscription(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s2),
+                DeviceKafka(STATUS.ON, timeStamp(), false, rnd(FARM_LATITUDE, 6), rnd(FARM_LONGITUDE, 6), AGRI_FARM, s2)
             )
         ).forEach { d -> executor.submit { d.run() } }
     executor.shutdown()
