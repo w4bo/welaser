@@ -66,6 +66,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
     implementation 'org.apache.kafka:kafka-clients:3.3.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-cli:0.3.5'
+    implementation 'org.mongodb:mongo-java-driver:3.12.11'
 }
 
 test {
@@ -95,6 +96,12 @@ task runIotAgent(type: JavaExec) {
     description = "Run the IotAgent"
     classpath = sourceSets.main.runtimeClasspath
     main = 'it.unibo.iotagent.IotAgent'
+}
+
+task runWriteToMongo(type: JavaExec) {
+    description = "Run the WriteToMongo service"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.writetomongo.WriteToMongo'
 }
 
 if (hasProperty('buildScan')) {
