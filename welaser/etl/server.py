@@ -56,7 +56,7 @@ class S(BaseHTTPRequestHandler):
 
             d["domain"] = get("domain", get("areaServed", get("hasFarm", "undefined-domain")))
             d["timestamp_subscription"] = round(time.time() * 1000)  # time in ms
-            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"\.|_|-|:", "", d["domain"]), value=d)
+            producer.send(DRACO_RAW_TOPIC + '.' + re.sub(r"[-:_]", "", d["domain"]), value=d)
 
     def log_request(self, code='-', size='-'):
         return

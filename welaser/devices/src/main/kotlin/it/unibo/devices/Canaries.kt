@@ -23,7 +23,6 @@ fun rnd(d: Double, p: Int): Double {
 fun main() {
     val s1: ISensor = Camera()
     val s2: ISensor = RandomSensor()
-
     val executor = Executors.newCachedThreadPool()
     (
         EntityFactory.createAll(DATA_MODEL_FOLDER) +

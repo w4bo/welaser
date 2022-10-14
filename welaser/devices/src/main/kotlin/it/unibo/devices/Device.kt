@@ -29,6 +29,7 @@ import kotlin.random.Random
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
 val DRACO_IP = dotenv["DRACO_IP"]
 val DRACO_PORT_EXT = dotenv["DRACO_PORT_EXT"].toInt()
+val DRACO_RAW_TOPIC = dotenv["DRACO_RAW_TOPIC"]
 val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
 val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}/v2/"
@@ -46,6 +47,25 @@ val MOSQUITTO_IP = dotenv["MOSQUITTO_IP"]
 val MOSQUITTO_PORT_EXT = dotenv["MOSQUITTO_PORT_EXT"].toInt()
 val CONTENTTYPE = "Content-Type" to "application/json"
 
+fun createEntity(id: String, type: String, domain: String, status: String, latitude: Double, longitude: Double, append: String = ""): String {
+    return """{
+                "id":              "$id",
+                "$TYPE":           "$type",
+                "status":          "$status",                      
+                "$TIMESTAMP":      ${System.currentTimeMillis()},
+                "$LOCATION": {
+                    "type": "Point",
+                    "coordinates": [
+                        $longitude,
+                        $latitude
+                    ]
+                },                
+                "$AREA_SERVED":     "$domain",
+                "$CMD_LIST":        ["on", "off"],
+                "$CMD":             ""
+                ${if (append != "") ", $append" else { "" }}
+            }""".replace("\\s+".toRegex(), " ")
+}
 /**
  * Some entity types
  */
@@ -82,13 +102,7 @@ class Camera(val onBoard: Boolean = true) : ISensor {
      */
     @Synchronized
     override fun sense(): String {
-        val inputstream = Camera::class.java.getResourceAsStream(
-            if (onBoard) {
-                "/img0"
-            } else {
-                "/field0"
-            } + Random.nextInt(1, 4) + ".png"
-        )
+        val inputstream = Camera::class.java.getResourceAsStream(if (onBoard) { "/img0" } else { "/field0" } + Random.nextInt(1, 4) + ".png")
         return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream)).replace("=", "%3D")
     }
 }
@@ -253,8 +267,8 @@ class ProtocolHTTP : IProtocol {
         val payloadJSON = JSONObject(payload)
         val id = payloadJSON.get("id")
         payloadJSON.remove("id")
-        if (payloadJSON.has("$TYPE")) {
-            payloadJSON.remove("$TYPE")
+        if (payloadJSON.has(TYPE)) {
+            payloadJSON.remove(TYPE)
         }
         if (payloadJSON.has(CMD)) {
             payloadJSON.remove(CMD)
@@ -285,7 +299,7 @@ class ProtocolKafka : IProtocol {
 
     @Synchronized
     override fun send(payload: String, topic: String) {
-        producer!!.send(ProducerRecord("data.canary.realtime", "foo", payload))
+        producer!!.send(ProducerRecord(DRACO_RAW_TOPIC + "." + AGRI_FARM.replace("[-:_]".toRegex(), ""), payload))
     }
 }
 
@@ -388,23 +402,7 @@ class DeviceSubscription(
     domain: String,
     s: ISensor
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolSubscription()) {
-    override fun getStatus(): String {
-        return """{"data": [{
-                "id":              "$id",
-                "$TYPE":           "Sub-${getType()}",
-                ${updateSensor()},
-                "status":          "$status",                      
-                "$TIMESTAMP":      ${System.currentTimeMillis()},
-                "$LOCATION": {
-                    "type": "Point",
-                    "coordinates": [
-                        $longitude,
-                        $latitude
-                    ]
-                },                
-                "$AREA_SERVED":     "$domain",
-            }]}""".replace("\\s+".toRegex(), " ")
-    }
+    override fun getStatus(): String = """{"data": [${createEntity(id, "Sub-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())}]}"""
 }
 
 open class DeviceHTTP(
@@ -459,25 +457,7 @@ open class DeviceHTTP(
         }
     }
 
-    override fun getStatus(): String {
-        return """{
-                "id":              "$id",
-                "$TYPE":           "OCB-${getType()}",
-                ${updateSensor()}, 
-                "status":          "$status",                      
-                "$TIMESTAMP":      ${System.currentTimeMillis()},
-                "$LOCATION": {
-                    "type": "Point",
-                    "coordinates": [
-                        $longitude,
-                        $latitude
-                    ]
-                },               
-                "$AREA_SERVED":     "$domain",
-                "$CMD_LIST":        ["on", "off"],
-                "$CMD":            ""               
-            }""".replace("\\s+".toRegex(), " ")
-    }
+    override fun getStatus(): String = createEntity(id, "OCB-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
 }
 
 class DeviceKafka(
@@ -489,7 +469,7 @@ class DeviceKafka(
     domain: String,
     s: ISensor
 ) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolKafka()) {
-    override fun sense(): String = super.sense().replace("OCB", "KAFKA")
+    override fun getStatus(): String = createEntity(id, "KAFKA-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
 }
 
 class DeviceMQTT(
@@ -506,25 +486,7 @@ class DeviceMQTT(
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
     override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
 
-    override fun getRegister(): String {
-        return """{
-                "id":              "$id",
-                "$TYPE":           "MQTT-${getType()}",
-                ${updateSensor()}, 
-                "status":          "$status",                      
-                "$TIMESTAMP":      ${System.currentTimeMillis()},
-                "$LOCATION": {
-                    "type": "Point",
-                    "coordinates": [
-                        $longitude,
-                        $latitude
-                    ]
-                },                
-                "$AREA_SERVED":     "$domain",
-                "$CMD_LIST":        ["on", "off"],
-                "$CMD":            ""
-            }""".replace("\\s+".toRegex(), " ")
-    }
+    override fun getRegister(): String = createEntity(id, "MQTT-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
 
     override fun getStatus(): String {
         return """{
