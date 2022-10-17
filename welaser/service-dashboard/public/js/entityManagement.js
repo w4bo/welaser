@@ -8,7 +8,7 @@ const entityManagement = {
                       <v-card-text>
                           <p>Select entity model<v-select :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)"></v-select></p>
                           <div v-show="visibleCreate">
-                              <p>Fill the object below</p>
+                              <p>Fill the entity below</p>
                               <div id="create"></div>
                           </div>
                       </v-card-text>
@@ -21,7 +21,7 @@ const entityManagement = {
                       <v-card-text>
                           <p>Select entity to update<v-select item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)"></v-select></p>
                           <div v-show="visibleUpdate">
-                              <p>Modify the object below</p>
+                              <p>Modify the entity below</p>
                               <div id="update"></div>
                           </div>
                       </v-card-text>
