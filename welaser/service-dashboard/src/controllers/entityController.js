@@ -36,11 +36,42 @@ exports.download = async function (req, res) {
     })
 }
 
+exports.entity = async function (req, res) {
+    const domain = req.params.domain
+    const id = req.params.id
+    connect(function (dbo) {
+        dbo.collection(domain).findOne({"id": id}, {fields: {"id": 0, "type": 0, "_id": 0}}, function (err, result) {
+            send(res, err, result)
+        })
+    })
+}
+
 exports.entitytypes = async function (req, res) {
     const domain = req.params.domain
     connect(function (dbo) {
         dbo.collection(domain).distinct('type', function (err, result) {
             send(res, err, result)
         })
+    })
+}
+
+exports.entities = async function (req, res) {
+    const domain = req.params.domain
+    connect(function (dbo) {
+        dbo.collection(domain)
+            .aggregate([{"$group": { "_id": { name: "$name", id: "$id" } } }])
+            .toArray(function (err, result) {
+                const data = []
+                for (const item of result) {
+                    const inner = item["_id"]
+                    if (inner["name"]) {
+                        // do nothing
+                    } else {
+                        inner["name"] = inner["id"]
+                    }
+                    data.push(inner)
+                }
+                send(res, err, data)
+            })
     })
 }

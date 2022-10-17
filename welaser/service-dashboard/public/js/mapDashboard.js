@@ -13,15 +13,14 @@ const mapDashboard = {
                   <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
-                          <v-card-text class="flex"><div v-html="renderJSON(device.data)"></div></v-card-text>
-                          <v-card-actions>
-                              <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
-                                  <template v-for="cmd in device.data.cmdList">
-                                      <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
-                                  </template>
-                              </div>
-                          </v-card-actions>
-                      </v-card-title>
+                      <v-card-text class="flex"><div v-html="vueRenderJSON(device.data)"></div></v-card-text>
+                      <v-card-actions>
+                          <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
+                              <template v-for="cmd in device.data.cmdList">
+                                  <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
+                              </template>
+                          </div>
+                      </v-card-actions>
                   </v-card>
                   </v-col>
               </template>
@@ -46,57 +45,8 @@ const mapDashboard = {
         }
     },
     methods: {
-        renderJSON(data) {
-            if (typeof (data) != "object") {
-                if (typeof (data) == "string") { data = data.trim() }
-                return data
-            } else {
-                return this.renderRows(data)
-            }
-        },
-        renderRows(data) {
-            let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
-            for (let [key, value] of Object.entries(data)) {
-                key = key.trim()
-                if (typeof value == 'string') value = value.trim().replaceAll("%3D", "=")
-                if (this.hideDetails && [
-                        "id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
-                        "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
-                        "hasFarm", "hasDevice", "hitch", "refRobotModel", "areaServed"
-                    ].includes(key)) {
-                } else {
-                    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-                    let th = `<th style="border: 1pt solid black">${key}</th>`
-                    if (Array.isArray(data)) { th = "" }
-                    html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-                    if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
-                        html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
-                    } else if (key === 'timestamp') {
-                        const date = new Date(parseInt(value));
-                        // Hours part from the timestamp
-                        const year = date.getFullYear();
-                        // Minutes part from the timestamp
-                        const month = "0" + date.getMonth();
-                        // Seconds part from the timestamp
-                        const day = "0" + date.getDay();
-                        // Hours part from the timestamp
-                        const hours = date.getHours();
-                        // Minutes part from the timestamp
-                        const minutes = "0" + date.getMinutes();
-                        // Seconds part from the timestamp
-                        const seconds = "0" + date.getSeconds();
-                        const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                        html += formattedTime
-                    } else if (value !== "") {
-                        html += this.renderJSON(value)
-                    }
-                    html += `</td></tr>`
-                    html = html
-                        .replaceAll("<table style=\"border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto\"></table>", "")
-                        .replaceAll("<td></td>", "")
-                }
-            }
-            return html + `</table>`
+        vueRenderJSON(data) {
+            return utils.renderJSON(data, this.hideDetails, false)
         },
         sendCommand(deviceId, command) {
             const inner = {}
