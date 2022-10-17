@@ -122,7 +122,25 @@ const entityManagement = {
             this.setSelectedUpdate(this.agrifarm, this.selectedentity["id"])
         })
 
-        const options = {mode: 'view', modes: ['code', 'tree', 'view', 'preview']}
+        const options = {
+            mode: 'tree',
+            modes: ['tree', 'view'], // 'code',
+            onEditable: function (node) {
+                // node is an object like:
+                //   {
+                //     field: 'FIELD',
+                //     value: 'VALUE',
+                //     path: ['PATH', 'TO', 'NODE']
+                //   }
+                switch (node.field) {
+                    default:
+                        return {
+                            field: false,
+                            value: true
+                        }
+                }
+            }
+        }
         this.editorUpdate = new JSONEditor(document.getElementById("update"), options)
         this.editorCreate = new JSONEditor(document.getElementById("create"), options)
     }
