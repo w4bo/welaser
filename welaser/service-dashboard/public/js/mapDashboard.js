@@ -1,13 +1,13 @@
 const mapDashboard = {
     template: `
-      <div style="padding: 0%">
-          <v-row align="center" justify="center">
-              <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>
-              <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
-              <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>
-              <!-- <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>-->
-          </v-row>
-          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px; z-index: 11"></div></v-col></v-row>
+      <div style="padding: 1%">
+          <!--<v-row align="center" justify="center">-->
+          <!--    <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>-->
+          <!--    <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>-->
+          <!--    <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>-->
+          <!--    &lt;!&ndash; <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>&ndash;&gt;-->
+          <!--</v-row>-->
+          <v-row align="center" justify="center"><v-col cols=8><div id="map" class="map" style="height: 250px"></div></v-col></v-row>
           <v-row justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
@@ -115,7 +115,7 @@ const mapDashboard = {
             const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
             // creating the map
-            this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary, this.layerStream]})
+            this.map = L.map('map', {center: [40.3128, -3.482], zoom: 17, layers: [satellite, this.layerBoundary, this.layerStream]})
             // add the layers to the group
             const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
             const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream }
@@ -127,8 +127,10 @@ const mapDashboard = {
                 .get(tis.ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
                 .then(agrifarms => {
                     agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
-                        tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
-                        tis.selectedTopic = agrifarm.id
+                        if (agrifarm.id === utils.agrifarm) {
+                            tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
+                            tis.selectedTopic = agrifarm.id
+                        }
                     })
                     tis.updateAgriFarm()
                 })
@@ -149,7 +151,6 @@ const mapDashboard = {
                 .get(tis.ORION_URL + `entities/${tis.selectedTopic}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
-                    console.log(agrifarm)
                     const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
                     attrs.forEach(function (attr, index) {
                         if (agrifarm[attr]) {

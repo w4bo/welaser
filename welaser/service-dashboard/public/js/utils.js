@@ -1,7 +1,6 @@
 const utils = {}
 
 function renderJSON(data, hideDetails, enableEdit) {
-    console.log("renderJSON")
     if (typeof (data) != "object") {
         // let html = data
         // if (typeof (data) == "string") {
@@ -20,7 +19,6 @@ function renderJSON(data, hideDetails, enableEdit) {
 }
 
 function renderRows(data, hideDetails, enableEdit) {
-    console.log("renderRows")
     let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
     for (let [key, value] of Object.entries(data)) {
         key = key.trim()
@@ -74,3 +72,4 @@ function uuidv4() {
 utils.renderJSON = renderJSON
 utils.renderRows = renderRows
 utils.uuidv4 = uuidv4
+utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"

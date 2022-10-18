@@ -1,41 +1,39 @@
 const entityManagement = {
     template: `
-      <div style="padding: 0%">
+      <div style="padding: 1%">
           <v-row justify="center">
-              <v-col cols=4>
+              <v-col cols=5>
                   <v-card>
                       <v-card-title class="pb-0">Create entity</v-card-title>
                       <v-card-text>
-                          <p>Select entity model<v-select :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)"></v-select></p>
+                          Select entity model<v-select :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)" style="padding: 0" dense></v-select>
                           <div v-show="visibleCreate">
-                              <p>Fill the entity below</p>
+                              Fill the entity below
                               <div id="create"></div>
                           </div>
                       </v-card-text>
                       <v-card-actions class="flex-column align-center"><v-btn v-on:click="create()">Create</v-btn></v-card-actions>
                   </v-card>
               </v-col>
-              <v-col cols=4>
+              <v-col cols=5>
                   <v-card>
                       <v-card-title class="pb-0">Update entity</v-card-title>
                       <v-card-text>
-                          <p>Select entity to update<v-select item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)"></v-select></p>
+                          Select entity to update<v-select item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)" style="padding: 0" dense></v-select>
                           <div v-show="visibleUpdate">
-                              <p>Modify the entity below</p>
+                              Modify the entity below
                               <div id="update"></div>
                           </div>
                       </v-card-text>
                       <v-card-actions class="flex-column align-center"><v-btn v-on:click="update()">Update</v-btn></v-card-actions>
                   </v-card>
               </v-col>
-              <v-col cols=2>
+              <v-col cols=3>
                   <v-card>
                       <v-card-title class="pb-0">Download entities</v-card-title>
                       <v-card-text>
-                          <p>Entity type <v-select :items="entitytypes" v-model="entitytype"></v-select></p>
-                          <p><div>Date range</div><v-date-picker v-model="dates" range></v-date-picker></p>
-                          <!-- <p>Limit from <input style="width: 100%; border: 1px solid #AAAAAA" placeholder="limitfrom" v-model="limitfrom"/></p>-->
-                          <!-- <p>Limit to <input style="width: 100%; border: 1px solid #AAAAAA" placeholder="limitto" v-model="limitto"/></p>-->
+                          Entity type <v-select :items="entitytypes" v-model="entitytype" style="padding: 0" dense></v-select>
+                          Date range<v-date-picker v-model="dates" range></v-date-picker>
                       </v-card-text>
                       <v-card-actions class="flex-column align-center"><v-btn v-on:click="download(agrifarm, entitytype, dates[0], dates[1])">Download</v-btn></v-card-actions>
                   </v-card>
@@ -58,7 +56,7 @@ const entityManagement = {
             limitfrom: "1",
             limitto: "50000",
             nodeurl: `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`,
-            agrifarm: "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
+            agrifarm: utils.agrifarm
         }
     },
     methods: {
@@ -99,7 +97,6 @@ const entityManagement = {
         download(domain, entitytype, datefrom, dateto) {
             const tis = this
             axios.get(this.nodeurl + `/api/download/${domain}/${entitytype}/${datefrom}/${dateto}/foo/foo`).then(entities => {
-                console.log(entities.data)
                 tis.downloadTextFile(JSON.stringify(entities.data), 'download.json')
             })
         },

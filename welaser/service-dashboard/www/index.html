@@ -20,7 +20,7 @@
     <script src="/static/libs/d3-color@3"></script>
     <script src="/static/libs/d3-interpolate@3"></script>
     <script src="/static/libs/d3-scale-chromatic@3"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/static/css/entry.css">
     <!--    <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
@@ -65,13 +65,11 @@
 </head>
 
 <body style="height: 100%; min-height:100vh; width: 100%">
-    <div class="back">
-        <v-app id="app">
-            <navbar></navbar>
-            <v-main><router-view></router-view></v-main>
-            <!--        <myfooter></myfooter>-->
-        </v-app>
-    </div>
+    <v-app id="app">
+        <navbar></navbar>
+        <v-main><router-view></router-view></v-main>
+        <!--        <myfooter></myfooter>-->
+    </v-app>
 
     <script>
         Vue.mixin({ data: () => (config) })
@@ -88,7 +86,7 @@
             vuetify: new Vuetify(),
             components: {
                 // 'myfooter': Footer,
-                // 'navbar': Navbar,
+                'navbar': Navbar,
             }
         })
         // Remove console info from Vue
