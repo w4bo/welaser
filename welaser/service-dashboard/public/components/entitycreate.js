@@ -29,7 +29,9 @@ const entitycreate = {
         create() {
             this.visibleCreate = false
             const tis = this
-            utils.fiwareCreateEntity(this.editorCreate.get(), function (res) {
+            const data = this.editorCreate.get()
+            data["domain"] = this.agrifarm
+            utils.fiwareCreateEntity(data, function (res) {
                 tis.showModal = true
                 tis.success = true
                 tis.response = "OK: " + res["statusText"]
