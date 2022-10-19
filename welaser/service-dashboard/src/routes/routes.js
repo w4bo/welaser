@@ -1,11 +1,10 @@
-const topicController = require("../controllers/topicController");
-const entityController = require("../controllers/entityController");
+const entityController = require('../controllers/entityController');
 module.exports = function (app) {
-    app.route("/api/statistics").get(entityController.getAll)
-    app.route("/api/statistics/:mission").get(entityController.getAll)
-    app.route("/api/topic").get(topicController.getAll)
-    app.route("/api/topic/:kind").get(topicController.getKind)
+    app.route('/api/download/:domain/:entitytype/:datetimefrom/:datetimeto/:limitfrom/:limitto').get(entityController.download)
+    app.route('/api/entitytypes/:domain').get(entityController.entitytypes)
+    app.route('/api/entities/:domain').get(entityController.entities)
+    app.route('/api/entity/:domain/:id').get(entityController.entity)
     app.use(function (req, res) {
-        res.sendFile(appRoot + '/www/index.html');
+        res.sendFile(appRoot + '/www/index.html')
     })
 }

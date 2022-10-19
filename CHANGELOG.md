@@ -1,3 +1,50 @@
+## [1.1.39](https://github.com/w4bo/welaser/compare/1.1.38...1.1.39) (2022-10-19)
+
+
+### Bug Fixes
+
+* **node:** working on apis ([#278](https://github.com/w4bo/welaser/issues/278)) ([008116a](https://github.com/w4bo/welaser/commit/008116a0f285327389be1969bb25ea26506b1790))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.1 ([321be92](https://github.com/w4bo/welaser/commit/321be921a2119bae060df636db5a42c59a4d6d31))
+
+## [1.1.38](https://github.com/w4bo/welaser/compare/1.1.37...1.1.38) (2022-10-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mysql:mysql-connector-java to v8.0.31 ([7dc560d](https://github.com/w4bo/welaser/commit/7dc560d0330dcb5023e4731fb6d38f386867610b))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.1 ([f712480](https://github.com/w4bo/welaser/commit/f71248003843e05416c1601814cbef6315f84d4a))
+* **deps:** update dependency pymongo to v4.3.2 ([15b8f9a](https://github.com/w4bo/welaser/commit/15b8f9aef530613819845a8bf7227e0e81437214))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.12 ([#273](https://github.com/w4bo/welaser/issues/273)) ([8721792](https://github.com/w4bo/welaser/commit/87217921c5b23a87a1b4928274e6f663836fd5e9))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.13 ([6f9ea58](https://github.com/w4bo/welaser/commit/6f9ea5841ee1b4f7685cf84b6b87f9d9f66902b1))
+* **deps:** update node.js to 16.18 ([df6ffbb](https://github.com/w4bo/welaser/commit/df6ffbb0b07a9a73bcb7ecbb298d9637017a6a52))
+
+## [1.1.37](https://github.com/w4bo/welaser/compare/1.1.36...1.1.37) (2022-10-12)
+
+
+### Bug Fixes
+
+* **demo:** Feature demo ([#271](https://github.com/w4bo/welaser/issues/271)) ([4ad6146](https://github.com/w4bo/welaser/commit/4ad6146e131492f455387862bb9f6ad77ca168dd))
+
+## [1.1.36](https://github.com/w4bo/welaser/compare/1.1.35...1.1.36) (2022-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.2 ([3d4db92](https://github.com/w4bo/welaser/commit/3d4db92c2e6793c0d9406fde2d98d7ddf0834882))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.1 ([6d9c786](https://github.com/w4bo/welaser/commit/6d9c786005b50c4676f2f1f88d7b0f5bfe42e1f9))
+
 ## [1.1.35](https://github.com/w4bo/welaser/compare/1.1.34...1.1.35) (2022-10-04)
 
 

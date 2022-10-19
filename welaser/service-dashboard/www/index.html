@@ -5,7 +5,7 @@
     <!--    <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
     <!--    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">-->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <title>Demo</title>
+    <title>WeLaser</title>
     <link href="/static/libs/roboto.css" rel="stylesheet">
     <!--    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">-->
     <!--    <link href="/static/libs/materialdesignicons.min.css" rel="stylesheet">-->
@@ -14,6 +14,13 @@
     <!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <link rel="stylesheet" type="text/css" href="/static/libs/bootstrap.min.css">
 
+    <!--    <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>-->
+    <!--    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>-->
+    <!--    <script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3"></script>-->
+    <script src="/static/libs/d3-color@3"></script>
+    <script src="/static/libs/d3-interpolate@3"></script>
+    <script src="/static/libs/d3-scale-chromatic@3"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/static/css/entry.css">
     <!--    <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
@@ -33,36 +40,42 @@
 
     <!-- import socket.io -->
     <script src="/socket.io/socket.io.js"></script>
-    <!--    <link href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.1/css/ol.css" type="text/css">-->
-    <link href="/static/libs/ol.css" rel="stylesheet" type="text/css" >
-    <!--    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.1/build/ol.js"></script>-->
-    <script src="/static/libs/ol.js"></script>
+    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.9.2/jsoneditor.min.css" rel="stylesheet" type="text/css">-->
+    <link href="/static/libs/jsoneditor.min.css" rel="stylesheet" type="text/css">
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.9.2/jsoneditor.min.js"></script>-->
+    <script src="/static/libs/jsoneditor.min.js"></script>
 
-    <!-- Import components -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
+    <!--    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>-->
+    <!--    <link rel="stylesheet" href="/static/libs/leaflet.css" crossorigin=""/>-->
+    <script src="/static/libs/leaflet.js"></script>
+
+    <!-- Import pages -->
+    <script src="/static/env.js"></script>
+    <script src="/static/js/utils.js"></script>
     <script src="/static/components/navbar.js"></script>
     <script src="/static/components/footer.js"></script>
-    <!-- Import pages -->
+    <script src="/static/components/missionplanner.js"></script>
+    <script src="/static/components/entitycreate.js"></script>
+    <script src="/static/components/entityupdate.js"></script>
+    <script src="/static/components/entitydownload.js"></script>
     <script src="/static/js/mapDashboard.js"></script>
-    <script src="/static/js/missionManager.js"></script>
-    <script src="/static/js/replayManager.js"></script>
-    <script src="/static/js/domainManager.js"></script>
+    <script src="/static/js/entityManagement.js"></script>
     <script src="/static/js/statistics.js"></script>
     <!-- Import utils -->
     <script src="/static/js/404.js"></script>
     <script src="/static/js/router.js"></script>
-    <script src="/static/env.js"></script>
+
 
     <style>canvas { transform: matrix(1, 0, 0, 1, 0, 0) !important;}</style>
 </head>
 
 <body style="height: 100%; min-height:100vh; width: 100%">
-    <div class="back">
-        <v-app id="app">
-            <navbar></navbar>
-            <v-main><router-view></router-view></v-main>
-            <!--        <myfooter></myfooter>-->
-        </v-app>
-    </div>
+    <v-app id="app">
+        <navbar></navbar>
+        <v-main><router-view></router-view></v-main>
+        <myfooter></myfooter>
+    </v-app>
 
     <script>
         Vue.mixin({ data: () => (config) })
@@ -78,11 +91,10 @@
             store: store,
             vuetify: new Vuetify(),
             components: {
-                // 'myfooter': Footer,
-                // 'navbar': Navbar,
+                myfooter: footer,
+                navbar: navbar,
             }
         })
-
         // Remove console info from Vue
         Vue.config.devtools = false
         Vue.config.productionTip = false

@@ -21,10 +21,11 @@ ln devices/src/main/resources/robotimages/*.png devices-python/
 
 # Devices
 rm devices/src/main/resources/datamodels/*.json || true
-find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/resources/datamodels/ \;
-rm devices/src/main/resources/datamodels/package*.json # these are not entities
-rm devices/src/main/resources/datamodels/renovate*.json # these are not entities
-ls devices/src/main/resources/datamodels/ > devices/src/main/resources/datamodels/filelist.txt
+rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/*.json || true
+find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/ \;
+rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/package*.json  # these are not entities
+rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/renovate*.json  # these are not entities
+ls devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/ > devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/filelist.txt
 rm devices/.env || true
 ln .env devices/.env
 

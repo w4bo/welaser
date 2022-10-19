@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: ['11'] # , '14'
     steps:
       - uses: actions/checkout@v3.1.0
         with:
@@ -20,7 +17,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java }}
+          java-version: 11
       - uses: actions/setup-python@v4
         with:
           python-version: '3.8.10'
@@ -33,9 +30,6 @@ jobs:
           pip install -r testScripts/requirements.txt
           scripts/runTests.sh
           scripts/mongodb-dump.sh
-      - name: Stop
-        run: |
-          cd welaser
           ./stop.sh
   release:
     needs:

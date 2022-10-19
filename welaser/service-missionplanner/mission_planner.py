@@ -15,7 +15,7 @@ def create_plan():
     # select the first one
     agrifarm = agrifarms[0]
     # print it
-    print(json.dumps(agrifarm))
+    # print(json.dumps(agrifarm))
     # get all the agriparcels
     agriparcels = requests.get('http://' + ORION_IP + ':' + str(ORION_PORT_EXT) + '/v2/entities?type=AgriParcel&options=keyValues&limit=1000').json()
     # iterate over them
@@ -23,7 +23,8 @@ def create_plan():
         # if the agriparcel is in the selected farm
         if agriparcel["id"] in agrifarm["hasAgriParcel"]:
             # ...print it
-            print(json.dumps(agriparcel))
+            # print(json.dumps(agriparcel))
+            pass
 
     # read the agrimission from file and return it as a plan
     with open('mission-123.json') as f:
@@ -36,9 +37,16 @@ class S(BaseHTTPRequestHandler):
     def _set_response(self, payload=""):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
         if payload != "":
             self.wfile.write(bytes(payload, "utf-8"))
+
+    def do_OPTIONS(self):
+        self._set_response()
 
     def do_GET(self):
         self._set_response()
@@ -53,7 +61,9 @@ class S(BaseHTTPRequestHandler):
             self._set_response()
         else:
             print("Working on request at " + now.strftime("%m/%d/%Y, %H:%M:%S") + "...", end=" ")
+            print(data)
             # create and return the plan (the plan must be both a valid JSON object and fiware entity)
+            # print(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
             self._set_response(json.dumps(create_plan()))
             now = datetime.now()
             print("Done at " + now.strftime("%m/%d/%Y, %H:%M:%S"))

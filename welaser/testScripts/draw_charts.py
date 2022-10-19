@@ -1,14 +1,10 @@
-# coding: utf-8
-# In[1]:
-
 import json
 import math
-import sys
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pymongo
+import sys
 from dotenv import dotenv_values
 
 conf = dotenv_values("../.env")
@@ -19,7 +15,6 @@ collections = database.list_collection_names()
 print(collections)
 collections = sorted([x for x in collections if "TEST" in x])
 assert (len(collections) > 0)
-# In[2]:
 
 cols = 3 if len(collections) > 3 else len(collections)
 rows = math.ceil(len(collections) / cols)
@@ -29,13 +24,13 @@ i = 0
 
 
 def label(timestamp):
-    if timestamp == "$timestamp.value":
+    if timestamp == "$timestamp":
         return "Device"
     if timestamp == "$timestamp_subscription":
         return "OCB-Sub"
     if timestamp == "$timestamp_kafka":
         return "Kafka"
-    if timestamp == "$timestamp_iota.value":
+    if timestamp == "$timestamp_iota":
         return "IoTA"
 
 
@@ -53,18 +48,15 @@ for collection in collections:
 
     mint = -1
     maxt = -1
-    for timestamp in ["$timestamp.value", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota.value"]:
+    for timestamp in ["$timestamp", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota"]:
         print(" - " + timestamp)
-        if timestamp in ["$timestamp.value", "$timestamp_iota.value"]:  # these timestamps are in ms
-            data = pd.DataFrame(list(database[collection].aggregate([{"$group": {"_id": {"$multiply": [{"$round": [{"$divide": [timestamp, 1000 * 10]}, 0]}, 1000 * 10]}, "count": {"$sum": 1}}}])))
-        else:  # these timestamps are in s, I need to round them in second and to transform them in ms
-            data = pd.DataFrame(list(database[collection].aggregate([{"$group": {"_id": {"$multiply": [{"$round": [{"$divide": [timestamp, 10]}, 0]}, 1000 * 10]}, "count": {"$sum": 1}}}])))
+        data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 1000 * 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
         # drop the null values
         data = data.dropna()
         # get the parameters from the collection's name
-        setup = json.loads('{"' + collection.replace("mission_TEST--", "").replace("--", '","').replace("-", '":"') + '"}')
+        setup = json.loads('{"' + collection.replace("TEST--", "").replace("--", '","').replace("-", '":"') + '"}')
         # this is the timestamp from devices
-        if timestamp == "$timestamp.value":
+        if timestamp == "$timestamp":
             # get the first timestamp
             mint = data["_id"].min()
             # plot the optimal value (if no message is lost)

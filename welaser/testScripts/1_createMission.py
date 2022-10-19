@@ -1,75 +1,51 @@
-import random
-import time
-from json import dumps, loads
-from time import sleep
-
 import paho.mqtt.client as mqttClient
 import requests
+import time
+from datetime import datetime
 from dotenv import dotenv_values
-from kafka import KafkaProducer, KafkaConsumer
+from json import loads
+from pymongo import MongoClient
+from time import sleep
 
 conf = dotenv_values("../.env")
-producer = KafkaProducer(
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    value_serializer=lambda x: dumps(x).encode('utf-8')
-)
-consumer = KafkaConsumer(
-    conf["MISSION_MANAGER_TOPIC"],
-    bootstrap_servers=[conf["KAFKA_IP"] + ":" + conf["KAFKA_PORT_EXT"]],
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    value_deserializer=lambda x: loads(x.decode('utf-8'))
-)
-domain = "foo"
-with open("createdomain.txt", "r") as f:
-    domain = f.read()
-mission = "m" + str(random.randrange(1000000) + 10)
-with open("createmission.txt", "w") as f:
-    f.write(mission)
-command = {
-    "type": "request",
-    "command": "start",
-    "mission": mission,
-    "domain": domain
-}
-producer.send(conf["MISSION_MANAGER_TOPIC"], command)
-for msg in consumer:
-    assert "type" in msg.value, "No type: " + str(msg)
-    # assert "domain" in msg.value, "No domain: " + str(msg)
-    assert "mission" in msg.value, "No mission: " + str(msg)
+orion_url = "http://{}:{}/v2/".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
+options = "&options=keyValues&limit=1000"
+url_farm = orion_url + "entities?type=AgriFarm" + options
+url_therm = orion_url + "entities?type=MQTT-Thermometer" + options
+url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
-    if msg.value["type"] == "response" and msg.value["status"] == "created" and msg.value["domain"] == domain and msg.value["mission"] == mission:
-        assert (msg.value["domain_topic"] == "data.{}.realtime".format(domain))
-        assert (msg.value["mission_topic"] == "data.{}.realtime.{}".format(domain, mission))
-        print("OK: Mission created.")
-        break
 
-headers = {
-#    'fiware-service': conf["FIWARE_SERVICE"],
-#    'fiware-servicepath': conf["FIWARE_SERVICEPATH"]
-}
+def wait_for(description, url, attr_dom_name="foo", domain="bar", check_domain=True):
+    print(description + url, end="")
+    response_body = []
+    i = 0
+    while i < 50 and len(response_body) == 0:
+        if i > 0:
+            sleep(1)
+        response = requests.get(url)
+        assert (response.status_code == 200)
+        response_body = [x for x in loads(response.text) if not check_domain or (attr_dom_name in x and x[attr_dom_name] == domain)]
+        i += 1
+    assert (len(response_body) > 0)
+    response_body = [x for x in response_body if "test" not in x["id"]]
+    print(". Found " + response_body[0]["id"])
+    return response_body[0]
 
-responseBody = []
-robots = []
-i = 0
-print("Looking for thermometer at: http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-while i < 50 and len(responseBody) == 0:
-    if i > 0:
-        sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) #, headers=headers, data={}
-    assert (response.status_code == 200)
-    responseBody = [x for x in loads(response.text) if x["domain"] == domain and x["mission"] == mission and x["latitude"] is not None]
-    i += 1
-assert (len(responseBody) > 0)
-print("OK: Thermometer found")
-responseBody = responseBody[0]
-thermometer_id = responseBody["id"]
+
+domain = wait_for("Looking for farm at: ", url_farm, check_domain=False)["id"]
+thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm, attr_dom_name="areaServed", domain=domain)
+thermometer_id = thermometer["id"]
 assert (len(thermometer_id) > 0)
-assert (responseBody["latitude"] >= -90)
-assert (responseBody["longitude"] >= -180)
-assert (responseBody["status"])
-assert (int(responseBody["temperature"]) >= 0)
+assert (thermometer["location"]["coordinates"][0] >= -180)  # longitude
+assert (thermometer["location"]["coordinates"][1] >= -90)  # latitude
+assert (thermometer["status"])
+assert (int(thermometer["temperature"]) >= 0)
+wait_for("Looking for AgriRobot: ", url_agrirobot, attr_dom_name="hasFarm", domain=domain)
+wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyValues&limit=1000", attr_dom_name="hasFarm", domain=domain)
 
+###############################################################################
+# Testing MQTT
+###############################################################################
 received = False  # global variable for message reception
 
 
@@ -91,37 +67,59 @@ client.on_connect = on_connect
 client.on_message = on_message
 client.connect(conf["MOSQUITTO_IP"], port=int(conf["MOSQUITTO_PORT_EXT"]))  # connect to broker
 client.loop_start()  # start the loop
-client.subscribe("/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id.split(":")[-1] + "/attrs")
-
-while not received:
+# topic = "/" + conf["FIWARE_API_KEY"] + "/" + thermometer_id + "/attrs"
+topic = "/" + conf["FIWARE_API_KEY"] + "/#"
+print("Listening to: " + topic)
+client.subscribe(topic)
+i = 0
+while i < 50 and not received:
     time.sleep(1)
-
-print("OK: MQTT message received.")
-
+    i += 1
 client.disconnect()
 client.loop_stop()
+assert received, "No MQTT message received"
 
-print("Looking for robot at: http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-i = 0
-while i < 300 and len(robots) == 0:
-    if i > 0:
-        sleep(2)
-    response = requests.request("GET", "http://{}:{}/v2/entities?type=ROBOT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]))
-    assert (response.status_code == 200)
-    robots = [x for x in loads(response.text) if "Domain" in x and x["Domain"] == domain and x["Mission"] == mission]
-    i += 1
-assert (len(robots) > 0)
-print("OK: Robot found")
-
-response = requests.request("GET", "http://{}:{}/v2/subscriptions".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])) # , headers={'fiware-service': conf["FIWARE_SERVICE"], 'fiware-servicepath': conf["FIWARE_SERVICEPATH"]}, data={}
+###############################################################################
+# Check subscriptions
+###############################################################################
+response = requests.get(orion_url + "subscriptions")
 responses = loads(response.text)
 i = 0
-for responseBody in responses:
-    assert (response.status_code == 200), str(responseBody)
-    assert (responseBody["status"] == "active"), str(responseBody)
-    if "notification" in responseBody and "timeSent" in responseBody["notification"]:
-        assert (responseBody["notification"]["timesSent"] > 0), str(responseBody)
-        assert (responseBody["notification"]["lastSuccessCode"] == 200), str(responseBody)
+for response_body in responses:
+    assert (response.status_code == 200), str(response_body)
+    assert (response_body["status"] == "active"), str(response_body)
+    if "notification" in response_body and "timeSent" in response_body["notification"]:
+        assert (response_body["notification"]["timesSent"] > 0), str(response_body)
+        assert (response_body["notification"]["lastSuccessCode"] == 200), str(response_body)
         i += 1
 assert i >= 0  # at least one notification should have the timeSent
 print("OK: Subscription found")
+
+###############################################################################
+# Check mongodb persistence
+###############################################################################
+MONGO_IP = conf["MONGO_DB_PERS_IP"]
+MONGO_PORT = conf["MONGO_DB_PERS_PORT_EXT"]
+MONGO_CONNECTION_STR = "mongodb://{}:{}".format(MONGO_IP, MONGO_PORT)
+client = MongoClient(MONGO_CONNECTION_STR)  # connect to mongo
+count1 = 0
+i = 0
+while i < 50 and count1 == 0:
+    time.sleep(1)
+    count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
+    i += 1
+assert count1 > 0, "No document found"
+
+###############################################################################
+# Test the node APIs
+###############################################################################
+today = datetime.today().strftime('%Y-%m-%d')
+NODE_URL = "http://{}:{}/api/".format(conf["IP"], conf["WEB_SERVER_PORT_EXT"])
+for url in ['download/{}/{}/{}/{}/{}/{}'.format(domain, 'AgriFarm', today, today, 'foo', 'foo'),
+            'entitytypes/{}'.format(domain),
+            'entities/{}'.format(domain),
+            'entity/{}/{}'.format(domain, domain)]:
+    response = requests.get(NODE_URL + url)
+    response_body = loads(response.text)
+    assert (response.status_code == 200), url
+    assert (len(response_body) > 0), url

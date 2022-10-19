@@ -48,7 +48,7 @@ idea {
 }
 
 dependencies {
-    implementation 'io.github.microutils:kotlin-logging-jvm:3.0.0'
+    implementation 'io.github.microutils:kotlin-logging-jvm:3.0.2'
     implementation 'khttp:khttp:1.0.0'
     implementation 'io.ktor:ktor-server-core:2.1.2'
     implementation 'io.ktor:ktor-server-netty:2.1.2'
@@ -66,6 +66,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
     implementation 'org.apache.kafka:kafka-clients:3.3.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-cli:0.3.5'
+    implementation 'org.mongodb:mongo-java-driver:3.12.11'
 }
 
 test {
@@ -97,6 +98,12 @@ task runIotAgent(type: JavaExec) {
     main = 'it.unibo.iotagent.IotAgent'
 }
 
+task runWriteToMongo(type: JavaExec) {
+    description = "Run the WriteToMongo service"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'it.unibo.writetomongo.WriteToMongo'
+}
+
 if (hasProperty('buildScan')) {
     buildScan {
         termsOfServiceUrl = 'https://gradle.com/terms-of-service'
@@ -104,4 +111,4 @@ if (hasProperty('buildScan')) {
     }
 }
 
-defaultTasks 'clean', 'build', 'check', 'shadowJar'
+defaultTasks 'clean', 'build', 'check' // , 'shadowJar'
