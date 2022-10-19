@@ -99,7 +99,6 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
                     HEARTBEAT -> Heartbeat()
                     TEMPERATURE -> RandomSensor()
                     HUMIDITY -> RandomSensor(0, 100)
-                    CAMERA -> Camera(onBoard = false)
                     IMAGE -> Camera(onBoard = false)
                     else -> throw java.lang.IllegalArgumentException("Unknown controlledProperty: $it")
                 }
