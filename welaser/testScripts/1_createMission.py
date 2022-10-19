@@ -1,7 +1,7 @@
-import datetime
 import paho.mqtt.client as mqttClient
 import requests
 import time
+from datetime import datetime
 from dotenv import dotenv_values
 from json import loads
 from pymongo import MongoClient
