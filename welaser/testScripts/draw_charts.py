@@ -50,7 +50,7 @@ for collection in collections:
     maxt = -1
     for timestamp in ["$timestamp", "$timestamp_subscription", "$timestamp_kafka", "$timestamp_iota"]:
         print(" - " + timestamp)
-        data = pd.DataFrame(list(database[collection].aggregate([{"$group": { "_id": { "$multiply" : [{ "$round" : [{ "$divide" : [ timestamp, 1000 * 10]}, 0 ]}, 1000 * 10]}, "count": { "$sum": 1 } }}])))
+        data = pd.DataFrame(list(database[collection].aggregate([{"$group": {"_id": {"$multiply": [{"$round": [{"$divide": [timestamp, 1000 * 10]}, 0]}, 1000 * 10]}, "count": {"$sum": 1}}}])))
         # drop the null values
         data = data.dropna()
         # get the parameters from the collection's name
@@ -60,7 +60,7 @@ for collection in collections:
             # get the first timestamp
             mint = data["_id"].min()
             # plot the optimal value (if no message is lost)
-            x = np.linspace(0, np.log(int(setup["dur"]) / 1000), num=100)
+            x = np.linspace(0, max(data["_id"].max() - mint, int(setup["dur"])) / 1000, num=100)
             y = [step * int(setup["freq"]) * int(setup["dev"]) for step in x]
             ax2.plot(x, y, label="Optimal", ls="--")
         # shift the time values to 0
