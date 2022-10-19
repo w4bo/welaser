@@ -1,3 +1,15 @@
+## [1.1.39](https://github.com/w4bo/welaser/compare/1.1.38...1.1.39) (2022-10-19)
+
+
+### Bug Fixes
+
+* **node:** working on apis ([#278](https://github.com/w4bo/welaser/issues/278)) ([008116a](https://github.com/w4bo/welaser/commit/008116a0f285327389be1969bb25ea26506b1790))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.1 ([321be92](https://github.com/w4bo/welaser/commit/321be921a2119bae060df636db5a42c59a4d6d31))
+
 ## [1.1.38](https://github.com/w4bo/welaser/compare/1.1.37...1.1.38) (2022-10-19)
 
 
