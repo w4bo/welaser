@@ -19,11 +19,9 @@ function renderJSON(data, hideDetails, enableEdit) {
 }
 
 utils.plannerCreatePlan = function (data, then, error) {
-    console.log(utils.plannerurl)
     axios
         .post(utils.plannerurl, data)
         .then(result => {
-            console.log(result)
             if (then) then(result)
         }).catch(err => {
             if (error) error(err)
@@ -32,9 +30,8 @@ utils.plannerCreatePlan = function (data, then, error) {
 
 utils.fiwareUpdateEntity = function (data, then, error) {
     axios
-        .post(utils.orion_url + `op/update?options=keyValues`, {'actionType': 'append', 'entities': [data]}, utils.jsonheaders)
+        .post(utils.orionurl + `op/update?options=keyValues`, {'actionType': 'append', 'entities': [data]}, utils.jsonheaders)
         .then(result => {
-            console.log(result)
             if (then) then(result)
         }).catch(err => {
             if (error) error(err)
@@ -43,7 +40,7 @@ utils.fiwareUpdateEntity = function (data, then, error) {
 
 utils.fiwareCreateEntity = function (data, then, error) {
     axios
-        .post(utils.orion_url + `entities?options=keyValues`, data, utils.jsonheaders)
+        .post(utils.orionurl + `entities?options=keyValues`, data, utils.jsonheaders)
         .then(result => {
             if (then) then(result)
         }).catch(err => {
@@ -107,6 +104,6 @@ utils.renderRows = renderRows
 utils.uuidv4 = uuidv4
 utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
 utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
-utils.orion_url = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
+utils.orionurl = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
 utils.plannerurl = `http://${config.PLANNER_IP}:${config.PLANNER_PORT_EXT}`
 utils.jsonheaders = {'Content-Type': 'application/json'}

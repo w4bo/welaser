@@ -51,7 +51,7 @@ const mapDashboard = {
             inner[command] = {}
             axios
                 .patch(
-                    utils.orion_url + `entities/${deviceId}/attrs?options=keyValues`,
+                    utils.orionurl + `entities/${deviceId}/attrs?options=keyValues`,
                     {"cmd": inner},
                     {headers: utils.jsonheaders}
                 )
@@ -122,7 +122,7 @@ const mapDashboard = {
         loadAgriFarms() {
             const tis = this
             axios // get the agrifarms
-                .get(utils.orion_url + `entities?type=AgriFarm&options=keyValues&limit=1000`)
+                .get(utils.orionurl + `entities?type=AgriFarm&options=keyValues&limit=1000`)
                 .then(agrifarms => {
                     agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
                         if (agrifarm.id === utils.agrifarm) {
@@ -146,7 +146,7 @@ const mapDashboard = {
             this.layerBoundary.addTo(this.map) // make the layer visible
             this.layerStream.addTo(this.map) // make the layer visible
             axios // get the selected agrifarm
-                .get(utils.orion_url + `entities/${tis.selectedTopic}?options=keyValues`)
+                .get(utils.orionurl + `entities/${tis.selectedTopic}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
                     const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
@@ -154,7 +154,7 @@ const mapDashboard = {
                         if (agrifarm[attr]) {
                             agrifarm[attr].forEach(function (id, index) {
                                 axios
-                                    .get(utils.orion_url + `entities/${id}?options=keyValues&attrs=location`)
+                                    .get(utils.orionurl + `entities/${id}?options=keyValues&attrs=location`)
                                     .then(loc => {
                                         let color = "#ff7800"
                                         const type = loc.data.type

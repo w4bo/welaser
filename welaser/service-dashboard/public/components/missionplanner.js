@@ -48,7 +48,7 @@ const missionplanner = {
     },
     mounted() {
         // get the agrifarm and its components
-        axios.get(utils.orion_url + `entities/${utils.agrifarm}?options=keyValues`).then(agrifarm => {
+        axios.get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`).then(agrifarm => {
             agrifarm = agrifarm.data
             this.froms = agrifarm.hasAgriParcel
             this.froms.push(agrifarm.hasBuilding)
@@ -62,7 +62,7 @@ const missionplanner = {
             }
         })
         // get the agrirobots
-        axios.get(utils.orion_url + `entities?type=AgriRobot&options=keyValues&limit=1000`).then(robots => {
+        axios.get(utils.orionurl + `entities?type=AgriRobot&options=keyValues&limit=1000`).then(robots => {
             robots = robots.data
             robots.forEach(robot => {
                 this.robots.push({"name": robot["name"], "id": robot["id"]})
