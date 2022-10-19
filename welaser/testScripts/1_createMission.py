@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqttClient
 import requests
 import time
+from datetime import datetime
 from dotenv import dotenv_values
 from json import loads
 from pymongo import MongoClient
@@ -108,3 +109,17 @@ while i < 50 and count1 == 0:
     count1 = len(list(client[conf["MONGO_DB_PERS_DB"]][domain].find()))
     i += 1
 assert count1 > 0, "No document found"
+
+###############################################################################
+# Test the node APIs
+###############################################################################
+today = datetime.today().strftime('%Y-%m-%d')
+NODE_URL = "http://{}:{}/api/".format(conf["IP"], conf["WEB_SERVER_PORT_EXT"])
+for url in ['download/{}/{}/{}/{}/{}/{}'.format(domain, 'AgriFarm', today, today, 'foo', 'foo'),
+            'entitytypes/{}'.format(domain),
+            'entities/{}'.format(domain),
+            'entity/{}/{}'.format(domain, domain)]:
+    response = requests.get(NODE_URL + url)
+    response_body = loads(response.text)
+    assert (response.status_code == 200), url
+    assert (len(response_body) > 0), url

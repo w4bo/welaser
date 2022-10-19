@@ -1,27 +1,26 @@
 const mapDashboard = {
     template: `
-      <div style="padding: 0%">
-          <v-row align="center" justify="center">
-              <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>
-              <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>
-              <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>
-              <!-- <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>-->
-          </v-row>
-          <v-row align="center" justify="center"><v-col cols=10><div id="map" class="map" style="height: 400px; z-index: 11"></div></v-col></v-row>
+      <div style="padding: 1%">
+          <!--<v-row align="center" justify="center">-->
+          <!--    <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>-->
+          <!--    <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>-->
+          <!--    <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>-->
+          <!--    &lt;!&ndash; <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>&ndash;&gt;-->
+          <!--</v-row>-->
+          <v-row align="center" justify="center"><v-col cols=8><div id="map" class="map" style="height: 250px"></div></v-col></v-row>
           <v-row justify="center">
               <template v-for="device in Object.values(devices)">
                   <v-col cols=3 class="pa-3 d-flex flex-column">
                   <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
                       <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
-                          <v-card-text class="flex"><div v-html="renderJSON(device.data)"></div></v-card-text>
-                          <v-card-actions>
-                              <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
-                                  <template v-for="cmd in device.data.cmdList">
-                                      <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
-                                  </template>
-                              </div>
-                          </v-card-actions>
-                      </v-card-title>
+                      <v-card-text class="flex"><div v-html="vueRenderJSON(device.data)"></div></v-card-text>
+                      <v-card-actions>
+                          <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
+                              <template v-for="cmd in device.data.cmdList">
+                                  <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
+                              </template>
+                          </div>
+                      </v-card-actions>
                   </v-card>
                   </v-col>
               </template>
@@ -29,8 +28,6 @@ const mapDashboard = {
       </div>`,
     data() {
         return {
-            ORION_URL: `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`,
-            headers: {'Content-Type': 'application/json'},
             layerBoundary: null,
             layerStream: null,
             layerControl: null,
@@ -46,66 +43,17 @@ const mapDashboard = {
         }
     },
     methods: {
-        renderJSON(data) {
-            if (typeof (data) != "object") {
-                if (typeof (data) == "string") { data = data.trim() }
-                return data
-            } else {
-                return this.renderRows(data)
-            }
-        },
-        renderRows(data) {
-            let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
-            for (let [key, value] of Object.entries(data)) {
-                key = key.trim()
-                if (typeof value == 'string') value = value.trim().replaceAll("%3D", "=")
-                if (this.hideDetails && [
-                        "id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
-                        "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
-                        "hasFarm", "hasDevice", "hitch", "refRobotModel", "areaServed"
-                    ].includes(key)) {
-                } else {
-                    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-                    let th = `<th style="border: 1pt solid black">${key}</th>`
-                    if (Array.isArray(data)) { th = "" }
-                    html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-                    if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
-                        html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
-                    } else if (key === 'timestamp') {
-                        const date = new Date(parseInt(value));
-                        // Hours part from the timestamp
-                        const year = date.getFullYear();
-                        // Minutes part from the timestamp
-                        const month = "0" + date.getMonth();
-                        // Seconds part from the timestamp
-                        const day = "0" + date.getDay();
-                        // Hours part from the timestamp
-                        const hours = date.getHours();
-                        // Minutes part from the timestamp
-                        const minutes = "0" + date.getMinutes();
-                        // Seconds part from the timestamp
-                        const seconds = "0" + date.getSeconds();
-                        const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                        html += formattedTime
-                    } else if (value !== "") {
-                        html += this.renderJSON(value)
-                    }
-                    html += `</td></tr>`
-                    html = html
-                        .replaceAll("<table style=\"border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto\"></table>", "")
-                        .replaceAll("<td></td>", "")
-                }
-            }
-            return html + `</table>`
+        vueRenderJSON(data) {
+            return utils.renderJSON(data, this.hideDetails, false)
         },
         sendCommand(deviceId, command) {
             const inner = {}
             inner[command] = {}
             axios
                 .patch(
-                    this.ORION_URL + `entities/${deviceId}/attrs?options=keyValues`,
+                    utils.orionurl + `entities/${deviceId}/attrs?options=keyValues`,
                     {"cmd": inner},
-                    {headers: this.headers}
+                    {headers: utils.jsonheaders}
                 )
                 .then(response => { console.log(response) })
                 .catch(err => { console.log(err) })
@@ -165,7 +113,7 @@ const mapDashboard = {
             const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
             // creating the map
-            this.map = L.map('map', {center: [40.31255, -3.482], zoom: 18, layers: [satellite, this.layerBoundary, this.layerStream]})
+            this.map = L.map('map', {center: [40.3128, -3.482], zoom: 17, layers: [satellite, this.layerBoundary, this.layerStream]})
             // add the layers to the group
             const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
             const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream }
@@ -174,11 +122,13 @@ const mapDashboard = {
         loadAgriFarms() {
             const tis = this
             axios // get the agrifarms
-                .get(tis.ORION_URL + `entities?type=AgriFarm&options=keyValues&limit=1000`)
+                .get(utils.orionurl + `entities?type=AgriFarm&options=keyValues&limit=1000`)
                 .then(agrifarms => {
                     agrifarms.data.forEach(function (agrifarm, index) { // for each agrifarm...
-                        tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
-                        tis.selectedTopic = agrifarm.id
+                        if (agrifarm.id === utils.agrifarm) {
+                            tis.topics.push({"name": agrifarm.name, "id": agrifarm.id})
+                            tis.selectedTopic = agrifarm.id
+                        }
                     })
                     tis.updateAgriFarm()
                 })
@@ -196,16 +146,15 @@ const mapDashboard = {
             this.layerBoundary.addTo(this.map) // make the layer visible
             this.layerStream.addTo(this.map) // make the layer visible
             axios // get the selected agrifarm
-                .get(tis.ORION_URL + `entities/${tis.selectedTopic}?options=keyValues`)
+                .get(utils.orionurl + `entities/${tis.selectedTopic}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
-                    console.log(agrifarm)
-                    const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
+                    const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasBuilding", "hasRoadSegment"]
                     attrs.forEach(function (attr, index) {
                         if (agrifarm[attr]) {
                             agrifarm[attr].forEach(function (id, index) {
                                 axios
-                                    .get(tis.ORION_URL + `entities/${id}?options=keyValues&attrs=location`)
+                                    .get(utils.orionurl + `entities/${id}?options=keyValues&attrs=location`)
                                     .then(loc => {
                                         let color = "#ff7800"
                                         const type = loc.data.type

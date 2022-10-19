@@ -69,7 +69,7 @@ fun createEntity(id: String, type: String, domain: String, status: String, latit
 /**
  * Some entity types
  */
-enum class EntityType { Camera, Thermometer, Dummy, Heartbeat }
+enum class EntityType { Image, Timestamp, Thermometer, Dummy, Heartbeat }
 
 /**
  * Any thing
@@ -95,7 +95,7 @@ interface ISensor : IThing {
  * A camera
  */
 class Camera(val onBoard: Boolean = true) : ISensor {
-    override fun getType(): EntityType = EntityType.Camera
+    override fun getType(): EntityType = EntityType.Image
 
     /**
      * @return get an image from src/main/resources, the image is encoded in Base64
@@ -130,10 +130,10 @@ class RandomSensor(val from: Int = 10, val to: Int = 30) : ISensor {
 /**
  * A heartbeat
  */
-class Heartbeat(val from: Int = 10, val to: Int = 30) : ISensor {
-    override fun getType(): EntityType = EntityType.Heartbeat
+class Heartbeat(val timestamp: Boolean = false) : ISensor {
+    override fun getType(): EntityType = if (timestamp) EntityType.Timestamp else EntityType.Heartbeat
     override fun sense(): String {
-        return "live" // "" + System.currentTimeMillis()
+        return if (timestamp) ("" + System.currentTimeMillis()) else "live"
     }
 }
 
@@ -360,7 +360,7 @@ abstract class Device(
         return when (status) {
             STATUS.ON -> {
                 updatePosition()
-                sensedValue = if (getType() == EntityType.Camera) { "\"$IMAGE\"" } else { "\"$TEMPERATURE\"" } + ": \"${s.sense()}\""
+                sensedValue = if (getType() == EntityType.Image) { "\"$IMAGE\"" } else { "\"$TEMPERATURE\"" } + ": \"${s.sense()}\""
                 sensedValue
             }
             else -> sensedValue

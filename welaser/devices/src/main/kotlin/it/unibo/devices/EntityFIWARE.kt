@@ -95,11 +95,11 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     val sensors: Map<String, ISensor> =
         if (initStatus.has("controlledProperty")) {
             initStatus.getJSONArray("controlledProperty").map {
-                it.toString() to when (it.toString()) {
+                it.toString() to when (it.toString().lowercase()) {
                     HEARTBEAT -> Heartbeat()
+                    TIMESTAMP -> Heartbeat(timestamp = true)
                     TEMPERATURE -> RandomSensor()
                     HUMIDITY -> RandomSensor(0, 100)
-                    CAMERA -> Camera(onBoard = false)
                     IMAGE -> Camera(onBoard = false)
                     else -> throw java.lang.IllegalArgumentException("Unknown controlledProperty: $it")
                 }

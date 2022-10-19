@@ -3,7 +3,6 @@ package it.unibo
 const val AGRI_FARM = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
 const val AGRI_ROBOT = "AgriRobot"
 const val AREA_SERVED = "areaServed"
-const val CAMERA = "camera"
 const val CMD = "cmd"
 const val CMD_LIST = "cmdList"
 const val COORDINATES = "coordinates"

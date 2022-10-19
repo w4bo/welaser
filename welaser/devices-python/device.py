@@ -4,11 +4,10 @@ import json
 import os
 import random
 import re
-import time
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-
 import requests
+import time
 from dotenv import load_dotenv, find_dotenv
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 # Idea:
 # - The robot wakes up, it knows its IP address (from the .env file), and it chooses a random port on which it will
@@ -75,8 +74,15 @@ def server():
         def _set_response(self):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
             self.end_headers()
-            self.wfile.write(bytes("", "utf-8"))
+
+        def do_OPTIONS(self):
+            # do nothing
+            self._set_response()
 
         def do_GET(self):
             # do nothing
