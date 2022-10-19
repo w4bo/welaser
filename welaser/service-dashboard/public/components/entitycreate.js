@@ -70,6 +70,11 @@ const entitycreate = {
                 //     path: ['PATH', 'TO', 'NODE']
                 //   }
                 switch (node.field) {
+                    case 'type':
+                        return {
+                            field: false,
+                            value: false
+                        }
                     default:
                         return {
                             field: false,
