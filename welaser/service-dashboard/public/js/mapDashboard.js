@@ -149,7 +149,7 @@ const mapDashboard = {
                 .get(utils.orionurl + `entities/${tis.selectedTopic}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
-                    const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasRoadSegment"] // "hasBuilding",
+                    const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasBuilding", "hasRoadSegment"]
                     attrs.forEach(function (attr, index) {
                         if (agrifarm[attr]) {
                             agrifarm[attr].forEach(function (id, index) {
