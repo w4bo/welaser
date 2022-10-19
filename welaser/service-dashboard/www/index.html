@@ -48,18 +48,22 @@
     <!--    <link rel="stylesheet" href="/static/libs/leaflet.css" crossorigin=""/>-->
     <script src="/static/libs/leaflet.js"></script>
 
-    <!-- Import components -->
+    <!-- Import pages -->
+    <script src="/static/env.js"></script>
+    <script src="/static/js/utils.js"></script>
     <script src="/static/components/navbar.js"></script>
     <script src="/static/components/footer.js"></script>
-    <!-- Import pages -->
-    <script src="/static/js/utils.js"></script>
+    <script src="/static/components/missionplanner.js"></script>
+    <script src="/static/components/entitycreate.js"></script>
+    <script src="/static/components/entityupdate.js"></script>
+    <script src="/static/components/entitydownload.js"></script>
     <script src="/static/js/mapDashboard.js"></script>
     <script src="/static/js/entityManagement.js"></script>
     <script src="/static/js/statistics.js"></script>
     <!-- Import utils -->
     <script src="/static/js/404.js"></script>
     <script src="/static/js/router.js"></script>
-    <script src="/static/env.js"></script>
+
 
     <style>canvas { transform: matrix(1, 0, 0, 1, 0, 0) !important;}</style>
 </head>
@@ -68,7 +72,7 @@
     <v-app id="app">
         <navbar></navbar>
         <v-main><router-view></router-view></v-main>
-        <!--        <myfooter></myfooter>-->
+        <myfooter></myfooter>
     </v-app>
 
     <script>
@@ -85,8 +89,8 @@
             store: store,
             vuetify: new Vuetify(),
             components: {
-                // 'myfooter': Footer,
-                'navbar': Navbar,
+                myfooter: footer,
+                navbar: navbar,
             }
         })
         // Remove console info from Vue

@@ -1,4 +1,4 @@
-const Navbar = {
+const navbar = {
     template: `
         <div>
             <v-navigation-drawer v-model="drawer" absolute bottom temporary>

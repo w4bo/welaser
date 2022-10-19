@@ -18,6 +18,16 @@ function renderJSON(data, hideDetails, enableEdit) {
     }
 }
 
+utils.fiwareCreateEntity = function (data, then, error) {
+    axios
+        .post(utils.orion_url + `entities?options=keyValues`, data, utils.jsonheaders)
+        .then(result => {
+            if (then) then(result)
+        }).catch(err => {
+            if (error) error(err)
+        })
+}
+
 function renderRows(data, hideDetails, enableEdit) {
     let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
     for (let [key, value] of Object.entries(data)) {
@@ -73,3 +83,6 @@ utils.renderJSON = renderJSON
 utils.renderRows = renderRows
 utils.uuidv4 = uuidv4
 utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
+utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
+utils.orion_url = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
+utils.jsonheaders = {'Content-Type': 'application/json'}
