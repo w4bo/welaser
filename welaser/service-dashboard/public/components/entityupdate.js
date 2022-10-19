@@ -8,6 +8,8 @@ const entityupdate = {
                     Modify the entity below
                     <div id="update"></div>
                 </div>
+                <p v-if="showModal"></p>
+                <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
             </v-card-text>
             <v-card-actions class="flex-column align-center"><v-btn v-on:click="update()">Update</v-btn></v-card-actions>
         </v-card>`,
@@ -17,16 +19,30 @@ const entityupdate = {
             selectedentity: "",
             selectableentities: [],
             editorUpdate: null,
+            response: "",
+            showModal: true,
+            success: true,
+            agrifarm: utils.agrifarm
         }
     },
     methods: {
         update() {
             this.visibleUpdate = false
-            console.log(this.editorUpdate.get())
+            const tis = this
+            utils.fiwareUpdateEntity(this.editorUpdate.get(), function (res) {
+                tis.showModal = true
+                tis.success = true
+                tis.response = "OK" // "OK: " + res["statusText"]
+            }, function (err) {
+                tis.showModal = true
+                tis.success = false
+                tis.response = "Error: " + err["response"]["data"]["description"]
+            })
         },
         setSelectedUpdate(domain, id) {
             axios.get(utils.nodeurl + `/api/entity/${domain}/${id}`).then(entity => {
                 this.visibleUpdate = true
+                this.showModal = false
                 this.editorUpdate.set(entity.data)
             })
         },
@@ -49,6 +65,16 @@ const entityupdate = {
                 //     path: ['PATH', 'TO', 'NODE']
                 //   }
                 switch (node.field) {
+                    case 'id':
+                        return {
+                            field: false,
+                            value: false
+                        }
+                    case 'type':
+                        return {
+                            field: false,
+                            value: false
+                        }
                     default:
                         return {
                             field: false,

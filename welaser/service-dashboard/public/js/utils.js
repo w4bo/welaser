@@ -18,6 +18,17 @@ function renderJSON(data, hideDetails, enableEdit) {
     }
 }
 
+utils.fiwareUpdateEntity = function (data, then, error) {
+    axios
+        .post(utils.orion_url + `op/update?options=keyValues`, {'actionType': 'append', 'entities': [data]}, utils.jsonheaders)
+        .then(result => {
+            console.log(result)
+            if (then) then(result)
+        }).catch(err => {
+            if (error) error(err)
+        })
+}
+
 utils.fiwareCreateEntity = function (data, then, error) {
     axios
         .post(utils.orion_url + `entities?options=keyValues`, data, utils.jsonheaders)

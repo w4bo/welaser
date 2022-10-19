@@ -40,7 +40,7 @@ exports.entity = async function (req, res) {
     const domain = req.params.domain
     const id = req.params.id
     connect(function (dbo) {
-        dbo.collection(domain).findOne({"id": id}, {fields: {"id": 0, "type": 0, "_id": 0}}, function (err, result) {
+        dbo.collection(domain).findOne({"id": id}, {fields: {"_id": 0}}, function (err, result) {
             send(res, err, result)
         })
     })

@@ -27,7 +27,6 @@ const entitycreate = {
     },
     methods: {
         create() {
-            console.log(this.editorCreate.get())
             this.visibleCreate = false
             const tis = this
             utils.fiwareCreateEntity(this.editorCreate.get(), function (res) {
