@@ -110,6 +110,9 @@ while i < 50 and count1 == 0:
     i += 1
 assert count1 > 0, "No document found"
 
+###############################################################################
+# Test the node APIs
+###############################################################################
 today = datetime.today().strftime('%Y-%m-%d')
 NODE_URL = "http://{}:{}/api/".format(conf["IP"], conf["WEB_SERVER_PORT_EXT"])
 for url in ['download/{}/{}/{}/{}/{}/{}'.format(domain, 'AgriFarm', today, today, 'foo', 'foo'),
