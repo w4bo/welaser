@@ -1,3 +1,19 @@
+## [1.1.38](https://github.com/w4bo/welaser/compare/1.1.37...1.1.38) (2022-10-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mysql:mysql-connector-java to v8.0.31 ([7dc560d](https://github.com/w4bo/welaser/commit/7dc560d0330dcb5023e4731fb6d38f386867610b))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.1 ([f712480](https://github.com/w4bo/welaser/commit/f71248003843e05416c1601814cbef6315f84d4a))
+* **deps:** update dependency pymongo to v4.3.2 ([15b8f9a](https://github.com/w4bo/welaser/commit/15b8f9aef530613819845a8bf7227e0e81437214))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.12 ([#273](https://github.com/w4bo/welaser/issues/273)) ([8721792](https://github.com/w4bo/welaser/commit/87217921c5b23a87a1b4928274e6f663836fd5e9))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.13 ([6f9ea58](https://github.com/w4bo/welaser/commit/6f9ea5841ee1b4f7685cf84b6b87f9d9f66902b1))
+* **deps:** update node.js to 16.18 ([df6ffbb](https://github.com/w4bo/welaser/commit/df6ffbb0b07a9a73bcb7ecbb298d9637017a6a52))
+
 ## [1.1.37](https://github.com/w4bo/welaser/compare/1.1.36...1.1.37) (2022-10-12)
 
 
