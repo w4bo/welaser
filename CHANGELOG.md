@@ -1,3 +1,10 @@
+## [1.1.40](https://github.com/w4bo/welaser/compare/1.1.39...1.1.40) (2022-10-20)
+
+
+### Bug Fixes
+
+* **node:** working on delay charts ([#269](https://github.com/w4bo/welaser/issues/269)) ([7a5cbce](https://github.com/w4bo/welaser/commit/7a5cbce798b77f5b754ff19cee36f4943bcfa3c2))
+
 ## [1.1.39](https://github.com/w4bo/welaser/compare/1.1.38...1.1.39) (2022-10-19)
 
 
