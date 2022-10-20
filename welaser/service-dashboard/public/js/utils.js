@@ -18,6 +18,10 @@ function renderJSON(data, hideDetails, enableEdit) {
     }
 }
 
+utils.getTopic = function (agrifarm = utils.agrifarm) {
+    return config.DRACO_RAW_TOPIC + "." + agrifarm.replaceAll(/[-:_]/g, "")
+}
+
 utils.plannerCreatePlan = function (data, then, error) {
     axios
         .post(utils.plannerurl, data)
@@ -44,8 +48,12 @@ utils.fiwareCreateEntity = function (data, then, error) {
         .then(result => {
             if (then) then(result)
         }).catch(err => {
-            if (error) error(err)
-        })
+        if (error) error(err)
+    })
+}
+
+utils.round = function (v, mult) {
+    return new Date(Math.round(v / mult) * mult).toLocaleString()
 }
 
 function renderRows(data, hideDetails, enableEdit) {
@@ -106,4 +114,7 @@ utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
 utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
 utils.orionurl = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
 utils.plannerurl = `http://${config.PLANNER_IP}:${config.PLANNER_PORT_EXT}`
+utils.proxyurl = `http://${config.PROXY_IP}:${config.PROXY_PORT_EXT}`
 utils.jsonheaders = {'Content-Type': 'application/json'}
+utils.chartresolution = 5000
+utils.charthistorylength = 25

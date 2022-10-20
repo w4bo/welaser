@@ -75,7 +75,7 @@ const mapDashboard = {
                 this.devices = {}
                 this.devicesLocation = {}
                 this.remoteSocket.removeAllListeners(this.socketName) // remove the listeners to the old topic
-                const selectedTopic = config.DRACO_RAW_TOPIC + "." + this.selectedTopic.replaceAll(/[-:_]/g, "")
+                const selectedTopic = utils.getTopic(this.selectedTopic)
                 this.socketName = selectedTopic // update the topic name
                 this.remoteSocket.emit("newtopic", selectedTopic) // notify the new topic on which the kafka proxy should create a Kakfa consumer
                 this.remoteSocket.on(this.socketName, data => { this.handleRemoteSocketData(JSON.parse(data)) }) // listen to the new topic
@@ -182,7 +182,7 @@ const mapDashboard = {
                 })
         },
         init() {
-            this.remoteSocket = io.connect(`http://${this.PROXY_IP}:${this.PROXY_PORT_EXT}`)
+            this.remoteSocket = io.connect(utils.proxyurl)
             this.loadMap() // create the map
             this.loadAgriFarms() // populate the map with the selected agrifarm
         }
