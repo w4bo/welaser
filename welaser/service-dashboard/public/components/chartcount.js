@@ -1,7 +1,7 @@
 const chartcount = {
     template: `
         <v-card>
-            <v-card-title class="pb-0">Message workload</v-card-title>
+            <v-card-title class="pb-0">Received messages</v-card-title>
             <v-card-text class="flex"><canvas id="chartcount" style="width: 200px; height: 200px"></canvas></v-card-text>
         </v-card>`,
     data() {
