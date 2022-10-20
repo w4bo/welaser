@@ -51,7 +51,6 @@ const chartdelay = {
         const chart = new Chart(ctx, {type: 'line', data: this.dataset, options: optionsAnimations})
 
         function update(tis, timestamp, timestamp_subscription, timestamp_gui, def) {
-            console.log({timestamp: timestamp, timestamp_subscription:timestamp_subscription, timestamp_gui:timestamp_gui})
             if (timestamp && timestamp_subscription && timestamp_gui) {
                 const v = utils.round(timestamp, mult)
                 if (tis.dict[v]) {
