@@ -6,8 +6,8 @@
 
 ## Set up
 
-This projects has been tested with Java 11 and Python 3.8.
-Refer to this [Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) to check the complete set up.
+This project requires Java 11 and Python 3.8.
+Refer to this [Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) for the complete setup.
 
 To do the mandatory configuration, run:
 
@@ -15,7 +15,7 @@ To do the mandatory configuration, run:
 scripts/config.sh
 ```
 
-Check the variables from the `.env` and `webserver/public/env.js` files and change IPs from `127.0.0.1` to the proper ip (if needed).
+Check the variables from the `.env` and `webserver/public/env.js` files and change IPs (if needed).
 
 ### (Optional) Mosquitto MQTT
 
@@ -34,8 +34,8 @@ mosquitto_passwd -c pwfile <user>
 
 Where `<user>` and `<pwd>` corresponds to `MOSQUITTO_USER` and `MOSQUITTO_PWD` variables defined in `.env`
 
-By default the MQTT broker is exposed on port 1883.
-You can edit `MOSQUITTO_PORT_EXT` in `.env` to specify another port
+By default the MQTT broker is exposed on port `${MOSQUITTO_PORT_EXT}`.
+You can edit it in `.env`.
 
 Register a subscriber
 
@@ -49,32 +49,24 @@ Publish some messages
 docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PORT_EXT} -t "foo" -m "bar" -u ${MOSQUITTO_USER} -P ${MOSQUITTO_PWD}
 ```
 
-## Interacting with the demo
+## Starting the architecture
 
-Bring up all the required containers
+Execute all the containers
 
 ```sh
 ./launch.sh
 ```
 
-By default, the GUI is available at `http://127.0.0.1:8080`.
-
-The following command shows the entity status
-
-```sh
-watch -n1 "curl -X GET "${IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1000" | python -m json.tool"
-```
-
-Finally, shut down the environment
+Shut down the environment
 
 ```sh
 ./stop.sh
 ``` 
 
-To restart and build a single container run
+To re-build and restart a single container
 
 ```sh
 scripts/restartService.sh containername
 ```
 
-Where `containername` name is picked from the `docker-compose.yml` file.
+Where `containername` is picked from the `docker-compose.yml` file.
