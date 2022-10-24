@@ -1,15 +1,5 @@
 const utils = {}
 
-utils.renderJSON = function (data, hideDetails) {
-    if (typeof (data) != "object") {
-        if (typeof (data) == "string") {
-            return data.trim()
-        }
-    } else {
-        return utils.renderRows(data, hideDetails)
-    }
-}
-
 utils.getTopic = function (agrifarm = utils.agrifarm) {
     return config.DRACO_RAW_TOPIC + "." + agrifarm.replaceAll(/[-:_]/g, "")
 }
@@ -71,6 +61,18 @@ utils.round = function (v, mult) {
 
 utils.getRandomColor = function (v) {
     return utils.colors[utils.hashCode(v) % utils.colors.length]
+}
+
+utils.renderJSON = function (data, hideDetails) {
+    if (typeof (data) != "object") {
+        if (typeof data === "string") {
+            return data.trim()
+        } else {
+            return data
+        }
+    } else {
+        return utils.renderRows(data, hideDetails)
+    }
 }
 
 utils.renderRows = function(data, hideDetails) {
@@ -135,9 +137,8 @@ utils.getDevices = function (tis, type, acc, then) {
         .then(devices => {
             devices = devices.data
             devices.forEach(function (device, index) {
-                device["color"] = utils.getRandomColor(device.type)
                 if (device["domain"] === utils.agrifarm) {
-                    tis.$set(acc, device.id, device)
+                    tis.$set(acc, device.id, {'data': device, 'color': utils.getRandomColor(device.type)})
                 }
             })
             if (then) then(acc)

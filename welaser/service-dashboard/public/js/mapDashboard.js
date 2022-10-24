@@ -23,7 +23,7 @@ const mapDashboard = {
     data() {
         return {
             devices: {},
-            hideDetails: true,
+            hideDetails: false,
         }
     },
     components: {

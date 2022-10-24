@@ -5,9 +5,9 @@ const entitymenu = {
             {{ type.name }}
             <template v-for="device in devicesbytype[type.name]">
                 <div>
-                    <input v-if="type.exclusive"  :id="device.id" :value="getName(device)" v-model="selectedbytype[type.name]" type="radio">
-                    <input v-if="!type.exclusive" :id="device.id" :value="getName(device)" v-model="selectedbytype[type.name]" type="checkbox">
-                    <label :for="device.id">{{ getName(device) }}</label>
+                    <input v-if="type.exclusive"  :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="radio">
+                    <input v-if="!type.exclusive" :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="checkbox">
+                    <label :for="device.data.id">{{ getName(device.data) }}</label>
                 </div>
             </template>
         </template>
@@ -28,7 +28,7 @@ const entitymenu = {
         const tis = this
         this.types.forEach(function(type) {
             utils.getDevices(tis, type.name,  {}, function(acc) {
-                let name = utils.getName(Object.values(acc)[0])
+                let name = utils.getName(Object.values(acc)[0]["data"])
                 if (!type.exclusive) {
                     name = [name]
                 }
