@@ -119,6 +119,31 @@ utils.renderRows = function(data, hideDetails) {
     return html + `</table>`
 }
 
+utils.getName = function (obj) {
+    let ret = undefined;
+    ["name", "cameraName", "id"].forEach(function (key) {
+        if (typeof ret === "undefined" && obj[key]) {
+            ret = obj[key]
+        }
+    })
+    return ret
+}
+
+utils.getDevices = function (tis, type, acc, then) {
+    axios
+        .get(utils.orionurl + `entities?type=${type}&options=keyValues&limit=1000`)
+        .then(devices => {
+            devices = devices.data
+            devices.forEach(function (device, index) {
+                device["color"] = utils.getRandomColor(device.type)
+                if (device["domain"] === utils.agrifarm) {
+                    tis.$set(acc, device.id, device)
+                }
+            })
+            if (then) then(acc)
+        })
+}
+
 utils.uuidv4 = function () {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -134,3 +159,10 @@ utils.chartresolution = 5000
 utils.charthistorylength = 25
 utils.colors = d3.schemeTableau10
 utils.mapcenter = [40.3128, -3.482]
+utils.selectedbytype = {}
+utils.missionguitypes = [
+    {name: 'AgriRobot', exclusive: true},
+    {name: 'Camera', exclusive: false, max: 4},
+    // {name: 'AgriParcel', exclusive: true},
+    // {name: 'Device', exclusive: false}
+]

@@ -4,8 +4,8 @@ const mapDashboard = {
             <v-row align="center" justify="center"><v-col cols=8><mymap></mymap></v-col></v-row>
             <v-row justify="center">
                 <template v-for="device in Object.values(devices)">
-                    <v-col cols=3 class="pa-3 d-flex flex-column">
-                        <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
+                    <v-col cols=3>
+                        <v-card :color="device.color">
                             <v-card-title class="pb-0">{{device.id}}</v-card-title>
                             <v-card-text class="flex"><div v-html="updateCards(device.data)"></div></v-card-text>
                             <v-card-actions>

@@ -42,6 +42,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             updatePosition()
         }
         find(initStatus, HEARTBEAT, h.sense(), prop = "serviceProvided", mod = "status")
+        initStatus.put(DOMAIN, AGRI_FARM)
         return initStatus.toString()
     }
 
