@@ -1,7 +1,6 @@
 const missiongui = {
     template: `
         <div>
-            
             <v-row align="center" justify="center">
                 <v-col cols=1><entitymenu></entitymenu></v-col>
                 <v-col cols=8><mymap></mymap></v-col>
@@ -10,7 +9,6 @@ const missiongui = {
                         <v-card v-if="isSelected(device)" :color="device.color">
                             <v-card-title class="p-0">{{device.name}}</v-card-title>
                             <v-card-text class="p-0">
-                                {{device.speed}}
                                 <table>
                                     <tr><td>Speed</td><td>{{device.speed}}</td></tr>
                                     <tr><td>Bearing</td><td>{{device.bearing}}</td></tr>
