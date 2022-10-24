@@ -1,10 +1,11 @@
 const missiongui = {
     template: `
         <div>
-            <entitymenu></entitymenu>
+            
             <v-row align="center" justify="center">
+                <v-col cols=1><entitymenu></entitymenu></v-col>
                 <v-col cols=8><mymap></mymap></v-col>
-                <v-col cols=4>
+                <v-col cols=2>
                     <template v-for="device in Object.values(robots)">
                         <v-card v-if="isSelected(device)" :color="device.color">
                             <v-card-title class="p-0">{{device.name}}</v-card-title>
