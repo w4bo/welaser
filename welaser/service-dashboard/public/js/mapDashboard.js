@@ -31,8 +31,7 @@ const mapDashboard = {
     },
     methods: {
         updateCards(data) {
-            const res = utils.renderJSON(data, this.hideDetails)
-            return res
+            return utils.renderJSON(data, this.hideDetails)
         },
         sendCommand(deviceId, command) {
             const inner = {}
