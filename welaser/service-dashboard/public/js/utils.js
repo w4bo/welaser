@@ -1,17 +1,26 @@
 const utils = {}
 
-utils.renderJSON = function (data, hideDetails, enableEdit) {
+utils.renderJSON = function (data, hideDetails) {
     if (typeof (data) != "object") {
         if (typeof (data) == "string") {
             return data.trim()
         }
     } else {
-        return renderRows(data, hideDetails, enableEdit)
+        return utils.renderRows(data, hideDetails)
     }
 }
 
 utils.getTopic = function (agrifarm = utils.agrifarm) {
     return config.DRACO_RAW_TOPIC + "." + agrifarm.replaceAll(/[-:_]/g, "")
+}
+
+utils.kafkaProxyNewTopic = function (remoteSocket, newtopic, handleStreamData, prevTopic = undefined) {
+    if (prevTopic) remoteSocket.removeAllListeners(prevTopic)
+    const socketName = utils.getTopic(newtopic) // clean the topic name
+    remoteSocket.emit("newtopic", socketName) // notify the new topic to Kakfa proxy
+    remoteSocket.on(socketName, data => { // listen to the new topic
+        handleStreamData(JSON.parse(data))
+    })
 }
 
 utils.plannerCreatePlan = function (data, then, error) {
@@ -64,7 +73,7 @@ utils.getRandomColor = function (v) {
     return utils.colors[utils.hashCode(v) % utils.colors.length]
 }
 
-utils.renderRows = function(data, hideDetails, enableEdit) {
+utils.renderRows = function(data, hideDetails) {
     let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
     for (let [key, value] of Object.entries(data)) {
         key = key.trim()
@@ -97,9 +106,9 @@ utils.renderRows = function(data, hideDetails, enableEdit) {
                 // Seconds part from the timestamp
                 const seconds = "0" + date.getSeconds();
                 const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                html += renderJSON(formattedTime, hideDetails, enableEdit)
+                html += utils.renderJSON(formattedTime, hideDetails)
             } else if (value !== "") {
-                html += renderJSON(value, hideDetails, enableEdit)
+                html += utils.renderJSON(value, hideDetails)
             }
             html += `</td></tr>`
             html = html
@@ -124,3 +133,4 @@ utils.jsonheaders = {'Content-Type': 'application/json'}
 utils.chartresolution = 5000
 utils.charthistorylength = 25
 utils.colors = d3.schemeTableau10
+utils.mapcenter = [40.3128, -3.482]
