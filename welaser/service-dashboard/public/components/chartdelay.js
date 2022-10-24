@@ -15,13 +15,13 @@ const chartdelay = {
                 fill: false,
                 datasets: [{
                     data: [],
-                    backgroundColor: [d3.schemeCategory10[0]],
-                    borderColor: [d3.schemeCategory10[0]],
+                    backgroundColor: [utils.colors[0]],
+                    borderColor: [utils.colors[0]],
                     label: 'OCB',
                 }, {
                     data: [],
-                    backgroundColor: [d3.schemeCategory10[1]],
-                    borderColor: [d3.schemeCategory10[1]],
+                    backgroundColor: [utils.colors[1]],
+                    borderColor: [utils.colors[1]],
                     label: 'GUI',
                 }]
             }

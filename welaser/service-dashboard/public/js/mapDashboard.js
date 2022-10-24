@@ -1,31 +1,23 @@
 const mapDashboard = {
     template: `
-      <div style="padding: 1%">
-          <!--<v-row align="center" justify="center">-->
-          <!--    <v-col cols=8><v-select :items="topics" item-text="name" item-value="id" v-model="selectedTopic" style="z-index: 20"></v-select></v-col>-->
-          <!--    <v-col cols=1><v-btn v-on:click="listenTopic" elevation="2">Listen</v-btn></v-col>-->
-          <!--    <v-col cols=1><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-col>-->
-          <!--    &lt;!&ndash; <v-row align="center" justify="center"><v-switch v-model="hideDetails" label='Hide details'></v-switch></v-row>&ndash;&gt;-->
-          <!--</v-row>-->
-          <v-row align="center" justify="center"><v-col cols=8><div id="map" class="map" style="height: 250px"></div></v-col></v-row>
-          <v-row justify="center">
-              <template v-for="device in Object.values(devices)">
-                  <v-col cols=3 class="pa-3 d-flex flex-column">
-                  <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
-                      <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
-                      <v-card-text class="flex"><div v-html="vueRenderJSON(device.data)"></div></v-card-text>
-                      <v-card-actions>
-                          <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
-                              <template v-for="cmd in device.data.cmdList">
-                                  <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
-                              </template>
-                          </div>
-                      </v-card-actions>
-                  </v-card>
-                  </v-col>
-              </template>
-          </v-row>
-      </div>`,
+        <v-row align="center" justify="center"><v-col cols=8><div id="map" class="map" style="height: 250px"></div></v-col></v-row>
+        <v-row justify="center">
+            <template v-for="device in Object.values(devices)">
+                <v-col cols=3 class="pa-3 d-flex flex-column">
+                <v-card class="elevation-5 ma-5 flex d-flex flex-column" :color="device.color">
+                    <v-card-title class="pb-0">{{device.data.id}}</v-card-title>
+                    <v-card-text class="flex"><div v-html="vueRenderJSON(device.data)"></div></v-card-text>
+                    <v-card-actions>
+                        <div v-if="typeof device.data !== 'undefined' && typeof device.data.cmdList !== 'undefined'">
+                            <template v-for="cmd in device.data.cmdList">
+                                <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
+                            </template>
+                        </div>
+                    </v-card-actions>
+                </v-card>
+                </v-col>
+            </template>
+        </v-row>`,
     data() {
         return {
             layerBoundary: null,
@@ -38,8 +30,7 @@ const mapDashboard = {
             socketName: "",
             hideDetails: true,
             topics: [],
-            selectedTopic: "",
-            colors: d3.schemeTableau10
+            selectedTopic: ""
         }
     },
     methods: {
@@ -57,18 +48,6 @@ const mapDashboard = {
                 )
                 .then(response => { console.log(response) })
                 .catch(err => { console.log(err) })
-        },
-        hashCode(s) {
-            if (s) {
-                let h;
-                for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 1; }
-                return Math.abs(h);
-            } else {
-                return 0
-            }
-        },
-        getRandomColor(type) {
-            return this.colors[this.hashCode(type) % this.colors.length]
         },
         listenTopic() {
             if (this.selectedTopic && this.selectedTopic !== "") {
@@ -93,10 +72,10 @@ const mapDashboard = {
         handleStreamData(data) {
             const hasLocation = Object.keys(data).includes("location")
             if (!Object.keys(this.devices).includes(data.id)) { // if the device is unknown
-                this.$set(this.devices, data.id, { 'id': data.id, 'data': data, 'color': this.getRandomColor(data.type) })
+                this.$set(this.devices, data.id, { 'id': data.id, 'data': data, 'color': utils.getRandomColor(data.type) })
                 if (hasLocation) {
                     const coordinates = data.location.coordinates
-                    this.$set(this.devicesLocation, data.id, L.circle(L.latLng(coordinates[1], coordinates[0]), 3, {"color": this.getRandomColor(data.type)}).bindPopup(data.id).addTo(this.layerStream))
+                    this.$set(this.devicesLocation, data.id, L.circle(L.latLng(coordinates[1], coordinates[0]), 3, {"color": utils.getRandomColor(data.type)}).bindPopup(data.id).addTo(this.layerStream))
                 }
             }
             const device = this.devices[data.id]
@@ -156,16 +135,16 @@ const mapDashboard = {
                                 axios
                                     .get(utils.orionurl + `entities/${id}?options=keyValues&attrs=location`)
                                     .then(loc => {
-                                        let color = "#ff7800"
+                                        let color = utils.colors[0]
                                         const type = loc.data.type
                                         if (type === "AgriParcel") {
-                                            color = d3.schemeCategory10[2]
+                                            color = utils.colors[2]
                                         } else if (type === "RestrictedTrafficArea") {
-                                            color = d3.schemeCategory10[3]
+                                            color = utils.colors[3]
                                         } else if (type === "RoadSegment") {
-                                            color = d3.schemeCategory10[0]
+                                            color = utils.colors[1]
                                         } else if (type === "Building") {
-                                            color = d3.schemeCategory10[0]
+                                            color = utils.colors[0]
                                         }
                                         const myStyle = {"color": color, "weight": 5, "opacity": 0.65};
                                         const geojson = {

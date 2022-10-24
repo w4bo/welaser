@@ -15,8 +15,8 @@ const chartcount = {
                 fill: false,
                 datasets: [{
                     data: [],
-                    backgroundColor: [d3.schemeCategory10[0]],
-                    borderColor: [d3.schemeCategory10[0]],
+                    backgroundColor: [utils.colors[0]],
+                    borderColor: [utils.colors[0]],
                     label: 'Count',
                 }]
             }
