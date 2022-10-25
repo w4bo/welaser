@@ -1,17 +1,21 @@
 const entitymenu = {
     template: `
-        <div>
-        <template v-for="type in types">
-            {{ type.name }}
-            <template v-for="device in devicesbytype[type.name]">
-                <div>
-                    <input v-if="type.exclusive"  :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="radio">
-                    <input v-if="!type.exclusive" :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="checkbox">
-                    <label :for="device.data.id">{{ getName(device.data) }}</label>
-                </div>
+        <v-list nav dense class="pl-10">
+            <template v-for="type in types">
+                {{ type.name }}
+                <template v-for="device in devicesbytype[type.name]">
+                        <v-list-item>
+                            <v-list-item-content class="nav-link">
+                                <div>
+                                    <input v-if="type.exclusive"  :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="radio">
+                                    <input v-if="!type.exclusive" :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="checkbox">
+                                    <label :for="device.data.id">{{ getName(device.data) }}</label>
+                                </div>
+                            </v-list-item-content>
+                        </v-list-item>
+                </template>
             </template>
-        </template>
-        </div>`,
+        </v-list>`,
     data() {
         return {
             types: utils.missionguitypes,

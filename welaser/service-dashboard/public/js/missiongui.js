@@ -2,7 +2,6 @@ const missiongui = {
     template: `
         <div>
             <v-row align="center" justify="center">
-                <v-col cols=2><entitymenu></entitymenu></v-col>
                 <v-col cols=6><mymap></mymap></v-col>
                 <v-col cols=3>
                     <template v-for="device in Object.values(robots)">
