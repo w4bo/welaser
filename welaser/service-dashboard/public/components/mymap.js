@@ -1,5 +1,5 @@
 const mymap = {
-    template: `<div id="map" class="map" style="height: 250px"></div>`,
+    template: `<div id="map" class="map" style="height: 250px; z-index: 1"></div>`,
     data() {
         return {
             layerBoundary: null,
