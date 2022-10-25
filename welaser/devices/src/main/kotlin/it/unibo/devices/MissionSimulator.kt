@@ -2,9 +2,7 @@
 
 package it.unibo.devices
 
-import it.unibo.DATA_MODEL_FOLDER
-import it.unibo.AGRI_FARM
-import it.unibo.ROBOT_CMD_START
+import it.unibo.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
@@ -16,9 +14,9 @@ fun main(args: Array<String>) {
     val parser = ArgParser("MissionSimulator")
     val domain by parser.option(ArgType.String, shortName = "domain", description = "Domain name").default(AGRI_FARM)
     parser.parse(args)
-    EntityFactory.createFromFile("$folder/mission-123.json", 1, 2).run()
-    val robot = EntityFactory.createFromFile("$folder/carob-1.json", timeout)
-    robot.exec(ROBOT_CMD_START, "mission-123")
+    EntityFactory.createFromFile("$folder/$MISSION_FILE", 1, 2).run()
+    val robot = EntityFactory.createFromFile("$folder/$ROBOT_FILE", timeout)
+    robot.exec(ROBOT_CMD_START, MISSION_ID)
     val executor = Executors.newCachedThreadPool()
     (
         listOf(

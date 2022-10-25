@@ -59,7 +59,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             ROBOT_CMD_START -> {
                 status = STATUS.ON
                 // TODO should be val mission: String = khttp.get("${ORION_URL}entities/${payload}/?options=keyValues").jsonObject.toString()
-                val mission: String = khttp.get("${ORION_URL}entities/mission-123/?options=keyValues").jsonObject.toString()
+                val mission: String = khttp.get("${ORION_URL}entities/$payload/?options=keyValues").jsonObject.toString()
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray(COORDINATES).toList()
             }

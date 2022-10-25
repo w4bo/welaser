@@ -34,16 +34,7 @@ const mapDashboard = {
             return utils.renderJSON(data, this.hideDetails)
         },
         sendCommand(deviceId, command) {
-            const inner = {}
-            inner[command] = {}
-            axios
-                .patch(
-                    utils.orionurl + `entities/${deviceId}/attrs?options=keyValues`,
-                    {"cmd": inner},
-                    {headers: utils.jsonheaders}
-                )
-                .then(response => { console.log(response) })
-                .catch(err => { console.log(err) })
+            return utils.sendCommand(deviceId, command)
         },
         handleStreamData(data) {
             if (this.devices[data.id]) { // if the device is known, update its data content

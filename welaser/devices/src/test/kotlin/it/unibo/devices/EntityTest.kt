@@ -49,7 +49,7 @@ class EntityTest {
     fun testRobot() {
         try {
             val r = EntityFactory.createFromFile("$folder/carob-1.json", 1, times = 1000)
-            r.exec(ROBOT_CMD_START, "mission-123")
+            r.exec(ROBOT_CMD_START, MISSION_ID)
             r.run()
             khttp.async.patch("${ORION_URL}entities/carob-1/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
                 waitFor(r, STATUS.OFF)

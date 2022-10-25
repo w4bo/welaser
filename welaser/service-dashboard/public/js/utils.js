@@ -121,6 +121,23 @@ utils.renderRows = function(data, hideDetails) {
     return html + `</table>`
 }
 
+utils.sendCommand = function (deviceId, command, payload = {}) {
+    const inner = {}
+    inner[command] = payload
+    axios
+        .patch(
+            utils.orionurl + `entities/${deviceId}/attrs?options=keyValues`,
+            {"cmd": inner},
+            {headers: utils.jsonheaders}
+        )
+        .then(response => {
+            console.log(response)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+
 utils.getName = function (obj) {
     let ret = undefined;
     ["name", "cameraName", "id"].forEach(function (key) {
