@@ -6,6 +6,7 @@ import it.unibo.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
+import org.json.JSONObject
 import java.util.concurrent.Executors
 
 fun main(args: Array<String>) {
@@ -16,7 +17,7 @@ fun main(args: Array<String>) {
     parser.parse(args)
     EntityFactory.createFromFile("$folder/$MISSION_FILE", 1, 2).run()
     val robot = EntityFactory.createFromFile("$folder/$ROBOT_FILE", timeout)
-    robot.exec(ROBOT_CMD_START, MISSION_ID)
+    robot.exec(ROBOT_CMD_START, """{"missionid": "$MISSION_ID"}""")
     val executor = Executors.newCachedThreadPool()
     (
         listOf(

@@ -58,10 +58,12 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
         when (commandName) {
             ROBOT_CMD_START -> {
                 status = STATUS.ON
-                // TODO should be val mission: String = khttp.get("${ORION_URL}entities/${payload}/?options=keyValues").jsonObject.toString()
-                val mission: String = khttp.get("${ORION_URL}entities/$payload/?options=keyValues").jsonObject.toString()
+                val pay = JSONObject(payload)
+                val missionid = if (pay.has("missionid")) pay.getString("missionid") else MISSION_ID
+                val mission: String = khttp.get("${ORION_URL}entities/${missionid}/?options=keyValues").jsonObject.toString()
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray(COORDINATES).toList()
+                // println("Done $missionid")
             }
             ROBOT_CMD_STOP -> reset()
             ROBOT_CMD_RESUME -> status = STATUS.ON

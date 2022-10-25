@@ -2,6 +2,7 @@
 
 package it.unibo.iotagent
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -56,12 +57,16 @@ class IOTA {
                     println("Alive at ${current.format(formatter)}")
                 }
                 post("/") {
-                    call.respondText("")
                     mutex.withLock {
-                        val payload = JSONObject(call.receive<String>())
-                        payload.getJSONArray("data").forEach {
-                            val o = JSONObject(it.toString())
-                            client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
+                        try {
+                            val payload = JSONObject(call.receive<String>())
+                            payload.getJSONArray("data").forEach {
+                                val o = JSONObject(it.toString())
+                                client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
+                            }
+                            call.respondText("")
+                        } catch (e: Exception) {
+                            call.respondText(e.message!!, status = HttpStatusCode.Forbidden)
                         }
                     }
                 }

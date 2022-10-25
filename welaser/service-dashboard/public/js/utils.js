@@ -130,12 +130,8 @@ utils.sendCommand = function (deviceId, command, payload = {}) {
             {"cmd": inner},
             {headers: utils.jsonheaders}
         )
-        .then(response => {
-            console.log(response)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        .then(response => {console.log(response)})
+        .catch(err => {console.log(err)})
 }
 
 utils.getName = function (obj) {
