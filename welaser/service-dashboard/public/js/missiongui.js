@@ -42,8 +42,8 @@ const missiongui = {
             devices: {},
             robots: {},
             choosemission: true,
-            executemission: false,
-            stop: false,
+            execute_mission: false,
+            abort: false,
             pause: false,
             resume: false,
             mission: "",
@@ -57,19 +57,19 @@ const missiongui = {
     methods: {
         sendCommand(id, cmd) {
             let payload = {}
-            if (cmd === "executemission") {
+            if (cmd === "execute_mission") {
                 this.missionStarted()
                 payload = {"missionid": this.mission}
-            } else if (cmd === "stop") {
+            } else if (cmd === "abort") {
                 this.choosemission = true
-                this.executemission = false
-                this.stop = false
+                this.execute_mission = false
+                this.abort = false
                 this.pause = false
                 this.resume = false
             } else if (cmd === "pause") {
                 this.choosemission = false
-                this.executemission = false
-                this.stop = true
+                this.execute_mission = false
+                this.abort = true
                 this.pause = false
                 this.resume = true
             } else if (cmd === "resume") {
@@ -79,15 +79,15 @@ const missiongui = {
         },
         missionChosen() {
             this.choosemission = false
-            this.executemission = true
-            this.stop = false
+            this.execute_mission = true
+            this.abort = false
             this.pause = false
             this.resume = false
         },
         missionStarted() {
             this.choosemission = false
-            this.executemission = false
-            this.stop = true
+            this.execute_mission = false
+            this.abort = true
             this.pause = true
             this.resume = false
         },
@@ -114,7 +114,7 @@ const missiongui = {
         const tis = this
         utils.getDevices(this, "Camera", this.devices)
         utils.getDevices(this, "AgriRobot", this.robots)
-        utils.getDevices(this, 'Task', {}, function(acc) {
+        utils.getDevices(this, "Task", {}, function(acc) {
             Object.values(acc).forEach(function(task) {
                 task = task.data
                 if (task["taskType"] === "Mission")  { // TODO choose the mission from the current robot task["hasAgriRobot"] === "foo"
