@@ -1,3 +1,17 @@
+## [1.1.41](https://github.com/w4bo/welaser/compare/1.1.40...1.1.41) (2022-10-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.1.3 ([de391ee](https://github.com/w4bo/welaser/commit/de391ee0440207b50772f5155db251f8c57b5240))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.14 ([af60172](https://github.com/w4bo/welaser/commit/af60172a0c89cf55bca325671bbf7900677de1da))
+* **deps:** update node.js to 18.12 ([2549a3a](https://github.com/w4bo/welaser/commit/2549a3af29aa4bd02434372201901ae707c56141))
+* **deps:** update node.js to v18 ([ee86541](https://github.com/w4bo/welaser/commit/ee865416395757eb491cbf7013ae772309ccf864))
+
 ## [1.1.40](https://github.com/w4bo/welaser/compare/1.1.39...1.1.40) (2022-10-20)
 
 
