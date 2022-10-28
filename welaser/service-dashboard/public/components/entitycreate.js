@@ -47,7 +47,8 @@ const entitycreate = {
             const data = {
                 "id": `urn:nsgi-ld:${type}:${utils.uuidv4()}`,
                 "type": type,
-                "name": `User-friendly name here`
+                "name": `User-friendly name here`,
+                "createdBy": ``
             }
             this.editorCreate.set(data)
         },
@@ -59,9 +60,48 @@ const entitycreate = {
             this.entitytype = result.data[0]
             this.setSelectedCreate(utils.agrifarm, this.entitytype)
         })
+        const schema = {
+            "title": "Entity",
+            "description": "An entity from the FIWARE ecosystem",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "description": "The unique id of the entity",
+                    "examples": [
+                        "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055",
+                        "urn:ngsi-ld:AgriParcel:d50ec8b0-9719-45ab-8ab8-a831e4d341c2"
+                    ],
+                    "type": "string",
+                },
+            },
+            "required": ["id", "type", "name", "createdBy"]
+        }
+
         const options = {
+            schema: schema,
             mode: 'tree',
             modes: ['tree', 'view'], // 'code',
+            onValidate: function (json) {
+                // rules:
+                // - team, names, and ages must be filled in and be of correct type
+                // - a team must have 4 members
+                // - at lease one member of the team must be adult
+                const errors = []
+                if (json.id && !json.id.startsWith("urn:ngsi-ld:")) {
+                    errors.push({
+                        path: ['id'],
+                        message: "The id should start with 'urn:ngsi-ld:'"
+                    })
+                }
+                if (json.createdBy && json.createdBy.length > 0) {
+                    errors.push({
+                        path: ['createdBy'],
+                        message: "The field should not be empty"
+                    })
+                }
+                return errors
+            },
             onEditable: function (node) {
                 // node is an object like:
                 //   {
