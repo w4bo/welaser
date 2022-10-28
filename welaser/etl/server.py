@@ -73,8 +73,9 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         self._set_response()
         content_length = int(self.headers['Content-Length'])  # Get the size of data
-        post_data = self.rfile.read(content_length)  # Get the data itself
-        post_data = json.loads(post_data.decode('utf-8'))  # get the subscription
+        post_data = self.rfile.read(content_length).decode('utf-8')  # Get the data itself
+        post_data = post_data.replace("%3D", "=")
+        post_data = json.loads(post_data)  # get the subscription
 
         if self.path == '/v2/subscriptions':
             self.do_register_subscription(post_data)

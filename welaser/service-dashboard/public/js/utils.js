@@ -94,21 +94,7 @@ utils.renderRows = function(data, hideDetails) {
             if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
                 html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
             } else if (key === 'timestamp') {
-                const date = new Date(parseInt(value));
-                // Hours part from the timestamp
-                const year = date.getFullYear();
-                // Minutes part from the timestamp
-                const month = "0" + date.getMonth();
-                // Seconds part from the timestamp
-                const day = "0" + date.getDay();
-                // Hours part from the timestamp
-                const hours = date.getHours();
-                // Minutes part from the timestamp
-                const minutes = "0" + date.getMinutes();
-                // Seconds part from the timestamp
-                const seconds = "0" + date.getSeconds();
-                const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                html += utils.renderJSON(formattedTime, hideDetails)
+                html += utils.renderJSON(utils.formatDateTime(value), hideDetails)
             } else if (value !== "") {
                 html += utils.renderJSON(value, hideDetails)
             }
@@ -156,6 +142,26 @@ utils.getDevices = function (tis, type, acc, then) {
             })
             if (then) then(acc)
         })
+}
+
+utils.formatDateTime = function (timestampMs, includeDate = true, includeTime = true) {
+    const date = new Date(parseInt(timestampMs));
+    // Hours part from the timestamp
+    const year = date.getFullYear();
+    // Minutes part from the timestamp
+    const month = "0" + date.getMonth();
+    // Seconds part from the timestamp
+    const day = "0" + date.getDay();
+    // Hours part from the timestamp
+    const hours = date.getHours();
+    // Minutes part from the timestamp
+    const minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    const seconds = "0" + date.getSeconds();
+    let d = year + "-" + month.substr(-2) + "-" + day.substr(-2)
+    let t = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2)
+    if (includeDate) t = " " + t
+    return (includeDate ? d : "") + (includeTime ? t : "")
 }
 
 utils.uuidv4 = function () {
