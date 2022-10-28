@@ -6,7 +6,6 @@ const chartdelay = {
         </v-card>`,
     data() {
         return {
-            socket: io.connect(utils.proxyurl),
             dict: {},
             chartlabels: [],
             chartdata: [],
@@ -77,13 +76,13 @@ const chartdelay = {
                 }
             }
         }
-        const topic = utils.getTopic(utils.agrifarm)
-        this.socket.emit("newtopic", topic)
+
         const tis = this
-        this.socket.on(topic, data => {
-            data = JSON.parse(data)
+        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl), utils.agrifarm, function (data) {
             update(tis, data["timestamp"], data["timestamp_subscription"], new Date().getTime(), 1)
         })
-        setInterval(function() { update(tis, new Date().getTime(), 0, 0, 0)}, mult)
+        setInterval(function () {
+            update(tis, new Date().getTime(), 0, 0, 0)
+        }, mult)
     }
 }

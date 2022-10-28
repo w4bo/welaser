@@ -66,13 +66,13 @@ const chartcount = {
                 }
             }
         }
-        const topic = utils.getTopic(utils.agrifarm)
-        this.socket.emit("newtopic", topic)
+
         const tis = this
-        this.socket.on(topic, data => {
-            data = JSON.parse(data)
+        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl), utils.agrifarm, function (data) {
             update(tis, data["timestamp"], 1)
         })
-        setInterval(function() { update(tis, new Date().getTime(), 0)}, mult)
+        setInterval(function () {
+            update(tis, new Date().getTime(), 0)
+        }, mult)
     }
 }
