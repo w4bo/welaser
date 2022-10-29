@@ -1,3 +1,15 @@
+## [1.1.43](https://github.com/w4bo/welaser/compare/1.1.42...1.1.43) (2022-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.3 ([16011e4](https://github.com/w4bo/welaser/commit/16011e44b622cda7f2ae1656fbbee9299a0415a9))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.15 ([9ccbd23](https://github.com/w4bo/welaser/commit/9ccbd236c24635308d4fde15f5e738cb70fe9385))
+
 ## [1.1.42](https://github.com/w4bo/welaser/compare/1.1.41...1.1.42) (2022-10-28)
 
 
