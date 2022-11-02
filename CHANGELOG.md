@@ -1,3 +1,15 @@
+## [1.1.44](https://github.com/w4bo/welaser/compare/1.1.43...1.1.44) (2022-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.4 ([09065f1](https://github.com/w4bo/welaser/commit/09065f1516f448502e42b80ad5318385cebb96a2))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.2 ([d7f25a5](https://github.com/w4bo/welaser/commit/d7f25a5a4d4a08d36f8f14f9a84c68bf5a563595))
+
 ## [1.1.43](https://github.com/w4bo/welaser/compare/1.1.42...1.1.43) (2022-10-29)
 
 
