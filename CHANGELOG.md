@@ -1,3 +1,15 @@
+## [1.1.45](https://github.com/w4bo/welaser/compare/1.1.44...1.1.45) (2022-11-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.fasterxml.jackson.module:jackson-module-kotlin to v2.14.0 ([1ab0b84](https://github.com/w4bo/welaser/commit/1ab0b8435ede1d168c24568785110b297e8c5f95))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.2 ([1f8c82e](https://github.com/w4bo/welaser/commit/1f8c82e3186959b606ef2619be39690cff59055c))
+
 ## [1.1.44](https://github.com/w4bo/welaser/compare/1.1.43...1.1.44) (2022-11-02)
 
 
