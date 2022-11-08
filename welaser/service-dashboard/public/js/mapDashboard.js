@@ -62,10 +62,10 @@ const mapDashboard = {
     },
     methods: {
         minMaxValue(value) {
-            const min = parseInt(moment(this.dates.fromdate).format('x'))
-            const max = parseInt(moment(this.dates.todate).format('x'))
+            const min = parseInt(moment(this.dates.fromdate).format('x')) // ms
+            const max = parseInt(moment(this.dates.todate).format('x')) // ms
             const delta = (max - min) * (parseInt(value) / 100) + min
-            return moment.unix(delta / 1000).format("DD/MM/YYYY hh:mm")
+            return moment.unix(delta / 1000).format("DD/MM/YYYY hh:mm:ss")
         },
         updateDate(mission) {
             this.missions.forEach(m => {
