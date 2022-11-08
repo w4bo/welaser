@@ -16,8 +16,8 @@ const mapDashboard = {
                 <v-col cols="2" style="float: left">Mission <v-select :disabled="replaymode2 == 'interval'" :items="missions" item-text="id" item-value="name" v-model="mission" @change="updateDate(mission)" dense></v-select></v-col>
                 <v-col cols="2" style="float: left">From <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.fromdate" /></v-col>
                 <v-col cols="2" style="float: left">To <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.todate" /></v-col>
-                <v-col cols="1"><v-btn v-on:click="listenTopic(mission.id)">Replay</v-btn></v-col>
-<!--                <template v-slot:default="{{minMaxValue(progressValue)}}"></template>-->
+                <v-col cols="1"><v-btn v-on:click="">Start</v-btn></v-col>
+                <v-col cols="1"><v-btn v-on:click="">Stop</v-btn></v-col>
                 <v-col cols="8" style="float: left"><v-progress-linear v-model="progressValue" color="blue-grey" height="25">{{ minMaxValue(progressValue) }}</v-progress-linear></v-col>
             </v-row>
             <v-row align="center" justify="center"><v-col cols=8><mymap></mymap></v-col></v-row>
