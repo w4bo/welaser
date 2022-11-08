@@ -49,6 +49,18 @@
     <!--    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>-->
     <!--    <link rel="stylesheet" href="/static/libs/leaflet.css" crossorigin=""/>-->
     <script src="/static/libs/leaflet.js"></script>
+    <!-- Date-picker dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Date-picker itself -->
+    <script src="https://cdn.jsdelivr.net/npm/pc-bootstrap4-datetimepicker@4.17/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/pc-bootstrap4-datetimepicker@4.17/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+    <script>
+        // Initialize as global component
+        Vue.component('date-picker', VueBootstrapDatetimePicker);
+    </script>
 
     <!-- Import pages -->
     <script src="/static/env.js"></script>

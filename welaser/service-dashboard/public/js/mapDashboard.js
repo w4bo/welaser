@@ -3,16 +3,20 @@ const mapDashboard = {
         <div>
             <v-row align="center" justify="center">
                 <div>
-                    Mode:
                     <input type="radio" id="r2" value="false" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm)"/><label for="r2">Real time</label>
                     <input type="radio" id="r1" value="true" v-model="replaymode" class="ml-3 mr-1"/><label for="r1">Replay</label>
                 </div>
             </v-row>
-            <v-row justify="center">
-                <div>
-                    <v-btn v-on:click="listenTopic(mission.id)" class="m-1" style="float: left" :disabled="replaymode === 'false'">Listen mission</v-btn>
-                    <v-select :items="missions" item-text="id" item-value="name" v-model="mission" dense :disabled="replaymode === 'false'"></v-select>
-                </div>
+            <v-row align="center" justify="center" v-if="replaymode === 'true'">
+                <v-col cols="1">
+                    Mode
+                    <div><input type="radio" id="r3" value="mission" v-model="replaymode2" class="ml-3 mr-1"/><label for="r3">Mission</label></div>
+                    <div><input type="radio" id="r4" value="interval" v-model="replaymode2" class="ml-3 mr-1"/><label for="r4">Interval</label></div>
+                </v-col>
+                <v-col cols="2" style="float: left">Mission <v-select :disabled="replaymode2 == 'interval'" :items="missions" item-text="id" item-value="name" v-model="mission" @change="updateDate(mission)" dense></v-select></v-col>
+                <v-col cols="2" style="float: left">From <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.fromdate" /></v-col>
+                <v-col cols="2" style="float: left">To <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.todate" /></v-col>
+                <v-col cols="1" style="float: left"><v-btn v-on:click="listenTopic(mission.id)">Replay</v-btn></v-col>
             </v-row>
             <v-row align="center" justify="center"><v-col cols=8><mymap></mymap></v-col></v-row>
             <v-row align="center" justify="center">
@@ -41,17 +45,28 @@ const mapDashboard = {
             devices: {},
             hideDetails: true,
             replaymode: 'false',
+            replaymode2: 'mission',
             remoteSocket: io.connect(utils.proxyurl),
             missions: [],
             mission: {},
             agrifarm: utils.agrifarm,
-            prevTopic: ""
+            prevTopic: "",
+            dates: {fromdate: moment(), todate: moment()}
         }
     },
     components: {
         mymap: mymap
     },
     methods: {
+        updateDate(mission) {
+            this.missions.forEach(m => {
+                if (m["name"] === mission || m["id"] === mission) {
+                    this.dates.fromdate = moment(m["actualBeginTime"])
+                    this.dates.todate = moment(m["actualEndTime"])
+                    return
+                }
+            })
+        },
         updateCards(data) {
             return utils.renderJSON(data, this.hideDetails)
         },
@@ -79,9 +94,15 @@ const mapDashboard = {
         utils.getDevices(this, "Task", {}, function(acc) {
             Object.values(acc).forEach(function(task) {
                 task = task.data
-                tis.missions.push({name: utils.getName(task), id: task["id"]})
+                if (task["actualBeginTime"] && task["actualEndTime"]) {
+                    task["name"] = utils.getName(task)
+                    tis.missions.push(task)
+                }
             })
-            tis.mission = tis.missions[0]
+            if (tis.missions.length > 0) {
+                tis.mission = tis.missions[0]
+                tis.updateDate(tis.missions[0]["id"])
+            }
         })
     }
 }
