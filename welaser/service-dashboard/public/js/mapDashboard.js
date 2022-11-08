@@ -16,7 +16,9 @@ const mapDashboard = {
                 <v-col cols="2" style="float: left">Mission <v-select :disabled="replaymode2 == 'interval'" :items="missions" item-text="id" item-value="name" v-model="mission" @change="updateDate(mission)" dense></v-select></v-col>
                 <v-col cols="2" style="float: left">From <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.fromdate" /></v-col>
                 <v-col cols="2" style="float: left">To <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.todate" /></v-col>
-                <v-col cols="1" style="float: left"><v-btn v-on:click="listenTopic(mission.id)">Replay</v-btn></v-col>
+                <v-col cols="1"><v-btn v-on:click="listenTopic(mission.id)">Replay</v-btn></v-col>
+<!--                <template v-slot:default="{{minMaxValue(progressValue)}}"></template>-->
+                <v-col cols="8" style="float: left"><v-progress-linear v-model="progressValue" color="blue-grey" height="25">{{ minMaxValue(progressValue) }}</v-progress-linear></v-col>
             </v-row>
             <v-row align="center" justify="center"><v-col cols=8><mymap></mymap></v-col></v-row>
             <v-row align="center" justify="center">
@@ -44,25 +46,33 @@ const mapDashboard = {
         return {
             devices: {},
             hideDetails: true,
-            replaymode: 'false',
+            replaymode: 'true',
             replaymode2: 'mission',
             remoteSocket: io.connect(utils.proxyurl),
             missions: [],
             mission: {},
             agrifarm: utils.agrifarm,
             prevTopic: "",
-            dates: {fromdate: moment(), todate: moment()}
+            dates: {fromdate: moment(), todate: moment(), current: moment()},
+            progressValue: 0
         }
     },
     components: {
         mymap: mymap
     },
     methods: {
+        minMaxValue(value) {
+            const min = parseInt(moment(this.dates.fromdate).format('x'))
+            const max = parseInt(moment(this.dates.todate).format('x'))
+            const delta = (max - min) * (parseInt(value) / 100) + min
+            return moment.unix(delta / 1000).format("DD/MM/YYYY hh:mm")
+        },
         updateDate(mission) {
             this.missions.forEach(m => {
                 if (m["name"] === mission || m["id"] === mission) {
                     this.dates.fromdate = moment(m["actualBeginTime"])
                     this.dates.todate = moment(m["actualEndTime"])
+                    this.dates.current = this.dates.fromdate
                     return
                 }
             })
