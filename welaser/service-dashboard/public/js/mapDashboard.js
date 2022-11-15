@@ -2,8 +2,12 @@ const mapDashboard = {
     template: `
         <div>
             <v-row align="center" justify="center">
-                <input type="radio" id="r2" value="realtime" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r2">Real time</label>
-                <input type="radio" id="r1" value="replay"   v-model="replaymode" class="ml-3 mr-1"/><label for="r1">Replay</label>
+<!--                <input type="radio" id="r2" value="realtime" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r2">Real time</label>-->
+<!--                <input type="radio" id="r1" value="replay"   v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r1">Replay</label>-->
+                <v-radio-group v-model="replaymode" row>
+                  <v-radio label="Real time" value="realtime" @change="listenTopic(agrifarm, 'realtime')"></v-radio>
+                  <v-radio label="Replay" value="replay"></v-radio>
+                </v-radio-group>
                 <v-switch v-model="hideDetails" label="Hide details" hide-details></v-switch>
             </v-row>
             <v-row align="center" justify="center" v-if="replaymode === 'replay'">
@@ -36,7 +40,12 @@ const mapDashboard = {
                 </v-col>
                 <v-col cols="6" style="float: left"><v-progress-linear v-model="progressValue" color="blue-grey" height="25">{{ percentageToTimestamp(progressValue) }}</v-progress-linear></v-col>
             </v-row>
-            <v-row align="center" justify="center"><v-col cols=8><mymap></mymap></v-col></v-row>
+            <v-row align="center" justify="center">
+                <v-col>
+                    <mymap cols=8 v-if="replaymode === 'replay'" topicroot="replay"/>
+                    <mymap2 v-else-if="replaymode === 'realtime'" topicroot="raw"/>
+                </v-col>
+            </v-row>
             <v-row justify="center">
                 <template v-for="device in Object.values(devices)">
                     <v-col cols=3>
@@ -66,7 +75,7 @@ const mapDashboard = {
             devices: {},
             hideDetails: true,
             replaymode: 'realtime',
-            replaymode2: 'mission',
+            replaymode2: 'interval',
             replaystatus: 'stop',
             remoteSocket: io.connect(utils.proxyurl),
             missions: [],
@@ -78,7 +87,8 @@ const mapDashboard = {
         }
     },
     components: {
-        mymap: mymap
+        mymap: mymap,
+        mymap2: mymap
     },
     methods: {
         stopReplay() {

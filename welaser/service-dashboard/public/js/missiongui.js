@@ -2,7 +2,7 @@ const missiongui = {
     template: `
         <div>
             <v-row align="center" justify="center">
-                <v-col cols=7><mymap></mymap></v-col>
+                <v-col cols=7><mymap topicroot="raw"/></v-col>
                 <v-col cols=5>
                     <template v-for="device in Object.values(robots)">
                         <v-card v-if="isSelected(device.data)" :color="device.color">
