@@ -2,11 +2,11 @@ const mapDashboard = {
     template: `
         <div>
             <v-row align="center" justify="center">
-<!--                <input type="radio" id="r2" value="realtime" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r2">Real time</label>-->
-<!--                <input type="radio" id="r1" value="replay"   v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r1">Replay</label>-->
+                <!-- <input type="radio" id="r2" value="realtime" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r2">Real time</label>-->
+                <!-- <input type="radio" id="r1" value="replay"   v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r1">Replay</label>-->
                 <v-radio-group v-model="replaymode" row>
-                  <v-radio label="Real time" value="realtime" @change="listenTopic(agrifarm, 'realtime')"></v-radio>
-                  <v-radio label="Replay" value="replay"></v-radio>
+                    <v-radio label="Real time" value="realtime" @change="listenTopic(agrifarm, 'realtime')"></v-radio>
+                    <v-radio label="Replay" value="replay"></v-radio>
                 </v-radio-group>
                 <v-switch v-model="hideDetails" label="Hide details" hide-details></v-switch>
             </v-row>
@@ -24,8 +24,8 @@ const mapDashboard = {
                     <v-btn v-if="replaystatus === 'start'" v-on:click="stopReplay()">Stop</v-btn>
                 </v-col>
             </v-row>
-            <v-row align="center" justify="center" v-if="replaymode === 'replay'">
-                <v-col cols="2" style="float: left">Selected entities
+            <v-row align="center" justify="center" v-if="replaystatus === 'start'">
+                <v-col cols="2" style="float: left">
                     <v-select attach chips @change="toggleSingle($event)" :items="entities" item-text="id" item-value="id" v-model="selectedentities" dense multiple>
                         <template v-slot:selection="{ item, index }">
                             <v-chip v-if="index === 0"><span>{{ item }}</span></v-chip>
@@ -38,7 +38,14 @@ const mapDashboard = {
                         </template>
                     </v-select>
                 </v-col>
-                <v-col cols="6" style="float: left"><v-progress-linear v-model="progressValue" color="blue-grey" height="25">{{ percentageToTimestamp(progressValue) }}</v-progress-linear></v-col>
+                <v-col cols="5" style="float: left"><v-progress-linear v-model="progressValue" :active="replaystatus === 'start'" @change="startReplay(percentageToTimestamp(progressValue), dates.todate)" color="blue-grey" height="25">{{ percentageToTimestamp(progressValue) }}</v-progress-linear></v-col>
+                <v-col cols="1">
+                    <v-btn-toggle cols="1" v-if="replaystatus === 'start'" v-model="speed" shaped mandatory>
+                        <v-btn value="1">1x</v-btn>
+                        <v-btn value="2">2x</v-btn>
+                        <v-btn value="4">4x</v-btn>
+                    </v-btn-toggle>
+                </v-col>
             </v-row>
             <v-row align="center" justify="center">
                 <v-col>
@@ -52,7 +59,7 @@ const mapDashboard = {
                         <v-card :color="device.color">
                             <v-card-title class="pb-0">{{device.id}}</v-card-title>
                             <v-card-text class="flex"><div v-html="updateCards(device.data)"></div></v-card-text>
-                            <v-card-actions>
+                            <v-card-actions v-if="replaymode === 'realtime'" >
                                 <div v-if="typeof device.data.cmdList !== 'undefined'">
                                     <template v-for="cmd in device.data.cmdList">
                                         <v-btn v-on:click="sendCommand(device.id, cmd)"> {{cmd}} </v-btn>
@@ -80,9 +87,10 @@ const mapDashboard = {
             remoteSocket: io.connect(utils.proxyurl),
             missions: [],
             mission: {},
+            speed: "",
             agrifarm: utils.agrifarm,
             prevTopic: "",
-            dates: {fromdate: moment().subtract(1, "days"), todate: moment(), current: moment()},
+            dates: {fromdate: moment().subtract(1, "days"), todate: moment()},
             progressValue: 0
         }
     },
@@ -93,6 +101,9 @@ const mapDashboard = {
     methods: {
         stopReplay() {
             this.replaystatus = 'stop'
+            this.cleanTimers()
+        },
+        cleanTimers() {
             let id = window.setTimeout(function() {}, 0)
             while (id--) {
                 window.clearTimeout(id) // will do nothing if no timeout with id is present
@@ -115,11 +126,12 @@ const mapDashboard = {
         },
         startReplay(from, to) {
             this.replaystatus = 'start'
+            this.cleanTimers()
             this.listenTopic(this.agrifarm, 'replay')
             let consumed = 0
             let prev = -1 // timestamp of the first entity from the replay
-            const fromdatetime = parseFloat(moment(this.dates.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
-            const todatetime = parseFloat(moment(this.dates.todate, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
+            const fromdatetime = parseFloat(moment(from, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
+            const todatetime = parseFloat(moment(to, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
             const limit = 1000 // how many entities to retrieve at the same time
             const tis = this
             // get the distinct entities from the replay, and select the first one
@@ -163,13 +175,13 @@ const mapDashboard = {
                             if (tis.replaystatus === 'stop') return
                             if (acc.length > 0) { // if there are entities to replay
                                 const entity = acc.shift() // take the first entity and remove it from the array
-                                const delay = parseInt(entity["timestamp_replay"])
+                                const delay = parseInt(entity["timestamp_replay"]) / tis.speed
                                 if (delay < 100) {
                                     // If the delay is too short, there is no need to invoke the setTimeout function
                                     // since it slow down the replay of messages
                                     emit(entity)
                                 } else {
-                                    setTimeout(function () { emit(entity) }, parseInt(entity["timestamp_replay"]))
+                                    setTimeout(function () { emit(entity) }, delay)
                                 }
                             }
                         }
@@ -196,7 +208,6 @@ const mapDashboard = {
                 if (m["name"] === mission || m["id"] === mission) {
                     this.dates.fromdate = moment(m["actualBeginTime"])
                     this.dates.todate = moment(m["actualEndTime"])
-                    this.dates.current = this.dates.fromdate
                     return
                 }
             })
@@ -219,6 +230,7 @@ const mapDashboard = {
             }
         },
         listenTopic(topic, mode) {
+            this.cleanTimers()
             this.devices = []
             const newtopic = utils.getTopic((mode === 'replay' ? config.DRACO_REPLAY_TOPIC : config.DRACO_RAW_TOPIC) + "." + topic)
             if (newtopic !== this.prevTopic) {
@@ -233,7 +245,7 @@ const mapDashboard = {
         utils.getDevices(this, "Task", {}, function(acc) {
             Object.values(acc).forEach(function(task) {
                 task = task.data
-                if (task["actualBeginTime"] && task["actualEndTime"]) {
+                if (task["actualBeginTime"] && task["actualEndTime"] && task["taskType"] === "Mission") {
                     task["name"] = utils.getName(task)
                     tis.missions.push(task)
                 }
