@@ -29,7 +29,7 @@ const entitydownload = {
         },
         download(domain, entitytype, datefrom, dateto) {
             const tis = this
-            axios.get(utils.nodeurl + `/api/download/${domain}/${entitytype}/${datefrom}/${dateto}/foo/foo`).then(entities => {
+            axios.get(utils.nodeurl + `/api/download/${domain}/${entitytype}/${moment(datefrom).format('x')}/${moment(dateto).format('x')}/0/1000000`).then(entities => {
                 tis.downloadTextFile(JSON.stringify(entities.data), 'download.json')
             })
         },

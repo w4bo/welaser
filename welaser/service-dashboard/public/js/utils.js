@@ -6,7 +6,7 @@ utils.getTopic = function (agrifarm = utils.agrifarm, root = config.DRACO_RAW_TO
 
 utils.kafkaProxyNewTopic = function (remoteSocket, newtopic, handleStreamData, prevTopic = undefined, replay = false) {
     if (prevTopic) remoteSocket.removeAllListeners(prevTopic) // remove previous listeners
-    const socketName = utils.getTopic(newtopic, replay? config.DRACO_REPLAY_TOPIC : config.DRACO_RAW_TOPIC) // clean the topic name
+    const socketName = utils.getTopic(newtopic, (("" + replay).toLowerCase() === 'true') ? config.DRACO_REPLAY_TOPIC : config.DRACO_RAW_TOPIC) // clean the topic name
     remoteSocket.emit("newtopic", socketName) // notify the new topic to Kakfa proxy
     remoteSocket.on(socketName, data => { // listen to the new topic
         handleStreamData(JSON.parse(data))

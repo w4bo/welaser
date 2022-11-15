@@ -1,6 +1,9 @@
 const entityController = require('../controllers/entityController');
 module.exports = function (app) {
-    app.route('/api/download/:domain/:entitytype/:datetimefrom/:datetimeto/:limitfrom/:limitto').get(entityController.download)
+    app.route('/api/download/:domain/:entitytype/:datetimefrom/:datetimeto/:skip/:limit').get(entityController.downloadTypeFromdateTodateSkipLimit)
+    app.route('/api/download/:domain/:datetimefrom/:datetimeto/:skip/:limit').get(entityController.downloadFromdateTodateSkipLimit)
+    app.route('/api/download/count/:domain/:datetimefrom/:datetimeto').get(entityController.downloadCountFromTo)
+    app.route('/api/download/distinct/:domain/:datetimefrom/:datetimeto').get(entityController.downloadDistinctFromTo)
     app.route('/api/entitytypes/:domain').get(entityController.entitytypes)
     app.route('/api/entities/:domain').get(entityController.entities)
     app.route('/api/entity/:domain/:id').get(entityController.entity)
