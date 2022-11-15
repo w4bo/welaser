@@ -209,10 +209,10 @@ const mapDashboard = {
             }
         },
         listenTopic(topic, mode) {
+            this.devices = []
             const newtopic = utils.getTopic((mode === 'replay' ? config.DRACO_REPLAY_TOPIC : config.DRACO_RAW_TOPIC) + "." + topic)
             if (newtopic !== this.prevTopic) {
                 this.prevTopic = newtopic
-                this.devices = []
                 utils.kafkaProxyNewTopic(this.remoteSocket, newtopic, this.handleStreamData)
             }
         }
