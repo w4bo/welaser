@@ -68,7 +68,7 @@ const chartcount = {
         }
 
         const tis = this
-        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl), utils.agrifarm, function (data) {
+        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl), config.DRACO_RAW_TOPIC + "." + utils.agrifarm, function (data) {
             update(tis, data["timestamp"], 1)
         })
         setInterval(function () {

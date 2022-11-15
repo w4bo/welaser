@@ -89,6 +89,6 @@ const mymap = {
         this.loadMap() // create the map
         this.updateAgriFarm()
         const remoteSocket = io.connect(utils.proxyurl) // connect to the Kafka proxy server
-        utils.kafkaProxyNewTopic(remoteSocket, utils.agrifarm, this.handleStreamData)
+        utils.kafkaProxyNewTopic(remoteSocket, config.DRACO_RAW_TOPIC + "." + utils.agrifarm, this.handleStreamData)
     }
 }
