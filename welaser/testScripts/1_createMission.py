@@ -115,7 +115,7 @@ assert count1 > 0, "No document found"
 ###############################################################################
 today = datetime.today().strftime('%Y-%m-%d')
 NODE_URL = "http://{}:{}/api/".format(conf["IP"], conf["WEB_SERVER_PORT_EXT"])
-for url in ['download/{}/{}/{}/{}/{}/{}'.format(domain, 'AgriFarm', today, today, 'foo', 'foo'),
+for url in ['download/{}/{}/{}/{}/{}/{}'.format(domain, 'AgriFarm', today, today, '1', '1000'),
             'entitytypes/{}'.format(domain),
             'entities/{}'.format(domain),
             'entity/{}/{}'.format(domain, domain)]:
