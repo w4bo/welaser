@@ -118,6 +118,11 @@ const mapDashboard = {
         startReplay(from, to) {
             this.replaystatus = 'start'
             this.devices = {}
+
+            // clean all the timeouts
+            let id = window.setTimeout(function() {}, 0);
+            while (id--) window.clearTimeout(id); // will do nothing if no timeout with id is present
+
             let prev = -1 // timestamp of the first entity from the replay
             const fromdatetime = parseFloat(moment(from, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
             const todatetime = parseFloat(moment(to, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
