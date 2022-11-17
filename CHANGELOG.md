@@ -1,3 +1,60 @@
+## [1.1.45](https://github.com/w4bo/welaser/compare/1.1.44...1.1.45) (2022-11-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.fasterxml.jackson.module:jackson-module-kotlin to v2.14.0 ([1ab0b84](https://github.com/w4bo/welaser/commit/1ab0b8435ede1d168c24568785110b297e8c5f95))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.2 ([1f8c82e](https://github.com/w4bo/welaser/commit/1f8c82e3186959b606ef2619be39690cff59055c))
+
+## [1.1.44](https://github.com/w4bo/welaser/compare/1.1.43...1.1.44) (2022-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.4 ([09065f1](https://github.com/w4bo/welaser/commit/09065f1516f448502e42b80ad5318385cebb96a2))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.2 ([d7f25a5](https://github.com/w4bo/welaser/commit/d7f25a5a4d4a08d36f8f14f9a84c68bf5a563595))
+
+## [1.1.43](https://github.com/w4bo/welaser/compare/1.1.42...1.1.43) (2022-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.3 ([16011e4](https://github.com/w4bo/welaser/commit/16011e44b622cda7f2ae1656fbbee9299a0415a9))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.15 ([9ccbd23](https://github.com/w4bo/welaser/commit/9ccbd236c24635308d4fde15f5e738cb70fe9385))
+
+## [1.1.42](https://github.com/w4bo/welaser/compare/1.1.41...1.1.42) (2022-10-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.1.3 ([818ba63](https://github.com/w4bo/welaser/commit/818ba638c69e3af1458f93f70d2e2a8501f1c2ff))
+
+## [1.1.41](https://github.com/w4bo/welaser/compare/1.1.40...1.1.41) (2022-10-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.1.3 ([de391ee](https://github.com/w4bo/welaser/commit/de391ee0440207b50772f5155db251f8c57b5240))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.14 ([af60172](https://github.com/w4bo/welaser/commit/af60172a0c89cf55bca325671bbf7900677de1da))
+* **deps:** update node.js to 18.12 ([2549a3a](https://github.com/w4bo/welaser/commit/2549a3af29aa4bd02434372201901ae707c56141))
+* **deps:** update node.js to v18 ([ee86541](https://github.com/w4bo/welaser/commit/ee865416395757eb491cbf7013ae772309ccf864))
+
 ## [1.1.40](https://github.com/w4bo/welaser/compare/1.1.39...1.1.40) (2022-10-20)
 
 
