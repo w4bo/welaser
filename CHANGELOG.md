@@ -1,3 +1,16 @@
+## [1.1.46](https://github.com/w4bo/welaser/compare/1.1.45...1.1.46) (2022-11-17)
+
+
+### Bug Fixes
+
+* **demo:** add mission gui ([#286](https://github.com/w4bo/welaser/issues/286)) ([b56fc6b](https://github.com/w4bo/welaser/commit/b56fc6b7c318c279134428c3e88b02b517797d8a))
+
+
+### Dependency updates
+
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.21 ([b8fc1f1](https://github.com/w4bo/welaser/commit/b8fc1f147696d546aa5d7169a58ae5c9f9b1cc79))
+* **deps:** update welaser/welaser-datamodels digest to 7b5377c ([e101f42](https://github.com/w4bo/welaser/commit/e101f420225c9ed27ad8a72550ab7afba42f9689))
+
 ## [1.1.45](https://github.com/w4bo/welaser/compare/1.1.44...1.1.45) (2022-11-06)
 
 
