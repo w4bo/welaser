@@ -5,11 +5,11 @@ env.config() // load the environment variables
 const url = 'mongodb://' + process.env.MONGO_DB_PERS_IP + ':' + process.env.MONGO_DB_PERS_PORT_EXT
 
 function connect(next) {
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err
         const dbo = db.db(process.env.MONGO_DB_PERS_DB)
-        next(dbo)
-        db.close()
+        await next(dbo)
+        // await db.close()
     })
 }
 
@@ -21,21 +21,90 @@ function send(res, err, result) {
     }
 }
 
-exports.download = async function (req, res) {
-    const domain = req.params.domain
-    const type = req.params.entitytype
-    const dateTimeFrom = req.params.datetimefrom
-    const dateTimeTo = req.params.datetimeto
-    const limitFrom = req.params.limitfrom
-    const limitTo = req.params.limitto
-
+/**
+ * Given a domain (i.e., collection), download the distinct ids of the entities within the selected time interval
+ */
+exports.downloadDistinctFromTo = async function (req, res) {
     connect(function (dbo) {
-        dbo.collection(domain).find({'type': type}).toArray(function (err, result) {
-            send(res, err, result)
-        })
+        dbo
+            .collection(req.params.domain)
+            .distinct("id", {
+                'timestamp_subscription': {
+                    '$gte': parseInt(req.params.datetimefrom),
+                    '$lte': parseInt(req.params.datetimeto)
+                }
+            }, function (err, result) {
+                send(res, err, result)
+            })
     })
 }
 
+/**
+ * Given a domain (i.e., collection), download all the entities within the selected time interval
+ */
+exports.downloadCountFromTo = async function (req, res) {
+    connect(async function (dbo) {
+        await dbo
+            .collection(req.params.domain)
+            .count({
+                'timestamp_subscription': {
+                    '$gte': parseInt(req.params.datetimefrom),
+                    '$lte': parseInt(req.params.datetimeto)
+                }
+            }, function (err, result) {
+                send(res, err, result)
+            })
+    })
+}
+
+/**
+ * Given a domain (i.e., collection), download all the entities within the selected time interval
+ */
+exports.downloadFromdateTodateSkipLimit = async function (req, res) {
+    connect(async function (dbo) {
+        await dbo
+            .collection(req.params.domain)
+            .find({
+                'timestamp_subscription': {
+                    '$gte': parseInt(req.params.datetimefrom),
+                    '$lte': parseInt(req.params.datetimeto)
+                }
+            })
+            .sort({'timestamp_subscription': 1})
+            .skip(parseInt(req.params.skip))
+            .limit(parseInt(req.params.limit))
+            .toArray(function (err, result) {
+                send(res, err, result)
+            })
+    })
+}
+
+/**
+ * Given a domain (i.e., collection) and an entity type, download all the entities within the selected time interval
+ */
+exports.downloadTypeFromdateTodateSkipLimit = async function (req, res) {
+    connect(function (dbo) {
+        dbo
+            .collection(req.params.domain)
+            .find({
+                'type': req.params.entitytype,
+                'timestamp_subscription': {
+                    '$gte': parseInt(req.params.datetimefrom),
+                    '$lte': parseInt(req.params.datetimeto)
+                }
+            })
+            .sort({'timestamp_subscription': 1})
+            .skip(parseInt(req.params.skip))
+            .limit(parseInt(req.params.limit))
+            .toArray(function (err, result) {
+                send(res, err, result)
+            })
+    })
+}
+
+/**
+ * Return the entity with a given id
+ */
 exports.entity = async function (req, res) {
     const domain = req.params.domain
     const id = req.params.id
@@ -46,6 +115,9 @@ exports.entity = async function (req, res) {
     })
 }
 
+/**
+ * Return the distinct entity types from the given domain
+ */
 exports.entitytypes = async function (req, res) {
     const domain = req.params.domain
     connect(function (dbo) {
@@ -55,6 +127,9 @@ exports.entitytypes = async function (req, res) {
     })
 }
 
+/**
+ * Return all the entities from the given domain
+ */
 exports.entities = async function (req, res) {
     const domain = req.params.domain
     connect(function (dbo) {

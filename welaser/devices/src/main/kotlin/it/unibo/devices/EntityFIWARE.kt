@@ -2,6 +2,7 @@ package it.unibo.devices
 
 import it.unibo.*
 import org.json.JSONObject
+import java.lang.IllegalArgumentException
 
 
 object EntityFactory {
@@ -39,9 +40,12 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             initStatus.put("bearing", Math.random())
             initStatus.put("heading", Math.random())
             find(initStatus, "front-camera", c.sense(), prop = "serviceProvided", mod = "status")
+            initStatus.put(ERRORS, if (r.nextDouble() > 0.95) listOf("Obstacle detected") else listOf())
+            initStatus.put(WARNINGS, if (r.nextDouble() > 0.90) listOf("Low connection", "Bumpy field").subList(0, r.nextInt(2) + 1) else listOf())
             updatePosition()
         }
         find(initStatus, HEARTBEAT, h.sense(), prop = "serviceProvided", mod = "status")
+        initStatus.put(DOMAIN, AGRI_FARM)
         return initStatus.toString()
     }
 
@@ -57,10 +61,12 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
         when (commandName) {
             ROBOT_CMD_START -> {
                 status = STATUS.ON
-                // TODO should be val mission: String = khttp.get("${ORION_URL}entities/${payload}/?options=keyValues").jsonObject.toString()
-                val mission: String = khttp.get("${ORION_URL}entities/mission-123/?options=keyValues").jsonObject.toString()
+                val pay = JSONObject(payload)
+                val missionid = if (pay.has("missionid")) pay.getString("missionid") else MISSION_ID
+                val mission: String = khttp.get("${ORION_URL}entities/${missionid}/?options=keyValues").jsonObject.toString()
                 missionPlan = JSONObject(mission)
                 coords = missionPlan.getJSONObject("actualLocation").getJSONArray(COORDINATES).toList()
+                // println("Done $missionid")
             }
             ROBOT_CMD_STOP -> reset()
             ROBOT_CMD_RESUME -> status = STATUS.ON
@@ -94,16 +100,16 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     override val id: String = initStatus.getString("id")
     val sensors: Map<String, ISensor> =
         if (initStatus.has("controlledProperty")) {
-            initStatus.getJSONArray("controlledProperty").map {
+            initStatus.getJSONArray("controlledProperty").associate {
                 it.toString() to when (it.toString().lowercase()) {
                     HEARTBEAT -> Heartbeat()
                     TIMESTAMP -> Heartbeat(timestamp = true)
                     TEMPERATURE -> RandomSensor()
                     HUMIDITY -> RandomSensor(0, 100)
                     IMAGE -> Camera(onBoard = false)
-                    else -> throw java.lang.IllegalArgumentException("Unknown controlledProperty: $it")
+                    else -> throw IllegalArgumentException("Unknown controlledProperty: $it")
                 }
-            }.toMap()
+            }
         } else {
             mapOf()
         }

@@ -1,25 +1,16 @@
 const utils = {}
 
-function renderJSON(data, hideDetails, enableEdit) {
-    if (typeof (data) != "object") {
-        // let html = data
-        // if (typeof (data) == "string") {
-        //     html = data.trim()
-        //     if (enableEdit) {
-        //         html = `<input placeholder="${html}">`
-        //     }
-        // }
-        // return html
-        if (typeof (data) == "string") {
-            return data.trim()
-        }
-    } else {
-        return renderRows(data, hideDetails, enableEdit)
-    }
+utils.getTopic = function (topic = config.DRACO_RAW_TOPIC + "." + utils.agrifarm) {
+    return topic.replaceAll(/[-:_]/g, "")
 }
 
-utils.getTopic = function (agrifarm = utils.agrifarm) {
-    return config.DRACO_RAW_TOPIC + "." + agrifarm.replaceAll(/[-:_]/g, "")
+utils.kafkaProxyNewTopic = function (remoteSocket, newtopic, handleStreamData, prevTopic = undefined) {
+    if (prevTopic) remoteSocket.removeAllListeners(prevTopic) // remove previous listeners
+    const socketName = utils.getTopic(newtopic) // clean the topic name
+    remoteSocket.emit("newtopic", socketName) // notify the new topic to Kakfa proxy
+    remoteSocket.on(socketName, data => { // listen to the new topic
+        handleStreamData(JSON.parse(data))
+    })
 }
 
 utils.plannerCreatePlan = function (data, then, error) {
@@ -28,8 +19,20 @@ utils.plannerCreatePlan = function (data, then, error) {
         .then(result => {
             if (then) then(result)
         }).catch(err => {
-            if (error) error(err)
-        })
+        if (error) error(err)
+    })
+}
+
+utils.hashCode = function (s) {
+    if (s) {
+        let h;
+        for (let i = 0; i < s.length; i++) {
+            h = Math.imul(31, h) + s.charCodeAt(i) | 1;
+        }
+        return Math.abs(h);
+    } else {
+        return 0
+    }
 }
 
 utils.fiwareUpdateEntity = function (data, then, error) {
@@ -38,8 +41,8 @@ utils.fiwareUpdateEntity = function (data, then, error) {
         .then(result => {
             if (then) then(result)
         }).catch(err => {
-            if (error) error(err)
-        })
+        if (error) error(err)
+    })
 }
 
 utils.fiwareCreateEntity = function (data, then, error) {
@@ -56,7 +59,23 @@ utils.round = function (v, mult) {
     return new Date(Math.round(v / mult) * mult).toLocaleString()
 }
 
-function renderRows(data, hideDetails, enableEdit) {
+utils.getRandomColor = function (v) {
+    return utils.colors[utils.hashCode(v) % utils.colors.length]
+}
+
+utils.renderJSON = function (data, hideDetails) {
+    if (typeof (data) != "object") {
+        if (typeof data === "string") {
+            return data.trim()
+        } else {
+            return data
+        }
+    } else {
+        return utils.renderRows(data, hideDetails)
+    }
+}
+
+utils.renderRows = function(data, hideDetails) {
     let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
     for (let [key, value] of Object.entries(data)) {
         key = key.trim()
@@ -75,23 +94,9 @@ function renderRows(data, hideDetails, enableEdit) {
             if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
                 html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
             } else if (key === 'timestamp') {
-                const date = new Date(parseInt(value));
-                // Hours part from the timestamp
-                const year = date.getFullYear();
-                // Minutes part from the timestamp
-                const month = "0" + date.getMonth();
-                // Seconds part from the timestamp
-                const day = "0" + date.getDay();
-                // Hours part from the timestamp
-                const hours = date.getHours();
-                // Minutes part from the timestamp
-                const minutes = "0" + date.getMinutes();
-                // Seconds part from the timestamp
-                const seconds = "0" + date.getSeconds();
-                const formattedTime = year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                html += renderJSON(formattedTime, hideDetails, enableEdit)
+                html += utils.renderJSON(utils.formatDateTime(value), hideDetails)
             } else if (value !== "") {
-                html += renderJSON(value, hideDetails, enableEdit)
+                html += utils.renderJSON(value, hideDetails)
             }
             html += `</td></tr>`
             html = html
@@ -102,14 +107,68 @@ function renderRows(data, hideDetails, enableEdit) {
     return html + `</table>`
 }
 
-function uuidv4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+utils.sendCommand = function (deviceId, command, payload = {}) {
+    const inner = {}
+    inner[command] = payload
+    axios
+        .patch(
+            utils.orionurl + `entities/${deviceId}/attrs?options=keyValues`,
+            {"cmd": inner},
+            {headers: utils.jsonheaders}
+        )
+        .then(response => {console.log(response)})
+        .catch(err => {console.log(err)})
+}
+
+utils.getName = function (obj) {
+    let ret = undefined;
+    ["name", "cameraName", "id"].forEach(function (key) {
+        if (typeof ret === "undefined" && obj[key]) {
+            ret = obj[key]
+        }
+    })
+    return ret
+}
+
+utils.getDevices = function (tis, type, acc, then) {
+    axios
+        .get(utils.orionurl + `entities?type=${type}&options=keyValues&limit=1000`)
+        .then(devices => {
+            devices = devices.data
+            devices.forEach(function (device, index) {
+                if (device["domain"] === utils.agrifarm) {
+                    tis.$set(acc, device.id, {'data': device, 'color': utils.getRandomColor(device.type)})
+                }
+            })
+            if (then) then(acc)
+        })
+}
+
+utils.formatDateTime = function (timestampMs, includeDate = true, includeTime = true) {
+    const date = new Date(parseInt(timestampMs));
+    // Hours part from the timestamp
+    const year = date.getFullYear();
+    // Minutes part from the timestamp
+    const month = "0" + date.getMonth();
+    // Seconds part from the timestamp
+    const day = "0" + date.getDay();
+    // Hours part from the timestamp
+    const hours = date.getHours();
+    // Minutes part from the timestamp
+    const minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    const seconds = "0" + date.getSeconds();
+    let d = year + "-" + month.substr(-2) + "-" + day.substr(-2)
+    let t = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2)
+    if (includeDate) t = " " + t
+    return (includeDate ? d : "") + (includeTime ? t : "")
+}
+
+utils.uuidv4 = function () {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     )
 }
-utils.renderJSON = renderJSON
-utils.renderRows = renderRows
-utils.uuidv4 = uuidv4
 utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
 utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
 utils.orionurl = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
@@ -118,3 +177,12 @@ utils.proxyurl = `http://${config.PROXY_IP}:${config.PROXY_PORT_EXT}`
 utils.jsonheaders = {'Content-Type': 'application/json'}
 utils.chartresolution = 5000
 utils.charthistorylength = 25
+utils.colors = d3.schemeTableau10
+utils.mapcenter = [40.3128, -3.482]
+utils.selectedbytype = {}
+utils.missionguitypes = [
+    {name: 'AgriRobot', exclusive: true},
+    {name: 'Camera', exclusive: false, max: 4},
+    // {name: 'AgriParcel', exclusive: true},
+    // {name: 'Device', exclusive: false}
+]

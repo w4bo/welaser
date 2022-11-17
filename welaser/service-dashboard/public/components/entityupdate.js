@@ -4,7 +4,7 @@ const entityupdate = {
             <v-card-title class="pb-0">Update entity</v-card-title>
             <v-card-text>
                 Select entity to update<v-select item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(utils.agrifarm, selectedentity)" style="padding: 0" dense></v-select>
-                <div><!-- <div v-show="visibleUpdate">-->
+                <div>
                     Modify the entity below
                     <div id="update"></div>
                 </div>

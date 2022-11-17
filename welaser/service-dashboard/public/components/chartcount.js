@@ -15,8 +15,8 @@ const chartcount = {
                 fill: false,
                 datasets: [{
                     data: [],
-                    backgroundColor: [d3.schemeCategory10[0]],
-                    borderColor: [d3.schemeCategory10[0]],
+                    backgroundColor: [utils.colors[0]],
+                    borderColor: [utils.colors[0]],
                     label: 'Count',
                 }]
             }
@@ -66,13 +66,13 @@ const chartcount = {
                 }
             }
         }
-        const topic = utils.getTopic(utils.agrifarm)
-        this.socket.emit("newtopic", topic)
+
         const tis = this
-        this.socket.on(topic, data => {
-            data = JSON.parse(data)
+        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl), config.DRACO_RAW_TOPIC + "." + utils.agrifarm, function (data) {
             update(tis, data["timestamp"], 1)
         })
-        setInterval(function() { update(tis, new Date().getTime(), 0)}, mult)
+        setInterval(function () {
+            update(tis, new Date().getTime(), 0)
+        }, mult)
     }
 }

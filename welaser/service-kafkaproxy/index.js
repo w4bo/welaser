@@ -59,7 +59,7 @@ io.on("connection", function (socket) {
         if (topic === prevTopic) return // if the topic is the same as before do nothing
         if (prevTopic) {
             socket.leave(prevTopic)
-            console.log("Leaving: " + topic)
+            console.log("Leaving: " + prevTopic)
         }
         socket.join(topic)
         console.log("Joining: " + topic)

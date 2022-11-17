@@ -3,6 +3,7 @@
 **/testScripts/*.pdf
 **/mongodb/*
 !**/mongodb/.dummy
+**/welaser_robot_replay
 createmission.txt
 createdomain.txt
 flow.xml.gz
