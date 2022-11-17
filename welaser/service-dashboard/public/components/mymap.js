@@ -14,7 +14,7 @@ const mymap = {
     },
     methods: {
         handleStreamData(data) {
-            if (data["location"]) {
+            if (data["location"] && data["location"]["type"] === "Point") {
                 const coordinates = data.location.coordinates
                 if (this.devicesLocation[data.id]) { // if the device is known, update its location
                     this.devicesLocation[data.id].setLatLng(L.latLng(coordinates[1], coordinates[0]))
@@ -74,7 +74,7 @@ const mymap = {
                                         } else if (type === "Building") {
                                             color = utils.colors[0]
                                         }
-                                        const myStyle = {"color": color, "weight": 5, "opacity": 1};
+                                        const myStyle = {"color": color, "weight": 5, "opacity": 1}
                                         const geojson = {
                                             "type": "Feature",
                                             "properties": {},

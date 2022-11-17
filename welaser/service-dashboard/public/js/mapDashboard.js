@@ -2,23 +2,21 @@ const mapDashboard = {
     template: `
         <div>
             <v-row align="center" justify="center">
-                <!-- <input type="radio" id="r2" value="realtime" v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r2">Real time</label>-->
-                <!-- <input type="radio" id="r1" value="replay"   v-model="replaymode" class="ml-3 mr-1" @input="listenTopic(agrifarm, 'realtime')"/><label for="r1">Replay</label>-->
-                <v-radio-group v-model="replaymode" row>
+                <v-radio-group v-model="replaymode" row :disabled="replaystatus == 'start'">
                     <v-radio label="Real time" value="realtime" @change="listenTopic(agrifarm, 'realtime')"></v-radio>
-                    <v-radio label="Replay" value="replay"></v-radio>
+                    <v-radio label="Replay"    value="replay"   @change="listenTopic(agrifarm, 'replay')"></v-radio>
                 </v-radio-group>
                 <v-switch v-model="hideDetails" label="Hide details" hide-details></v-switch>
             </v-row>
             <v-row align="center" justify="center" v-if="replaymode === 'replay'">
                 <v-col cols="1">
                     Mode
-                    <div><input type="radio" id="r3" value="mission" v-model="replaymode2" class="ml-3 mr-1"/><label for="r3">Mission</label></div>
-                    <div><input type="radio" id="r4" value="interval" v-model="replaymode2" class="ml-3 mr-1"/><label for="r4">Interval</label></div>
+                    <div><input :disabled="replaystatus == 'start'" type="radio" id="r3" value="mission"  v-model="replaymode2" class="ml-3 mr-1"/><label for="r3">Mission</label></div>
+                    <div><input :disabled="replaystatus == 'start'" type="radio" id="r4" value="interval" v-model="replaymode2" class="ml-3 mr-1"/><label for="r4">Interval</label></div>
                 </v-col>
-                <v-col cols="2" style="float: left">Mission identifier <v-select :disabled="replaymode2 == 'interval'" :items="missions" item-text="id" item-value="name" v-model="mission" @change="updateDate(mission)" dense></v-select></v-col>
-                <v-col cols="2" style="float: left">From <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.fromdate" :config="options"/></v-col>
-                <v-col cols="2" style="float: left">To <date-picker :disabled="replaymode2 == 'mission'" v-model="dates.todate" :config="options" /></v-col>
+                <v-col cols="2" style="float: left">Mission identifier <v-select :disabled="(replaystatus == 'stop' && replaymode2 == 'interval') || replaystatus == 'start'" :items="missions" item-text="id" item-value="name" v-model="mission" @change="updateDate(mission)" dense></v-select></v-col>
+                <v-col cols="2" style="float: left">From <date-picker :disabled="(replaystatus == 'stop' && replaymode2 == 'mission') || replaystatus == 'start'" v-model="dates.fromdate" :config="options"/></v-col>
+                <v-col cols="2" style="float: left">To <date-picker   :disabled="(replaystatus == 'stop' && replaymode2 == 'mission') || replaystatus == 'start'" v-model="dates.todate" :config="options" /></v-col>
                 <v-col cols="1">
                     <v-btn v-if="replaystatus === 'stop'" v-on:click="startReplay(dates.fromdate, dates.todate)">Start</v-btn>
                     <v-btn v-if="replaystatus === 'start'" v-on:click="stopReplay()">Stop</v-btn>
@@ -49,8 +47,8 @@ const mapDashboard = {
             </v-row>
             <v-row align="center" justify="center">
                 <v-col>
-                    <mymap cols=8 v-if="replaymode === 'replay'" topicroot="replay"/>
-                    <mymap2 v-else-if="replaymode === 'realtime'" topicroot="raw"/>
+                    <mymap ref="mymap" cols=8 v-if="replaymode === 'replay'" topicroot="replay"/>
+                    <mymap2 cols=8 v-else-if="replaymode === 'realtime'" topicroot="raw"/>
                 </v-col>
             </v-row>
             <v-row justify="center">
@@ -91,7 +89,7 @@ const mapDashboard = {
             agrifarm: utils.agrifarm,
             prevTopic: "",
             dates: {fromdate: moment().subtract(1, "days"), todate: moment()},
-            progressValue: 0
+            progressValue: 0,
         }
     },
     components: {
@@ -101,13 +99,6 @@ const mapDashboard = {
     methods: {
         stopReplay() {
             this.replaystatus = 'stop'
-            this.cleanTimers()
-        },
-        cleanTimers() {
-            let id = window.setTimeout(function() {}, 0)
-            while (id--) {
-                window.clearTimeout(id) // will do nothing if no timeout with id is present
-            }
         },
         toggleAll() {
             this.selectedentities = this.entities
@@ -126,9 +117,7 @@ const mapDashboard = {
         },
         startReplay(from, to) {
             this.replaystatus = 'start'
-            this.cleanTimers()
-            this.listenTopic(this.agrifarm, 'replay')
-            let consumed = 0
+            this.devices = {}
             let prev = -1 // timestamp of the first entity from the replay
             const fromdatetime = parseFloat(moment(from, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
             const todatetime = parseFloat(moment(to, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
@@ -137,7 +126,7 @@ const mapDashboard = {
             // get the distinct entities from the replay, and select the first one
             axios.get(utils.nodeurl + `/api/download/distinct/${utils.agrifarm}/${fromdatetime}/${todatetime}`).then(result => {
                 tis.entities = result.data
-                tis.toggleAll()
+                tis.selectedentities = tis.entities
             })
 
             // recursively get all the entities from the replay (I need to do this since the entities could be too many to get them all at the same time)
@@ -156,19 +145,13 @@ const mapDashboard = {
                         }, 2000)
                     }
                     if (count === 0) { // after the first population... begin with the replay
-                        const topic = utils.getTopic(config.DRACO_REPLAY_TOPIC + "." + utils.agrifarm) // get the name of the topic
-                        function emit(entity) { // publish the entity updates to kafka (only for the selected entities)
-                            // We publish/consume events to/from kafka to avoid to change the logic of the components
-                            // that in the "real-time" mode listen to messages from kafka
+                        function emit(entity) {
                             if (tis.replaystatus === 'stop') return
-                            consumed = consumed + 1
                             if (tis.selectedentities.some(e => e === entity["id"])) {
-                                // if this is one the entities the users want to see in the replay
-                                tis.remoteSocket.emit("publish", { // publish the entity to kafka
-                                    topic: topic,
-                                    data: entity
-                                })
+                                tis.handleStreamData(entity)
+                                tis.$refs.mymap.handleStreamData(entity)
                             }
+                            tis.progressValue = tis.timestampToPercentage(entity["timestamp_subscription"])
                             replay(acc)
                         }
                         function replay(acc) {
@@ -176,6 +159,7 @@ const mapDashboard = {
                             if (acc.length > 0) { // if there are entities to replay
                                 const entity = acc.shift() // take the first entity and remove it from the array
                                 const delay = parseInt(entity["timestamp_replay"]) / tis.speed
+                                // console.log("Waiting for: " + delay)
                                 if (delay < 100) {
                                     // If the delay is too short, there is no need to invoke the setTimeout function
                                     // since it slow down the replay of messages
@@ -189,8 +173,7 @@ const mapDashboard = {
                     }
                 })
             }
-            const acc = [] // accumulator of the entities belonging to the replay
-            get(0, acc) // begin the accumulation of the entities
+            get(0, []) // begin the accumulation of the entities
         },
         percentageToTimestamp(value) {
             const min = parseFloat(moment(this.dates.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x')) // ms
@@ -225,17 +208,13 @@ const mapDashboard = {
                 // $set allows us to add a new property to an already reactive object, and makes sure that this new property is ALSO reactive
                 this.$set(this.devices, data.id, {'id': data.id, 'data': data, 'color': utils.getRandomColor(data.type)})
             }
-            if (this.replaymode === 'replay') {
-                this.progressValue = this.timestampToPercentage(data["timestamp_subscription"])
-            }
         },
         listenTopic(topic, mode) {
-            this.cleanTimers()
-            this.devices = []
             const newtopic = utils.getTopic((mode === 'replay' ? config.DRACO_REPLAY_TOPIC : config.DRACO_RAW_TOPIC) + "." + topic)
             if (newtopic !== this.prevTopic) {
+                this.devices = {}
+                utils.kafkaProxyNewTopic(this.remoteSocket, newtopic, this.handleStreamData, this.prevTopic)
                 this.prevTopic = newtopic
-                utils.kafkaProxyNewTopic(this.remoteSocket, newtopic, this.handleStreamData)
             }
         }
     },
