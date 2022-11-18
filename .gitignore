@@ -2,6 +2,8 @@
 **/testScripts/*.svg
 **/testScripts/*.pdf
 **/mongodb/*
+**/images_dump/*.jpg
+**/images_dump/*.png
 !**/mongodb/.dummy
 **/welaser_robot_replay
 createmission.txt

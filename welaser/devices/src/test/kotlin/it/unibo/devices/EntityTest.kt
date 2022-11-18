@@ -1,12 +1,20 @@
 package it.unibo.devices
 
+import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.*
+import it.unibo.devices.EntityFactory.readJsonFromFile
+import it.unibo.writeimages.createFTPClient
+import it.unibo.writeimages.upload
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 import java.util.*
+
 
 @TestMethodOrder(MethodOrderer.MethodName::class)
 class EntityTest {
@@ -81,6 +89,30 @@ class EntityTest {
             s = khttp.get("${ORION_URL}entities?id=${d.id}").text
         }
         return s
+    }
+
+    @Test
+    fun testImageUpload() {
+        try {
+            val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
+            val camera = readJsonFromFile("$DATA_MODEL_FOLDER/camera2.json")
+            upload(camera)
+            val ftpClient = createFTPClient()
+            ftpClient.listFiles().forEach { println(it.name) }
+            assertTrue(ftpClient.listFiles().any { it.isFile && java.net.URLDecoder.decode(it.name, "utf-8").contains(camera.getString("id")) })
+            URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
+                var itemCount = 0
+                val br = BufferedReader(InputStreamReader(it))
+                var line: String = ""
+                while (itemCount == 0 && br.readLine().also { line = it } != null) {
+                    if (line.contains("<a href")) itemCount++
+                }
+                assertTrue(itemCount > 0)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail()
+        }
     }
 
     @Test

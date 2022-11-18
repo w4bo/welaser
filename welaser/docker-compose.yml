@@ -171,11 +171,26 @@ services:
       orion:
         condition: service_healthy
 
+  writeimages:
+    init: true
+    restart: always
+    hostname: writeimages
+    build:
+      context: ./devices
+      dockerfile: writeimages.Dockerfile
+    container_name: writeimages
+    networks:
+      - default
+    env_file:
+      - .env
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+
   writetomongo:
     init: true
     restart: always
     hostname: writetomongo
-    # build: ./service-writetomongo
     build:
       context: ./devices
       dockerfile: writetomongo.Dockerfile
@@ -202,6 +217,31 @@ services:
     depends_on:
       orion:
         condition: service_healthy
+
+  nginx:
+    hostname: nginx
+    container_name: nginx
+    image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
+    ports:
+      - "${IMAGESERVER_PORT_HTTP_EXT}:80"
+      - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
+    volumes:
+      - "./images-dump:/usr/share/nginx/html"
+      - "./images-dump:/mnt/data"
+
+  ftp:
+    hostname: ftp
+    container_name: ftp
+    image: delfer/alpine-ftp-server
+    environment:
+      USERS: "${IMAGESERVER_USER}|${IMAGESERVER_PWD}|/data"
+      ADDRESS: "${IMAGESERVER_IP}"
+    volumes:
+      - "./images-dump:/data"
+    ports:
+      - "${IMAGESERVER_PORT_FTP20_EXT}:20"
+      - "${IMAGESERVER_PORT_FTP21_EXT}:21"
+      - '21000-21010:21000-21010/tcp'
 
 networks:
   default_net:

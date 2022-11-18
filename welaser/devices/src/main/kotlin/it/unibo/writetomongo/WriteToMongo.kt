@@ -19,13 +19,11 @@ import java.util.regex.Pattern
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
 const val GIVE_UP = 30
 
-fun main() {
-    // create a mongodb client
-    val mongoClient = MongoClients.create("mongodb://${dotenv["MONGO_DB_PERS_IP"]}:${dotenv["MONGO_DB_PERS_PORT_EXT"]}")
+fun consumeFromKafka(group: String, consume: (JSONObject) -> Unit) {
     // configuring the kafka client
     val props = Properties()
     props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "${dotenv["KAFKA_IP"]}:${dotenv["KAFKA_PORT_EXT"]}"
-    props[ConsumerConfig.GROUP_ID_CONFIG] = "writetomongo"
+    props[ConsumerConfig.GROUP_ID_CONFIG] = group
     props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
     props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
     props[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
@@ -57,13 +55,21 @@ fun main() {
                 // add the kafka timestamp
                 data.put("timestamp_kafka", System.currentTimeMillis())
                 // write to mongo
-                mongoClient
-                    .getDatabase(dotenv["MONGO_DB_PERS_DB"])
-                    .getCollection(data.getString(DOMAIN))
-                    .insertOne(Document.parse(data.toString()))
+                consume(data)
             }
         }
     }
     // stop the consumer
     consumer.close()
+}
+
+fun main() {
+    // create a mongodb client
+    val mongoClient = MongoClients.create("mongodb://${dotenv["MONGO_DB_PERS_IP"]}:${dotenv["MONGO_DB_PERS_PORT_EXT"]}")
+    consumeFromKafka("writetomongo") { data ->
+        mongoClient
+            .getDatabase(dotenv["MONGO_DB_PERS_DB"])
+            .getCollection(data.getString(DOMAIN))
+            .insertOne(Document.parse(data.toString()))
+    }
 }
