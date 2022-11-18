@@ -2,9 +2,11 @@ package it.unibo.devices
 
 import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.*
+import it.unibo.devices.EntityFactory.createFromFile
 import it.unibo.devices.EntityFactory.readJsonFromFile
 import it.unibo.writeimages.createFTPClient
 import it.unibo.writeimages.upload
+import org.json.JSONArray
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.MethodOrderer
@@ -85,8 +87,9 @@ class EntityTest {
             if (i > 1) {
                 Thread.sleep(100)
             }
-            println("Looking for ${d.id} at ${ORION_URL}entities?id=${d.id}")
-            s = khttp.get("${ORION_URL}entities?id=${d.id}").text
+            val url = "${ORION_URL}entities?id=${d.id}&options=keyValues"
+            println("Looking for ${d.id} at $url")
+            s = khttp.get(url).text
         }
         return s
     }
@@ -95,20 +98,28 @@ class EntityTest {
     fun testImageUpload() {
         try {
             val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
-            val camera = readJsonFromFile("$DATA_MODEL_FOLDER/camera2.json")
-            upload(camera)
+            val path = "$DATA_MODEL_FOLDER/camera2.json"
+            val e = createFromFile(path, 1, 1)
+            val camera = readJsonFromFile(path)
+            upload(camera, async = false)
+            // Test FTP
             val ftpClient = createFTPClient()
             ftpClient.listFiles().forEach { println(it.name) }
             assertTrue(ftpClient.listFiles().any { it.isFile && java.net.URLDecoder.decode(it.name, "utf-8").contains(camera.getString("id")) })
+            // Test HTTP
             URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
                 var itemCount = 0
                 val br = BufferedReader(InputStreamReader(it))
-                var line: String = ""
-                while (itemCount == 0 && br.readLine().also { line = it } != null) {
-                    if (line.contains("<a href")) itemCount++
+                var line: String?
+                while (br.readLine().also { line = it } != null) {
+                    if (line!!.contains("<a href")) itemCount++
                 }
-                assertTrue(itemCount > 0)
+                assertTrue(itemCount > 1) // the page also contains <a href="../">../</a>
             }
+            // Test update of the URL
+            val t = waitDevice(e)
+            val obj = JSONArray(t).getJSONObject(0)
+            assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
         } catch (e: Exception) {
             e.printStackTrace()
             fail()

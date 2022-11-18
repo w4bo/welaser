@@ -6,6 +6,8 @@ import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.AREA_SERVED
 import it.unibo.DOMAIN
 import it.unibo.IMAGE_URL
+import it.unibo.devices.CONTENTTYPE
+import it.unibo.devices.ORION_URL
 import it.unibo.writetomongo.consumeFromKafka
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
@@ -25,22 +27,28 @@ fun createFTPClient(): FTPClient {
     return ftpClient
 }
 
-fun upload(obj: JSONObject) {
+fun upload(obj: JSONObject, async: Boolean = true) {
     listOf(IMAGE_URL).filter { attr -> obj.has(attr) }.forEach { attr ->
         val curUrl = obj.getString(attr)
         if (curUrl.isNotEmpty() && !curUrl.contains(dotenv["IMAGESERVER_IP"])) {
             // URL(curUrl).openStream().use { Files.copy(it, Paths.get("foo.png")) }
             try {
+                val id = obj.getString("id")
+                val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
+                val filename = domain + "-" +  id + "-" + System.currentTimeMillis() + "-" + attr + curUrl.substring(curUrl.lastIndexOf("."))
                 URL(curUrl).openStream().use {
                     val ftpClient = createFTPClient()
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                    // val input: InputStream = BufferedInputStream(FileInputStream("foo.png"))
-                    // ftpClient.storeFile(java.net.URLEncoder.encode(obj.getString("domain") + "-" + obj.getString("id") + "-" + System.currentTimeMillis() + "-" + attr + curUrl.substring(curUrl.lastIndexOf(".")), "utf-8"), input)
-                    // input.close()
-                    val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
-                    ftpClient.storeFile(java.net.URLEncoder.encode(domain + "-" + obj.getString("id") + "-" + System.currentTimeMillis() + "-" + attr + curUrl.substring(curUrl.lastIndexOf(".")), "utf-8"), it)
+                    ftpClient.storeFile(java.net.URLEncoder.encode(filename, "utf-8"), it)
                     ftpClient.logout()
                     ftpClient.disconnect()
+                }
+                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/$filename"}"""
+                val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
+                if (async) {
+                    khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
+                } else {
+                    khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
                 }
             } catch (e: Exception) {
                 print(e.message)
