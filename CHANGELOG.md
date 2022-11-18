@@ -1,3 +1,15 @@
+## [1.1.47](https://github.com/w4bo/welaser/compare/1.1.46...1.1.47) (2022-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.4 ([3af8101](https://github.com/w4bo/welaser/commit/3af81013373753f2ed08013eeb66df08c297b422))
+
+
+### Dependency updates
+
+* **deps:** update dependency pymongo to v4.3.3 ([d11382f](https://github.com/w4bo/welaser/commit/d11382f676c999bd18505847527ba7390e7e7399))
+
 ## [1.1.46](https://github.com/w4bo/welaser/compare/1.1.45...1.1.46) (2022-11-17)
 
 
