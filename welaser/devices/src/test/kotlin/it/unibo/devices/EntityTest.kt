@@ -7,8 +7,7 @@ import it.unibo.devices.EntityFactory.readJsonFromFile
 import it.unibo.writeimages.createFTPClient
 import it.unibo.writeimages.upload
 import org.json.JSONArray
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
@@ -120,6 +119,7 @@ class EntityTest {
             val t = waitDevice(e)
             val obj = JSONArray(t).getJSONObject(0)
             assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
+            assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
         } catch (e: Exception) {
             e.printStackTrace()
             fail()

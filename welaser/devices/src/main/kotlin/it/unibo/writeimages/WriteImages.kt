@@ -35,11 +35,11 @@ fun upload(obj: JSONObject, async: Boolean = true) {
             try {
                 val id = obj.getString("id")
                 val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
-                val filename = domain + "-" +  id + "-" + System.currentTimeMillis() + "-" + attr + curUrl.substring(curUrl.lastIndexOf("."))
+                val filename = domain + "_" +  id + "_" + System.currentTimeMillis() + "_" + attr + curUrl.substring(curUrl.lastIndexOf("."))
                 URL(curUrl).openStream().use {
                     val ftpClient = createFTPClient()
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                    ftpClient.storeFile(java.net.URLEncoder.encode(filename, "utf-8"), it)
+                    ftpClient.storeFile(filename, it)
                     ftpClient.logout()
                     ftpClient.disconnect()
                 }
