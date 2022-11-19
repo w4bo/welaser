@@ -7,3 +7,5 @@ docker-compose up --build &>logs/docker-compose-$(date +%s).txt &
 ./wait-for-it.sh ${MOSQUITTO_IP}:${MOSQUITTO_PORT_EXT} --timeout=480 -- echo "Mosquitto is up"
 ./wait-for-it.sh ${IOTA_IP}:${IOTA_NORTH_PORT} --timeout=480 -- echo "IoTA is up"
 ./wait-for-it.sh ${IP}:${WEB_SERVER_PORT_EXT} --timeout=480 -- echo "NodeJS is up"
+./wait-for-it.sh ${IMAGESERVER_IP}:${IMAGESERVER_PORT_HTTP_EXT} --timeout=480 -- echo "Nginx is up"
+./wait-for-it.sh ${IMAGESERVER_IP}:${IMAGESERVER_PORT_FTP21_EXT} --timeout=480 -- echo "FTP server is up"
