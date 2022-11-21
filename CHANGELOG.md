@@ -1,3 +1,10 @@
+## [1.1.49](https://github.com/w4bo/welaser/compare/1.1.48...1.1.49) (2022-11-21)
+
+
+### Bug Fixes
+
+* **images:** upload images to FTP and update their URL in fiware ([#308](https://github.com/w4bo/welaser/issues/308)) ([8531057](https://github.com/w4bo/welaser/commit/85310574709533765bac870e7729d7f4d46fd16e))
+
 ## [1.1.48](https://github.com/w4bo/welaser/compare/1.1.47...1.1.48) (2022-11-18)
 
 
