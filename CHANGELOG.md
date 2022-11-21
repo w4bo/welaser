@@ -1,3 +1,10 @@
+## [1.1.50](https://github.com/w4bo/welaser/compare/1.1.49...1.1.50) (2022-11-21)
+
+
+### Bug Fixes
+
+* **demo:** update the robot GUI ([#314](https://github.com/w4bo/welaser/issues/314)) ([ed2dec6](https://github.com/w4bo/welaser/commit/ed2dec604dc01f31a75e69aea09363d9b725af2e))
+
 ## [1.1.49](https://github.com/w4bo/welaser/compare/1.1.48...1.1.49) (2022-11-21)
 
 
