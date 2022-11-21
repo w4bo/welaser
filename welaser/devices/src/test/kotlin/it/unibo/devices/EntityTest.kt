@@ -104,6 +104,7 @@ class EntityTest {
             // Test FTP
             val ftpClient = createFTPClient()
             ftpClient.listFiles().forEach { println(it.name) }
+            ftpClient.disconnect()
             assertTrue(ftpClient.listFiles().any { it.isFile && java.net.URLDecoder.decode(it.name, "utf-8").contains(camera.getString("id")) })
             // Test HTTP
             URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
@@ -122,7 +123,7 @@ class EntityTest {
             assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
         } catch (e: Exception) {
             e.printStackTrace()
-            fail()
+            fail(e.message)
         }
     }
 

@@ -12,7 +12,6 @@ import it.unibo.writetomongo.consumeFromKafka
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
-import java.lang.IllegalArgumentException
 import java.net.URL
 
 
@@ -20,12 +19,23 @@ import java.net.URL
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
 
 fun createFTPClient(): FTPClient {
-    val ftpClient = FTPClient()
-    ftpClient.isRemoteVerificationEnabled = false
-    ftpClient.connect(dotenv["IMAGESERVER_IP"], dotenv["IMAGESERVER_PORT_FTP21_EXT"].toInt())
-    ftpClient.login(dotenv["IMAGESERVER_USER"], dotenv["IMAGESERVER_PWD"])
-    ftpClient.changeWorkingDirectory("/data")
-    return ftpClient
+    var retry = 3
+    return try {
+        val ftpClient = FTPClient()
+        ftpClient.isRemoteVerificationEnabled = false
+        ftpClient.connect(dotenv["IMAGESERVER_IP"], dotenv["IMAGESERVER_PORT_FTP21_EXT"].toInt())
+        ftpClient.login(dotenv["IMAGESERVER_USER"], dotenv["IMAGESERVER_PWD"])
+        ftpClient.changeWorkingDirectory("/data")
+        ftpClient
+    } catch (e: Exception) {
+        if (retry-- > 0) {
+            Thread.sleep(1000)
+            println("Retrying to connect...")
+            createFTPClient()
+        } else {
+            throw e
+        }
+    }
 }
 
 fun upload(obj: JSONObject, async: Boolean = true) {
