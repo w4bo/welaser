@@ -36,7 +36,7 @@ class EntityTest {
     }
 
     @Test
-    fun testInit() {
+    fun test0Init() {
         try {
             EntityFactory.createAll(folder).forEach { it.run() }
         } catch (e: Exception) {

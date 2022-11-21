@@ -11,7 +11,6 @@ else
 fi
 
 ./stop.sh
-./scripts/build.sh
 ./scripts/createVenv.sh
 ./scripts/setupKafka.sh
 ./scripts/setupFiware.sh

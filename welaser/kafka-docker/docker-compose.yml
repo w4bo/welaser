@@ -1,6 +1,8 @@
 version: "3.9"
 services:
   zookeeper:
+    hostname: zookeeper
+    container_name: zookeeper
     init: true
     image: wurstmeister/zookeeper
     ports:
@@ -9,6 +11,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   kafka:
+    hostname: kafka
+    container_name: kafka
     init: true
     image: wurstmeister/kafka
     depends_on:

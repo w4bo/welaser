@@ -221,6 +221,7 @@ services:
   nginx:
     hostname: nginx
     container_name: nginx
+    init: true
     image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
     ports:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
@@ -232,6 +233,7 @@ services:
   ftp:
     hostname: ftp
     container_name: ftp
+    init: true
     image: delfer/alpine-ftp-server
     environment:
       USERS: "${IMAGESERVER_USER}|${IMAGESERVER_PWD}|/data"

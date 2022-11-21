@@ -12,6 +12,7 @@ import it.unibo.writetomongo.consumeFromKafka
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
+import java.lang.IllegalArgumentException
 import java.net.URL
 
 
@@ -48,7 +49,10 @@ fun upload(obj: JSONObject, async: Boolean = true) {
                 if (async) {
                     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
                 } else {
-                    khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
+                    val r = khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
+                    if (r.statusCode != 200) {
+                        throw IllegalArgumentException(r.text)
+                    }
                 }
             } catch (e: Exception) {
                 print(e.message)
