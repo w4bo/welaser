@@ -108,7 +108,7 @@ task runWriteToMongo(type: JavaExec) {
 task runWriteImages(type: JavaExec) {
     description = "Run the WriteImages service"
     classpath = sourceSets.main.runtimeClasspath
-    main = 'it.unibo.writetomongo.WriteImages'
+    main = 'it.unibo.writeimages.WriteImages'
 }
 
 if (hasProperty('buildScan')) {

@@ -13,6 +13,7 @@ import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
 import java.net.URL
+import java.util.concurrent.Executors
 
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
@@ -73,7 +74,8 @@ fun upload(obj: JSONObject, async: Boolean = true) {
 }
 
 fun main() {
+    val executor = Executors.newFixedThreadPool(3)
     consumeFromKafka("writeimages") { obj ->
-        upload(obj)
+        executor.submit { upload(obj) }
     }
 }
