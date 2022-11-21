@@ -228,6 +228,9 @@ services:
       - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
       - "./images-dump:/mnt/data"
+    depends_on:
+      ftp:
+        condition: service_healthy
 
   ftp:
     hostname: ftp
