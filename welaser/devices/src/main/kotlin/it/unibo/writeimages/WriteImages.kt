@@ -18,8 +18,7 @@ import java.net.URL
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
 val dotenv: Dotenv = Dotenv.configure().directory("./.env").load()
 
-fun createFTPClient(): FTPClient {
-    var retry = 3
+fun createFTPClient(retry: Int = 3): FTPClient {
     return try {
         val ftpClient = FTPClient()
         ftpClient.isRemoteVerificationEnabled = false
@@ -28,10 +27,11 @@ fun createFTPClient(): FTPClient {
         ftpClient.changeWorkingDirectory("/data")
         ftpClient
     } catch (e: Exception) {
-        if (retry-- > 0) {
+        if (retry > 0) {
+            e.printStackTrace()
             Thread.sleep(1000)
             println("Retrying to connect...")
-            createFTPClient()
+            createFTPClient(retry - 1)
         } else {
             throw e
         }
