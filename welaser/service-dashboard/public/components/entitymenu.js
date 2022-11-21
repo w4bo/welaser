@@ -32,12 +32,14 @@ const entitymenu = {
         const tis = this
         this.types.forEach(function(type) {
             utils.getDevices(tis, type.name,  {}, function(acc) {
-                let name = utils.getName(Object.values(acc)[0]["data"])
-                if (!type.exclusive) {
-                    name = [name]
+                if (Object.values(acc).length > 0) {
+                    let name = utils.getName(Object.values(acc)[0]["data"])
+                    if (!type.exclusive) {
+                        name = [name]
+                    }
+                    tis.$set(tis.selectedbytype, type.name, name)
+                    tis.$set(tis.devicesbytype, type.name, acc)
                 }
-                tis.$set(tis.selectedbytype, type.name, name)
-                tis.$set(tis.devicesbytype, type.name, acc)
             })
         })
     }
