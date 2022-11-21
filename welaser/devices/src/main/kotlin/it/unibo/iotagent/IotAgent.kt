@@ -80,7 +80,7 @@ class IOTA {
         connOpts.password = MOSQUITTO_PWD.toCharArray()
         connOpts.connectionTimeout = 0
         connOpts.keepAliveInterval = 0
-        connOpts.setAutomaticReconnect(true)
+        connOpts.isAutomaticReconnect = true
         client.connect(connOpts)
         // subscribe to all mqtt messages
         client.subscribe("#", 0) { topic, message ->
