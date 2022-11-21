@@ -2,15 +2,17 @@ package it.unibo.devices
 
 import it.unibo.*
 import org.json.JSONObject
-import java.lang.IllegalArgumentException
 
 
 object EntityFactory {
+    fun readJsonFromFile(fileName: String): JSONObject {
+        val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
+        return JSONObject(lines)
+    }
+
     fun createFromFile(fileName: String, timeoutMs: Int, times: Int = 1000): EntityFIWARE {
         println(fileName)
-        val lines = this::class.java.getResourceAsStream(fileName)!!.bufferedReader().readLines().reduce { a, b -> a + "\n" + b }
-        val initStatus = JSONObject(lines)
-        return when (initStatus.getString(TYPE)) {
+        return when (readJsonFromFile(fileName).getString(TYPE)) {
             AGRI_ROBOT -> Robot(fileName, timeoutMs, times)
             else -> EntityFIWARE(fileName, timeoutMs, times)
         }

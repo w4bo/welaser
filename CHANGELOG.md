@@ -1,3 +1,35 @@
+## [1.1.48](https://github.com/w4bo/welaser/compare/1.1.47...1.1.48) (2022-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.4 ([fa6cbbe](https://github.com/w4bo/welaser/commit/fa6cbbe7d41eddcde6ec737f146dca21bb6779b9))
+
+## [1.1.47](https://github.com/w4bo/welaser/compare/1.1.46...1.1.47) (2022-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.4 ([3af8101](https://github.com/w4bo/welaser/commit/3af81013373753f2ed08013eeb66df08c297b422))
+
+
+### Dependency updates
+
+* **deps:** update dependency pymongo to v4.3.3 ([d11382f](https://github.com/w4bo/welaser/commit/d11382f676c999bd18505847527ba7390e7e7399))
+
+## [1.1.46](https://github.com/w4bo/welaser/compare/1.1.45...1.1.46) (2022-11-17)
+
+
+### Bug Fixes
+
+* **demo:** add mission gui ([#286](https://github.com/w4bo/welaser/issues/286)) ([b56fc6b](https://github.com/w4bo/welaser/commit/b56fc6b7c318c279134428c3e88b02b517797d8a))
+
+
+### Dependency updates
+
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.21 ([b8fc1f1](https://github.com/w4bo/welaser/commit/b8fc1f147696d546aa5d7169a58ae5c9f9b1cc79))
+* **deps:** update welaser/welaser-datamodels digest to 7b5377c ([e101f42](https://github.com/w4bo/welaser/commit/e101f420225c9ed27ad8a72550ab7afba42f9689))
+
 ## [1.1.45](https://github.com/w4bo/welaser/compare/1.1.44...1.1.45) (2022-11-06)
 
 
