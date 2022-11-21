@@ -60,7 +60,7 @@ fun upload(obj: JSONObject, async: Boolean = true) {
                     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
                 } else {
                     val r = khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
-                    if (r.statusCode != 200) {
+                    if (r.statusCode != 204) {
                         throw IllegalArgumentException(r.text)
                     }
                 }

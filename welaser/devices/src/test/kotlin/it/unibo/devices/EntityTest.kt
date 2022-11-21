@@ -104,8 +104,8 @@ class EntityTest {
             // Test FTP
             val ftpClient = createFTPClient()
             ftpClient.listFiles().forEach { println(it.name) }
-            ftpClient.disconnect()
             assertTrue(ftpClient.listFiles().any { it.isFile && java.net.URLDecoder.decode(it.name, "utf-8").contains(camera.getString("id")) })
+            ftpClient.disconnect()
             // Test HTTP
             URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
                 var itemCount = 0
