@@ -227,7 +227,6 @@ services:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
       - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
-      - "./images-dump:/usr/share/nginx/html"
       - "./images-dump:/mnt/data"
 
   ftp:
@@ -244,6 +243,10 @@ services:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
       - '21000-21010:21000-21010/tcp'
+    healthcheck:
+      test: wget -O .dummy ftp://${IMAGESERVER_USER}:${IMAGESERVER_PWD}@localhost:21/.dummy
+      interval: 5s
+      timeout: 10s
 
 networks:
   default_net:
