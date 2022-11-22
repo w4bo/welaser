@@ -1,8 +1,12 @@
 #!/bin/bash
 set -exo
 
-git submodule update --recursive
 git submodule update --init --recursive
+cd welaser-datamodels
+git stash
+git checkout master
+git pull
+cd ..
 
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
@@ -36,6 +40,11 @@ ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/miss
 # Visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
+
+if [ -f "scripts/updatePwd.sh" ]; then
+    chmod +x scripts/updatePwd.sh
+    . ./scripts/updatePwd.sh
+fi
 
 # Mosquitto
 cp mosquitto/pwfile.example mosquitto/pwfile
