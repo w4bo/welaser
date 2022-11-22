@@ -1,3 +1,11 @@
+## [1.1.51](https://github.com/w4bo/welaser/compare/1.1.50...1.1.51) (2022-11-22)
+
+
+### Bug Fixes
+
+* **scripts:** install the python packages even if testScripts/venv already exists ([#316](https://github.com/w4bo/welaser/issues/316)) ([8ee1fde](https://github.com/w4bo/welaser/commit/8ee1fdeb5027ebb55263318146ee239ce5ced56c))
+* **writeimage:** Feature images ([#315](https://github.com/w4bo/welaser/issues/315)) ([fac21bc](https://github.com/w4bo/welaser/commit/fac21bcd26db83fe9dcde74219d3dd7b963f9678))
+
 ## [1.1.50](https://github.com/w4bo/welaser/compare/1.1.49...1.1.50) (2022-11-21)
 
 
