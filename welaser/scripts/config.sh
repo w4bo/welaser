@@ -1,8 +1,11 @@
 #!/bin/bash
 set -exo
 
-git submodule update --recursive
 git submodule update --init --recursive
+cd welaser-datamodels
+git checkout master
+git pull
+cd ..
 
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
