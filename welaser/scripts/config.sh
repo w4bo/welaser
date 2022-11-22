@@ -3,6 +3,7 @@ set -exo
 
 git submodule update --init --recursive
 cd welaser-datamodels
+git stash
 git checkout master
 git pull
 cd ..
