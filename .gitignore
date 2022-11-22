@@ -1,3 +1,4 @@
+**/scripts/updatePwd.sh
 **/datamodels/**/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
