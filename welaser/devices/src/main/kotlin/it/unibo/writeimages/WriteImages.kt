@@ -13,6 +13,7 @@ import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
 import java.net.URL
+import java.util.concurrent.Executors
 
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
@@ -24,6 +25,7 @@ fun createFTPClient(retry: Int = 3): FTPClient {
         ftpClient.isRemoteVerificationEnabled = false
         ftpClient.connect(dotenv["IMAGESERVER_IP"], dotenv["IMAGESERVER_PORT_FTP21_EXT"].toInt())
         ftpClient.login(dotenv["IMAGESERVER_USER"], dotenv["IMAGESERVER_PWD"])
+        ftpClient.enterLocalPassiveMode()
         ftpClient.changeWorkingDirectory("/data")
         ftpClient
     } catch (e: Exception) {
@@ -73,7 +75,8 @@ fun upload(obj: JSONObject, async: Boolean = true) {
 }
 
 fun main() {
+    val executor = Executors.newFixedThreadPool(3)
     consumeFromKafka("writeimages") { obj ->
-        upload(obj)
+        executor.submit { upload(obj) }
     }
 }
