@@ -1,6 +1,8 @@
 #!/bin/bash
 set -exo
 
+git pull
+
 git submodule update --init --recursive
 cd welaser-datamodels
 git stash
