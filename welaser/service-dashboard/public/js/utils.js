@@ -79,7 +79,7 @@ utils.renderRows = function(data, hideDetails) {
     let html = `<table style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto">`
     for (let [key, value] of Object.entries(data)) {
         key = key.trim()
-        if (typeof value == 'string') value = value.trim().replaceAll("%3D", "=")
+        if (typeof value == 'string') value = decodeURI(value.trim())
         if (hideDetails && [
             "id", "timestamp_iota", "timestamp_subscription", "domain", "mission", "location",
             "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
