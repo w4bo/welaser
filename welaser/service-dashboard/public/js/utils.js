@@ -91,12 +91,19 @@ utils.renderRows = function(data, hideDetails) {
             let th = `<th style="border: 1pt solid black">${key}</th>`
             if (Array.isArray(data)) { th = "" }
             html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-            if (typeof value == 'string' && value.length > 100 && base64regex.test(value)) {
-                html += `<img src="data:image/png;base64,${value}" style="width:20vh" alt="Broken image: ${value}">`
-            } else if (key === 'timestamp') {
-                html += utils.renderJSON(utils.formatDateTime(value), hideDetails)
-            } else if (value !== "") {
-                html += utils.renderJSON(value, hideDetails)
+            if (value !== "") {
+                if (typeof value === 'string' && value.length > 100 && base64regex.test(value)) {
+                    html += `<img src="data:image/png;base64,${value}" width="100%" alt="Broken image: ${value}">`
+                } else if (typeof value === 'string' && value.startsWith("http") && (value.endsWith(".jpg") || value.endsWith(".png"))) {
+                    html += `<img src="${value}" width="100%" alt="Broken image: ${value}">`
+                } else if (key === 'streamURL') {
+                    html += `<iframe src="${value}" width="100%"></iframe>`
+                } else if (key.toLowerCase().includes('timestamp') && parseFloat(value) > 946681200) {
+                    // 946681200 = Fri Dec 31 1999 23:00:00 GMT+0000
+                    html += utils.renderJSON(utils.formatDateTime(value), hideDetails)
+                } else {
+                    html += utils.renderJSON(value, hideDetails)
+                }
             }
             html += `</td></tr>`
             html = html
