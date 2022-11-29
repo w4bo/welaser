@@ -1,6 +1,8 @@
 #!/bin/bash
 set -exo
 
+git pull
+
 git submodule update --init --recursive
 cd welaser-datamodels
 git stash
@@ -14,6 +16,11 @@ IP=${1:-$DEFIP}
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
+
+if [ -f "scripts/updatePwd.sh" ]; then
+    chmod +x scripts/updatePwd.sh
+    . ./scripts/updatePwd.sh
+fi
 
 # Devices python
 rm devices-python/carob-1.json || true
@@ -40,11 +47,6 @@ ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/miss
 # Visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
-
-if [ -f "scripts/updatePwd.sh" ]; then
-    chmod +x scripts/updatePwd.sh
-    . ./scripts/updatePwd.sh
-fi
 
 # Mosquitto
 cp mosquitto/pwfile.example mosquitto/pwfile
