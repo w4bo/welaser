@@ -35,11 +35,11 @@ curl -iX POST \
 cd devices
 ./gradlew --stacktrace --scan
 
-run_mission=1
+run_mission=0
 while getopts "s" opt
 do
     case $opt in
-    (s) run_mission=0 ;;
+    (s) run_mission=1 ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
     esac
 done

@@ -1,8 +1,8 @@
 const recursivetable = {
     template: `
-      <tr style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto; border: 1px solid">
-          <td style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto; border: 1px solid" v-if="k !== ''">{{ k }} </td>
-          <td style="border-collapse: collapse; width:100%; margin-left: auto; margin-right: auto; border: 1px solid" v-if="typeof v !== 'object'">
+      <tr style="border: 1pt solid black; width:100%">
+          <td style="border: 1px solid" v-if="k !== ''">{{ k }} </td>
+          <td style="border: 1pt solid black; width:100%" v-if="typeof v !== 'object'">
               <img v-if="typeof v === 'string' && v.startsWith('http') && (v.endsWith('.jpg') || v.endsWith('.png'))" :src="v" width="100%" />
               <iframe v-else-if="k === 'streamURL' && v != ''" :src="v" width="100%" />  
               <div v-else v-html="display()"></div>

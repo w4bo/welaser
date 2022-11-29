@@ -71,8 +71,7 @@ utils.renderRows = function(data, hideDetails) {
             "actualLocation", "plannedLocation", "category", "cmdList", "weight", "heading",
             "hasFarm", "hasDevice", "hitch", "refRobotModel", "areaServed"
         ].includes(key)) { /* do nothing */ } else {
-            let th = `<th style="border: 1pt solid black">${key}</th>`
-            html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
+            html += `<tr style="border: 1pt solid black; width:100%"><td style="border: 1pt solid black">${key}</td><td style="border: 1pt solid black; width:100%">`
             if (typeof value === "object") {
                 html += utils.renderRows(value, hideDetails)
             } else {
