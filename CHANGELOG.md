@@ -1,3 +1,16 @@
+## [1.1.54](https://github.com/w4bo/welaser/compare/1.1.53...1.1.54) (2022-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.5 ([caba3eb](https://github.com/w4bo/welaser/commit/caba3ebc26eccf12f6660ed43009fe8ac3061fd1))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.2 ([8954a27](https://github.com/w4bo/welaser/commit/8954a27fc1742c7a854cd1a2717feadf32ac7b8b))
+* **deps:** update dependency urllib3 to v1.26.13 ([f7c9101](https://github.com/w4bo/welaser/commit/f7c910104f7ee421db63c64265962e99743b13c6))
+
 ## [1.1.53](https://github.com/w4bo/welaser/compare/1.1.52...1.1.53) (2022-11-22)
 
 
