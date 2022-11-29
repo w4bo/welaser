@@ -57,29 +57,12 @@ const mapDashboard = {
                         <v-card :color="device.color">
                             <v-card-title class="pb-0">{{device.id}}</v-card-title>
                             <v-card-text class="flex">
-                                 <div v-html="updateCards(device.data)"></div>
-<!--                                <template>-->
-<!--                                  <div :style="nodeMargin">-->
-<!--                                    <b-alert show class="d-flex justify-content-between mb-1">-->
-<!--                                      {{ node.label }}-->
-<!--                                      <span-->
-<!--                                        v-if="hasChildren"-->
-<!--                                        :class="toggleChildrenIcon"-->
-<!--                                        @click="toggleChildren"-->
-<!--                                        @keypress="toggleChildren"-->
-<!--                                      />-->
-<!--                                    </b-alert>-->
-<!--                                    <div v-if="hasChildren" v-show="showChildren">-->
-<!--                                      <TreeNode-->
-<!--                                        v-for="child in node.children"-->
-<!--                                        :key="child.id"-->
-<!--                                        :node="child"-->
-<!--                                        :spacing="spacing + 10"-->
-<!--                                      />-->
-<!--                                    </div>-->
-<!--                                  </div>-->
-<!--                                </template>-->
-
+<!--                                 <div v-html="updateCards(device.data)"></div>-->
+                                <table>
+                                    <template>
+                                        <recursivetable :k="''" :v="device.data" prevkey="device.id" />
+                                    </template>
+                                </table>
                             </v-card-text>
                             <v-card-actions v-if="replaymode === 'realtime'" >
                                 <div v-if="typeof device.data.cmdList !== 'undefined'">
@@ -118,7 +101,8 @@ const mapDashboard = {
     },
     components: {
         mymap: mymap,
-        mymap2: mymap
+        mymap2: mymap,
+        recursivetable: recursivetable
     },
     methods: {
         stopReplay() {

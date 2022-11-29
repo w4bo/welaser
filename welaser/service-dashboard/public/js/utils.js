@@ -73,7 +73,7 @@ utils.renderRows = function(data, hideDetails) {
         ].includes(key)) { /* do nothing */ } else {
             let th = `<th style="border: 1pt solid black">${key}</th>`
             html += `<tr style="border: 1pt solid black; width:100%">${th}<td>`
-            if (typeof value === "object" || Array.isArray(value)) {
+            if (typeof value === "object") {
                 html += utils.renderRows(value, hideDetails)
             } else {
                 if (typeof value == 'string') value = decodeURI(value.trim())
