@@ -7,7 +7,7 @@ git submodule update --init --recursive
 cd welaser-datamodels
 git stash
 git checkout master
-git pull
+git pull origin master
 cd ..
 
 DEFIP=$(hostname -I | cut -d' ' -f1)
