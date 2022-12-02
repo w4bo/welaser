@@ -56,8 +56,8 @@ docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PO
 Execute all the containers
 
 ```sh
-./launch.sh # also simulates a mission
-./launch.sh -s # skips the simulation
+./launch.sh -s # also simulates a mission
+./launch.sh # skips the simulation
 
 ```
 

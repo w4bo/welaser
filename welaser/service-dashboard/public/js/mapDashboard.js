@@ -56,7 +56,10 @@ const mapDashboard = {
                     <v-col cols=3>
                         <v-card :color="device.color">
                             <v-card-title class="pb-0">{{device.id}}</v-card-title>
-                            <v-card-text class="flex"><div v-html="updateCards(device.data)"></div></v-card-text>
+                            <v-card-text class="flex">
+                                <div v-if="device.data.type == 'Device'" v-html="updateCards(device.data)"></div>
+                                <table v-else><template><recursivetable :k="''" :v="device.data" prevkey="device.id" /></template></table>
+                            </v-card-text>
                             <v-card-actions v-if="replaymode === 'realtime'" >
                                 <div v-if="typeof device.data.cmdList !== 'undefined'">
                                     <template v-for="cmd in device.data.cmdList">
@@ -94,7 +97,8 @@ const mapDashboard = {
     },
     components: {
         mymap: mymap,
-        mymap2: mymap
+        mymap2: mymap,
+        recursivetable: recursivetable
     },
     methods: {
         stopReplay() {
@@ -140,7 +144,7 @@ const mapDashboard = {
                 axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/${fromdatetime}/${todatetime}/${count}/${limit}`).then(result => {
                     const curresult = result.data // get the data
                     curresult.forEach(function (entity) { // compute the timestamp of the replay
-                        entity["timestamp_replay"] = prev < 0 ? 0 : entity["timestamp_subscription"] - prev // the time to wait is the time between two entity updates
+                        entity["delay_replay"] = prev < 0 ? 0 : entity["timestamp_subscription"] - prev // the time to wait is the time between two entity updates
                         prev = parseFloat(entity["timestamp_subscription"])
                     })
                     acc.push(...curresult) // add it to the accumulator
@@ -163,7 +167,7 @@ const mapDashboard = {
                             if (tis.replaystatus === 'stop') return
                             if (acc.length > 0) { // if there are entities to replay
                                 const entity = acc.shift() // take the first entity and remove it from the array
-                                const delay = parseInt(entity["timestamp_replay"]) / tis.speed
+                                const delay = parseInt(entity["delay_replay"]) / tis.speed
                                 // console.log("Waiting for: " + delay)
                                 if (delay < 100) {
                                     // If the delay is too short, there is no need to invoke the setTimeout function
@@ -201,7 +205,7 @@ const mapDashboard = {
             })
         },
         updateCards(data) {
-            return utils.renderJSON(data, this.hideDetails)
+            return utils.renderRows(data, this.hideDetails)
         },
         sendCommand(deviceId, command) {
             return utils.sendCommand(deviceId, command)

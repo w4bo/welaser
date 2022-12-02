@@ -1,15 +1,6 @@
 #!/bin/bash
 set -exo
 
-git pull
-
-git submodule update --init --recursive
-cd welaser-datamodels
-git stash
-git checkout master
-git pull
-cd ..
-
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
 

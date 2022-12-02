@@ -13,6 +13,7 @@ const val FARM_LATITUDE = 40.3123117652
 const val FARM_LONGITUDE = -3.481042237784
 const val HEARTBEAT = "heartbeat"
 const val HUMIDITY = "humidity"
+const val ID = "id"
 const val IMAGE = "image"
 const val IMAGE_URL = "imageSnapshot"
 const val LOCATION = "location"

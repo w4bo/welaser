@@ -96,13 +96,16 @@ interface ISensor : IThing {
  */
 class Camera(val onBoard: Boolean = true) : ISensor {
     override fun getType(): EntityType = EntityType.Image
+    var i = 0
+    var max = 7
 
     /**
      * @return get an image from src/main/resources, the image is encoded in Base64
      */
     @Synchronized
     override fun sense(): String {
-        val inputstream = Camera::class.java.getResourceAsStream(if (onBoard) { "/img0" } else { "/field0" } + Random.nextInt(1, 4) + ".png")
+        val filename = /* if (onBoard) { "/img0" } else { "/field0" } */ "/field0" + (i++ % max + 1) + ".png"
+        val inputstream = Camera::class.java.getResourceAsStream(filename)
         return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream)).replace("=", "%3D")
     }
 }
@@ -240,26 +243,27 @@ class ProtocolSubscription : IProtocol {
 }
 
 class ProtocolHTTP : IProtocol {
+
+    fun reg(s: String, retry: Int) {
+        // khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s) {
+        val r = khttp.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s)
+        val text = r.text
+        if (text.contains("BadRequest")) {
+            if (retry == 0) {
+                throw throw IllegalArgumentException(JSONObject(s).getString("id") + ": $text")
+            } else {
+                Thread.sleep(1000)
+                reg(s, retry - 1)
+            }
+        }
+    }
+
     @Synchronized
     override fun register(s: String) {
         JSONObject(s) // check if s is a valid json object
-        var retry = 3
-        while (retry-- >= 0) {
-            try {
-                khttp.async.post("${ORION_URL}entities?options=keyValues", mapOf(CONTENTTYPE), data = s) {
-                    if (text.contains("BadRequest")) {
-                        throw IllegalArgumentException(JSONObject(s).getString("id") + ": $text")
-                    }
-                }
-            } catch (e: Exception) {
-                if (retry == 0) {
-                    e.printStackTrace()
-                    throw e
-                } else {
-                    Thread.sleep(1000)
-                }
-            }
-        }
+        // delete the entity if exists
+        khttp.delete("${ORION_URL}entities/" + JSONObject(s).getString(ID))
+        reg(s, 3)
     }
 
     @Synchronized
