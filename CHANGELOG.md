@@ -1,3 +1,10 @@
+## [1.1.56](https://github.com/w4bo/welaser/compare/1.1.55...1.1.56) (2022-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commons-net:commons-net to v3.9.0 ([51d77aa](https://github.com/w4bo/welaser/commit/51d77aa5b0ee053287d8e8515cfe78ada7452e8b))
+
 ## [1.1.55](https://github.com/w4bo/welaser/compare/1.1.54...1.1.55) (2022-12-02)
 
 
