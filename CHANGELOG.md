@@ -1,3 +1,16 @@
+## [1.1.55](https://github.com/w4bo/welaser/compare/1.1.54...1.1.55) (2022-12-02)
+
+
+### Bug Fixes
+
+* **visual-dashboard:** update the dashboard ([#329](https://github.com/w4bo/welaser/issues/329)) ([48af90c](https://github.com/w4bo/welaser/commit/48af90ce9e301b8d0c4227a8e6ef035480e7574c))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.6 ([3feebd4](https://github.com/w4bo/welaser/commit/3feebd4d39cd48e1fed72eda931be94f7fcd2992))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.7.22 ([cfd38ac](https://github.com/w4bo/welaser/commit/cfd38acf3df15f4e17608d0fb532ce63634211d1))
+
 ## [1.1.54](https://github.com/w4bo/welaser/compare/1.1.53...1.1.54) (2022-11-25)
 
 
