@@ -1,3 +1,10 @@
+## [1.1.58](https://github.com/w4bo/welaser/compare/1.1.57...1.1.58) (2022-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.cdimascio:dotenv-kotlin to v6.4.0 ([e7acfb2](https://github.com/w4bo/welaser/commit/e7acfb2216dc003b015267f3bd7518aebbb3ab69))
+
 ## [1.1.57](https://github.com/w4bo/welaser/compare/1.1.56...1.1.57) (2022-12-03)
 
 
