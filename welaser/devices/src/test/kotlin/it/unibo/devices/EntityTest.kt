@@ -2,6 +2,7 @@ package it.unibo.devices
 
 import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.*
+import it.unibo.devices.EntityFactory.createAll
 import it.unibo.devices.EntityFactory.createFromFile
 import it.unibo.devices.EntityFactory.readJsonFromFile
 import it.unibo.writeimages.createFTPClient
@@ -40,7 +41,7 @@ class EntityTest {
     @Test
     fun test0Init() {
         try {
-            EntityFactory.createAll(folder).forEach { it.run() }
+            createAll(folder).forEach { it.run() }
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
@@ -59,7 +60,7 @@ class EntityTest {
     @Test
     fun testRobot() {
         try {
-            val r = EntityFactory.createFromFile("$folder/$ROBOT_FILE", 1, times = 1000)
+            val r = createFromFile("$folder/$ROBOT_FILE", 1, times = 1000)
             r.exec(ROBOT_CMD_START, """{"missionid": "$MISSION_ID"}""")
             r.run()
             khttp.async.patch("${ORION_URL}entities/${ROBOT_ID}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
