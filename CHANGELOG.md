@@ -1,3 +1,24 @@
+## [1.1.58](https://github.com/w4bo/welaser/compare/1.1.57...1.1.58) (2022-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.cdimascio:dotenv-kotlin to v6.4.0 ([e7acfb2](https://github.com/w4bo/welaser/commit/e7acfb2216dc003b015267f3bd7518aebbb3ab69))
+
+## [1.1.57](https://github.com/w4bo/welaser/compare/1.1.56...1.1.57) (2022-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.5 ([bf7be02](https://github.com/w4bo/welaser/commit/bf7be027e12b108dcf1b499e098cacaa845b65e1))
+
+## [1.1.56](https://github.com/w4bo/welaser/compare/1.1.55...1.1.56) (2022-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commons-net:commons-net to v3.9.0 ([51d77aa](https://github.com/w4bo/welaser/commit/51d77aa5b0ee053287d8e8515cfe78ada7452e8b))
+
 ## [1.1.55](https://github.com/w4bo/welaser/compare/1.1.54...1.1.55) (2022-12-02)
 
 
