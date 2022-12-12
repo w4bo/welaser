@@ -1,3 +1,17 @@
+## [1.1.59](https://github.com/w4bo/welaser/compare/1.1.58...1.1.59) (2022-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.2.1 ([2cac827](https://github.com/w4bo/welaser/commit/2cac827c42bfb7506a84602a37f6f1f77f60c5f7))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to 58910d3 ([d388838](https://github.com/w4bo/welaser/commit/d3888380ca2b459d88e8020b8f419bf160336f6f))
+* **deps:** update welaser/welaser-datamodels digest to 6281557 ([9567569](https://github.com/w4bo/welaser/commit/95675698913aa339d3dcabe519b520f0bf53fc46))
+* **deps:** update welaser/welaser-datamodels digest to 857300b ([#330](https://github.com/w4bo/welaser/issues/330)) ([d34af89](https://github.com/w4bo/welaser/commit/d34af890d2f93be4e0aa0e35538c702dec65fb2a))
+
 ## [1.1.58](https://github.com/w4bo/welaser/compare/1.1.57...1.1.58) (2022-12-03)
 
 
