@@ -1,3 +1,15 @@
+## [1.1.60](https://github.com/w4bo/welaser/compare/1.1.59...1.1.60) (2022-12-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.6 ([c1fcfa5](https://github.com/w4bo/welaser/commit/c1fcfa553166c76f03b82e49224ca98244464f5d))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to e5519a5 ([f6cac63](https://github.com/w4bo/welaser/commit/f6cac63254590d60bd4fe6ba6f3846c4df20de8a))
+
 ## [1.1.59](https://github.com/w4bo/welaser/compare/1.1.58...1.1.59) (2022-12-12)
 
 
