@@ -1,3 +1,16 @@
+## [1.1.61](https://github.com/w4bo/welaser/compare/1.1.60...1.1.61) (2022-12-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.2.1 ([a495287](https://github.com/w4bo/welaser/commit/a495287524981570ec8c605805f25cdbe216c04e))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.6 ([9061602](https://github.com/w4bo/welaser/commit/9061602945000bd5f4e10af8a8a6c7fb2ab74c64))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.2.0 ([777d1a2](https://github.com/w4bo/welaser/commit/777d1a2e0e8c7c323d60fc8a9577d64fab3be136))
+
 ## [1.1.60](https://github.com/w4bo/welaser/compare/1.1.59...1.1.60) (2022-12-13)
 
 
