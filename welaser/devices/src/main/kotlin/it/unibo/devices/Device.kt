@@ -33,13 +33,10 @@ val DRACO_RAW_TOPIC = dotenv["DRACO_RAW_TOPIC"]
 val ORION_IP = dotenv["ORION_IP"]
 val ORION_PORT_EXT = dotenv["ORION_PORT_EXT"].toInt()
 val ORION_URL = "http://${ORION_IP}:${ORION_PORT_EXT}/v2/"
-val IOTA_IP = dotenv["IOTA_IP"]
 val DEVICE_IP = dotenv["DEVICE_IP"]
 val IOTA_NORTH_PORT = dotenv["IOTA_NORTH_PORT"].toInt()
 val KAFKA_IP = dotenv["KAFKA_IP"]
 val KAFKA_PORT_EXT = dotenv["KAFKA_PORT_EXT"].toInt()
-val FIWARE_SERVICE = dotenv["FIWARE_SERVICE"]
-val FIWARE_SERVICEPATH = dotenv["FIWARE_SERVICEPATH"]
 val FIWARE_API_KEY = dotenv["FIWARE_API_KEY"]
 val MOSQUITTO_USER = dotenv["MOSQUITTO_USER"]
 val MOSQUITTO_PWD = dotenv["MOSQUITTO_PWD"]
@@ -69,7 +66,7 @@ fun createEntity(id: String, type: String, domain: String, status: String, latit
 /**
  * Some entity types
  */
-enum class EntityType { Image, Timestamp, Thermometer, Dummy, Heartbeat }
+enum class EntityType { Image, Timestamp, Thermometer, Dummy, Heartbeat, AggDevice }
 
 /**
  * Any thing
@@ -88,56 +85,7 @@ interface ISensor : IThing {
     /**
      * @return the sensed value as string
      */
-    fun sense(): String
-}
-
-/**
- * A camera
- */
-class Camera(val onBoard: Boolean = true) : ISensor {
-    override fun getType(): EntityType = EntityType.Image
-    var i = 0
-    var max = 7
-
-    /**
-     * @return get an image from src/main/resources, the image is encoded in Base64
-     */
-    @Synchronized
-    override fun sense(): String {
-        val filename = /* if (onBoard) { "/img0" } else { "/field0" } */ "/field0" + (i++ % max + 1) + ".png"
-        val inputstream = Camera::class.java.getResourceAsStream(filename)
-        return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream)).replace("=", "%3D")
-    }
-}
-
-/** A dummy sensor */
-class DummySensor : ISensor {
-    override fun getType(): EntityType = EntityType.Dummy
-    override fun sense() = "foo"
-}
-
-/**
- * A thermometer
- */
-class RandomSensor(val from: Int = 10, val to: Int = 30) : ISensor {
-    override fun getType(): EntityType = EntityType.Thermometer
-
-    /**
-     * @return a random temperature value
-     */
-    override fun sense(): String {
-        return "" + Random.nextInt(from, to)
-    }
-}
-
-/**
- * A heartbeat
- */
-class Heartbeat(val timestamp: Boolean = false) : ISensor {
-    override fun getType(): EntityType = if (timestamp) EntityType.Timestamp else EntityType.Heartbeat
-    override fun sense(): String {
-        return if (timestamp) ("" + System.currentTimeMillis()) else "live"
-    }
+    fun sense(): Any
 }
 
 /**
@@ -250,7 +198,7 @@ class ProtocolHTTP : IProtocol {
         val text = r.text
         if (text.contains("BadRequest")) {
             if (retry == 0) {
-                throw throw IllegalArgumentException(JSONObject(s).getString("id") + ": $text")
+                throw throw IllegalArgumentException(JSONObject(s).getString("id") + ": $text\n$s")
             } else {
                 Thread.sleep(1000)
                 reg(s, retry - 1)
@@ -281,7 +229,9 @@ class ProtocolHTTP : IProtocol {
             "${ORION_URL}entities/$id/attrs?options=keyValues",
             mapOf(CONTENTTYPE),
             data = payloadJSON.toString(),
-            onResponse = { /* connection.disconnect() */ }
+            onResponse = {
+                if (statusCode != 204) throw IllegalArgumentException(text)
+            }
         )
     }
 }
@@ -451,13 +401,16 @@ open class DeviceHTTP(
                     }
                 }
             }.start(wait = false)
-            khttp.post(
+            val r = khttp.post(
                 "http://${DRACO_IP}:${DRACO_PORT_EXT}/v2/subscriptions", mapOf(CONTENTTYPE), data = """{
                     "description": "Notify $id for commands",
                     "subject": { "entities": [{ "id" : "$id" }], "condition": { "attrs": [ "$CMD" ] }},
                     "notification": { "http": { "url": "http://${DEVICE_IP}:${socket.second}" }, "attrsFormat" : "keyValues", "attrs" : ["$CMD"] }
                 }""".trimIndent()
             )
+            if (r.statusCode != 200) {
+                throw java.lang.IllegalArgumentException(r.text)
+            }
         }
     }
 
