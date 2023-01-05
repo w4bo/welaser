@@ -1,3 +1,23 @@
+## [1.1.62](https://github.com/w4bo/welaser/compare/1.1.61...1.1.62) (2023-01-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.2.2 ([0468868](https://github.com/w4bo/welaser/commit/046886829c6ae8a2f30086f283aa4405a86bbd2c))
+
+
+### Dependency updates
+
+* **deps:** bump engine.io in /welaser/service-dashboard ([#321](https://github.com/w4bo/welaser/issues/321)) ([65b0a77](https://github.com/w4bo/welaser/commit/65b0a772670ff7035d766b8fcbce9608460d2ca4))
+* **deps:** bump engine.io in /welaser/service-kafkaproxy ([#322](https://github.com/w4bo/welaser/issues/322)) ([fb953cc](https://github.com/w4bo/welaser/commit/fb953cc0d7f6694ccac0f3f7a86086ef1704e2ef))
+* **deps:** update welaser/welaser-datamodels digest to 24a252c ([#347](https://github.com/w4bo/welaser/issues/347)) ([48afb22](https://github.com/w4bo/welaser/commit/48afb22dcbffd66d06c916383e30d4e1af1ccbf9))
+* **deps:** update welaser/welaser-datamodels digest to 4e835aa ([#349](https://github.com/w4bo/welaser/issues/349)) ([e76a92f](https://github.com/w4bo/welaser/commit/e76a92f266768b9318f9426203a03cac42e3d4cb))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.3.0 ([767984f](https://github.com/w4bo/welaser/commit/767984fac9160a0f08927fb80523abdfa3882eee))
+
 ## [1.1.61](https://github.com/w4bo/welaser/compare/1.1.60...1.1.61) (2022-12-13)
 
 
