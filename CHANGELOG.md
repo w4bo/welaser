@@ -1,3 +1,16 @@
+## [1.1.64](https://github.com/w4bo/welaser/compare/1.1.63...1.1.64) (2023-01-10)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.9.2 ([de04ac3](https://github.com/w4bo/welaser/commit/de04ac3908869a5f48915cce49ec9f3a9a49c663))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.16 ([cd5d14e](https://github.com/w4bo/welaser/commit/cd5d14ed085c5392be895b64e9170f80d5f3cfcf))
+* **deps:** update welaser/welaser-datamodels digest to eba7c8e ([e84b4c2](https://github.com/w4bo/welaser/commit/e84b4c2da532d022309f2990e8f9049aedd5aa55))
+
 ## [1.1.63](https://github.com/w4bo/welaser/compare/1.1.62...1.1.63) (2023-01-06)
 
 
