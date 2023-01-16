@@ -1,3 +1,20 @@
+## [1.1.65](https://github.com/w4bo/welaser/compare/1.1.64...1.1.65) (2023-01-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.cdimascio:dotenv-kotlin to v6.4.1 ([7c34979](https://github.com/w4bo/welaser/commit/7c3497921e7dc1a745564ed7b871e85e8444c78d))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.3 ([20e8408](https://github.com/w4bo/welaser/commit/20e84085c0d36b34c6aed1d3ac9250ae7451aef5))
+* **deps:** update dependency requests to v2.28.2 ([8d26f91](https://github.com/w4bo/welaser/commit/8d26f919270f75585e40d1814f94d330897ece99))
+* **deps:** update dependency urllib3 to v1.26.14 ([4eb02c2](https://github.com/w4bo/welaser/commit/4eb02c2c4d1105dc256de69aa0973bf285ba50dd))
+* **deps:** update node.js to 18.13 ([2904d6f](https://github.com/w4bo/welaser/commit/2904d6f13c2a428dba4d377585c234dbe9af7841))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.0 ([2378908](https://github.com/w4bo/welaser/commit/2378908227543b3de9420e7dcae20aaaee019a0e))
+* **deps:** update welaser/welaser-datamodels digest to 387bfef ([7b9e714](https://github.com/w4bo/welaser/commit/7b9e714be31ae39b9cf462e236ebedcf6f83155f))
+
 ## [1.1.64](https://github.com/w4bo/welaser/compare/1.1.63...1.1.64) (2023-01-10)
 
 
