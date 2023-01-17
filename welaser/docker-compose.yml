@@ -153,6 +153,25 @@ services:
       interval: 5s
       timeout: 10s
 
+  mapbuilder:
+    init: true
+    hostname: mapbuilder
+    build: ./service-mapbuilder
+    container_name: mapbuilder
+    expose:
+      - "${BUILDER_PORT_EXT}"
+    ports:
+      - "${BUILDER_PORT_EXT}:${BUILDER_PORT_EXT}"
+    networks:
+      - default
+    env_file:
+      - .env
+    healthcheck:
+      test: |
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${BUILDER_IP}:${BUILDER_PORT_EXT}
+      interval: 5s
+      timeout: 10s
+
   kafkaproxy:
     init: true
     restart: always
