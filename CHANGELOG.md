@@ -1,3 +1,10 @@
+## [1.1.66](https://github.com/w4bo/welaser/compare/1.1.65...1.1.66) (2023-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.3.2 ([b8d3322](https://github.com/w4bo/welaser/commit/b8d33221db341c1a13132283c3630500e4f186f8))
+
 ## [1.1.65](https://github.com/w4bo/welaser/compare/1.1.64...1.1.65) (2023-01-16)
 
 
