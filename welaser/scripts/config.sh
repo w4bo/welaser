@@ -31,10 +31,6 @@ ls devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32
 rm devices/.env || true
 ln .env devices/.env
 
-# Mission planner
-rm service-missionplanner/mission-123.json || true
-ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/mission-123.json
-
 # Visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
