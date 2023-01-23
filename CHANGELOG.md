@@ -1,3 +1,15 @@
+## [1.1.67](https://github.com/w4bo/welaser/compare/1.1.66...1.1.67) (2023-01-23)
+
+
+### Bug Fixes
+
+* **service-dashboard:** add nested devices and visualization of device data ([#348](https://github.com/w4bo/welaser/issues/348)) ([410cf13](https://github.com/w4bo/welaser/commit/410cf1381b6b8c66d02ee35d0041389b30ba52d5))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v1.5.3 ([5cbb8e5](https://github.com/w4bo/welaser/commit/5cbb8e52b461f8426b516ae64994a271ca230327))
+
 ## [1.1.66](https://github.com/w4bo/welaser/compare/1.1.65...1.1.66) (2023-01-19)
 
 
