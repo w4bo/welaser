@@ -31,9 +31,11 @@ ls devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32
 rm devices/.env || true
 ln .env devices/.env
 
-# Visual dashboard
+# Node - visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
+rm service-dashboard/.env || true
+ln .env service-dashboard/.env
 
 # Mosquitto
 cp mosquitto/pwfile.example mosquitto/pwfile

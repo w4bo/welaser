@@ -74,10 +74,7 @@ const mapDashboard = {
         </div>`,
     data() {
         return {
-            options: {
-                format: 'DD/MM/YYYY HH:mm:ss',
-                useCurrent: false,
-            },
+            options: utils.dataTimeOptions,
             entities: [],
             selectedentities: [],
             devices: {},

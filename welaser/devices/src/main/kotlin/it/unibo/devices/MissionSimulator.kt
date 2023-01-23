@@ -23,11 +23,12 @@ fun main(args: Array<String>) {
         listOf(
             robot,
             DeviceMQTT(STATUS.ON, timeout, false, 40.3120984, -3.481554, domain, RandomSensor()),
-            // EntityFactory.createFromFile("$folder/weatherstation-1.json", timeout),
+            EntityFactory.createFromFile("$folder/weatherstation-1.json", timeout),
             EntityFactory.createFromFile("$folder/camera-1.json", timeout * 3),
             // EntityFactory.createFromFile("$folder/camera-2.json", timeout * 3),
             EntityFactory.createFromFile("$folder/camera2.json", timeout * 3),
             EntityFactory.createFromFile("$folder/camera5.json", timeout * 3),
+            EntityFactory.createFromFile("$folder/giuliano-aggdevice1.json", timeout * 3),
         )
     ).forEach { executor.submit { it.run() } }
     executor.shutdown()

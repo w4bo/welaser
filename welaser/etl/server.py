@@ -7,6 +7,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from kafka import KafkaProducer
+import urllib.parse
+
 
 path1 = "../.env"
 if os.path.isfile(path1):
@@ -74,7 +76,9 @@ class S(BaseHTTPRequestHandler):
         self._set_response()
         content_length = int(self.headers['Content-Length'])  # Get the size of data
         post_data = self.rfile.read(content_length).decode('utf-8')  # Get the data itself
+        # post_data = urllib.parse.unquote(post_data)
         post_data = post_data.replace("%3D", "=")
+        # print(post_data)
         post_data = json.loads(post_data)  # get the subscription
 
         if self.path == '/v2/subscriptions':
