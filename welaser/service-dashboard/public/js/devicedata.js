@@ -2,8 +2,9 @@ const devicedata = {
     template: `
         <div>
             <v-row justify="center">
-                <v-col cols="2" style="float: left">From <date-picker v-model="fromdate" :config="options"/></v-col>
-                <v-col cols="2" style="float: left">To <date-picker v-model="todate" :config="options"/></v-col>
+                <v-col cols="1" style="text-align: right">From</v-col><v-col cols="2"><date-picker v-model="fromdate" :config="options"/></v-layout></v-col>
+                <v-col cols="1" style="text-align: right">To</v-col><v-col cols="2"><date-picker v-model="todate" :config="options"/></v-col>
+                <v-col cols="2"><v-btn v-on:click="update()">Refresh</v-btn></v-col>
             </v-row>
             <v-row justify="center">    
                 <v-col cols="3" v-for="device in devices">
@@ -26,13 +27,13 @@ const devicedata = {
             devices: {},
             options: utils.dataTimeOptions,
             fromdate: moment().subtract(1, "days"),
-            todate: moment()
+            todate: moment(),
+            charts: []
         }
     },
     methods: {
         iterate(device, tis, root) {
             if (typeof tis.devices[root.id] === "undefined") {
-                console.log("Reassign")
                 // if the device is unknown, create the object to visualize. Do not consider the timestamp attribute
                 const v = Object.assign({}, device)
                 delete v.timestamp
@@ -77,7 +78,8 @@ const devicedata = {
             }
         },
         plot() {
-            for (const [deviceid, device] of Object.entries(this.devices)) {
+            const tis = this
+            for (const [deviceid, device] of Object.entries(tis.devices)) {
                 device.controlledProperty.forEach(function (property) {
                     const datasets = {
                         fill: false,
@@ -96,8 +98,7 @@ const devicedata = {
                         }
                     }
                     const ctx = document.getElementById(deviceid + "-" + property).getContext("2d");
-                    console.log(JSON.parse(JSON.stringify(datasets)))
-                    new Chart(ctx, {
+                    const c = new Chart(ctx, {
                         type: 'line', data: datasets, options: {
                             animation: false,
                             responsive: true,
@@ -109,21 +110,30 @@ const devicedata = {
                             },
                         }
                     })
+                    tis.charts.push(c)
                 })
             }
+        },
+        update() {
+            this.charts.forEach(function (chart) {
+                chart.destroy()
+            })
+            this.charts = []
+            this.devices = {}
+            const tis = this
+            const min = parseFloat(moment(this.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x'))
+            const max = parseFloat(moment(this.todate, 'DD/MM/YYYY HH:mm:ss').format('x'))
+            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000000`)
+                .then(entities => {
+                    entities.data.forEach(function (device) {
+                        tis.iterate(device, tis, device)
+                    })
+                    this.$forceUpdate();
+                    setTimeout(this.plot, 1000)
+                })
         }
     },
     mounted() {
-        const tis = this
-        const min = parseFloat(moment(this.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x'))
-        const max = parseFloat(moment(this.todate, 'DD/MM/YYYY HH:mm:ss').format('x'))
-        axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000000`)
-            .then(entities => {
-                entities.data.forEach(function (device) {
-                    tis.iterate(device, tis, device)
-                })
-                this.$forceUpdate();
-                setTimeout(this.plot, 1000)
-            })
+        this.update()
     }
 }
