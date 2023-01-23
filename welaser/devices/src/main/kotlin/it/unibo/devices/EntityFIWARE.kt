@@ -41,7 +41,6 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             initStatus.put("speed", Math.random())
             initStatus.put("bearing", Math.random())
             initStatus.put("heading", Math.random())
-            find(initStatus, "front-camera", c.sense(), prop = "serviceProvided", mod = "status")
             initStatus.put(ERRORS, if (r.nextDouble() > 0.95) listOf("Obstacle detected") else listOf())
             initStatus.put(WARNINGS, if (r.nextDouble() > 0.90) listOf("Low connection", "Bumpy field").subList(0, r.nextInt(2) + 1) else listOf())
             updatePosition()

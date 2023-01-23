@@ -38,6 +38,7 @@ ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/miss
 # Node - visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js
 sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
+rm service-dashboard/.env || true
 ln .env service-dashboard/.env
 
 # Mosquitto
