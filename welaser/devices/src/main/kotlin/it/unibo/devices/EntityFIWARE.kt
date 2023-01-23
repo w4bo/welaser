@@ -41,7 +41,6 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             initStatus.put("speed", Math.random())
             initStatus.put("bearing", Math.random())
             initStatus.put("heading", Math.random())
-            find(initStatus, "front-camera", c.sense(), prop = "serviceProvided", mod = "status")
             initStatus.put(ERRORS, if (r.nextDouble() > 0.95) listOf("Obstacle detected") else listOf())
             initStatus.put(WARNINGS, if (r.nextDouble() > 0.90) listOf("Low connection", "Bumpy field").subList(0, r.nextInt(2) + 1) else listOf())
             updatePosition()
@@ -87,10 +86,16 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
     }
 }
 
-fun find(initStatus: JSONObject, key: String, value: Any, prop: String = "controlledProperty", mod: String = "value") {
-    val idx = initStatus.getJSONArray(prop).indexOfFirst { it.toString() == key }
-    if (idx != -1) {
-        initStatus.put(mod, initStatus.getJSONArray(mod).put(idx, value))
+fun find(initStatus: JSONObject, key: String, value: Any, prop: String = CONTROLLED_PROPERTY, mod: String = VALUE) {
+    if (initStatus.has(prop)) {
+        val idx = initStatus.getJSONArray(prop).indexOfFirst { it.toString() == key }
+        if (idx != -1) {
+            initStatus.put(mod, initStatus.getJSONArray(mod).put(idx, value))
+        } else {
+            throw IllegalArgumentException("$key not found")
+        }
+    } else {
+        initStatus.put(mod, value)
     }
 }
 
@@ -101,23 +106,27 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     val type: String = initStatus.getString(TYPE)
     override val id: String = initStatus.getString("id")
     val sensors: Map<String, ISensor> =
-        if (initStatus.has("controlledProperty")) {
-            initStatus.getJSONArray("controlledProperty").associate {
-                it.toString() to when (it.toString().lowercase()) {
-                    HEARTBEAT -> Heartbeat()
-                    TIMESTAMP -> Heartbeat(timestamp = true)
-                    TEMPERATURE -> RandomSensor()
-                    HUMIDITY -> RandomSensor(0, 100)
-                    IMAGE -> Camera(onBoard = false)
-                    else -> throw IllegalArgumentException("Unknown controlledProperty: $it")
+        if (initStatus.get(TYPE) == DEVICE) {
+            if (initStatus.has(CONTROLLED_PROPERTY)) {
+                initStatus.getJSONArray(CONTROLLED_PROPERTY).associate {
+                    it.toString() to when (it.toString().lowercase()) {
+                        HEARTBEAT -> Heartbeat()
+                        TIMESTAMP -> Heartbeat(timestamp = true)
+                        TEMPERATURE -> RandomSensor()
+                        HUMIDITY -> RandomSensor(0, 100)
+                        IMAGE -> Camera(onBoard = false)
+                        else -> RandomSensor()
+                    }
                 }
+            } else {
+                mapOf(DEVICE to AggSensor())
             }
         } else {
             mapOf()
         }
 
     override var status = when (type) {
-        "Device" -> STATUS.ON
+        DEVICE -> STATUS.ON
         else -> STATUS.OFF
     }
 
@@ -126,7 +135,10 @@ open class EntityFIWARE(fileName: String, timeoutMs: Int, times: Int = 1000) :
     @Synchronized
     override fun getStatus(): String {
         when (initStatus.getString(TYPE)) {
-            "Device" -> sensors.forEach { s -> find(initStatus, s.key, s.value.sense()) }
+            DEVICE -> sensors.forEach {
+                s ->  find(initStatus, s.key, s.value.sense())
+                // s ->  find(initStatus, s.key, java.net.URLEncoder.encode(s.value.sense().replace("\\s+".toRegex(), " "), "utf-8"))
+            }
         }
         initStatus.put(TIMESTAMP, System.currentTimeMillis())
         initStatus.put(DOMAIN, AGRI_FARM)

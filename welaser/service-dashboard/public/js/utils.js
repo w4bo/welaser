@@ -1,5 +1,10 @@
 const utils = {}
 
+utils.dataTimeOptions = {
+    format: 'DD/MM/YYYY HH:mm:ss',
+    useCurrent: false,
+}
+
 utils.getTopic = function (topic = config.DRACO_RAW_TOPIC + "." + utils.agrifarm) {
     return topic.replaceAll(/[-:_]/g, "")
 }

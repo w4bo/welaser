@@ -31,7 +31,7 @@ class EntityTest {
     fun testCamera() {
         try {
             val c = Camera()
-            (1..100).forEach { Base64.getDecoder().decode(c.sense().replace("%3D", "=")) }
+            (1..100).forEach { Base64.getDecoder().decode(c.sense().toString().replace("%3D", "=")) }
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
