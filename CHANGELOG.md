@@ -1,3 +1,67 @@
+## [1.1.66](https://github.com/w4bo/welaser/compare/1.1.65...1.1.66) (2023-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.3.2 ([b8d3322](https://github.com/w4bo/welaser/commit/b8d33221db341c1a13132283c3630500e4f186f8))
+
+## [1.1.65](https://github.com/w4bo/welaser/compare/1.1.64...1.1.65) (2023-01-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.cdimascio:dotenv-kotlin to v6.4.1 ([7c34979](https://github.com/w4bo/welaser/commit/7c3497921e7dc1a745564ed7b871e85e8444c78d))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.6.3 ([20e8408](https://github.com/w4bo/welaser/commit/20e84085c0d36b34c6aed1d3ac9250ae7451aef5))
+* **deps:** update dependency requests to v2.28.2 ([8d26f91](https://github.com/w4bo/welaser/commit/8d26f919270f75585e40d1814f94d330897ece99))
+* **deps:** update dependency urllib3 to v1.26.14 ([4eb02c2](https://github.com/w4bo/welaser/commit/4eb02c2c4d1105dc256de69aa0973bf285ba50dd))
+* **deps:** update node.js to 18.13 ([2904d6f](https://github.com/w4bo/welaser/commit/2904d6f13c2a428dba4d377585c234dbe9af7841))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.0 ([2378908](https://github.com/w4bo/welaser/commit/2378908227543b3de9420e7dcae20aaaee019a0e))
+* **deps:** update welaser/welaser-datamodels digest to 387bfef ([7b9e714](https://github.com/w4bo/welaser/commit/7b9e714be31ae39b9cf462e236ebedcf6f83155f))
+
+## [1.1.64](https://github.com/w4bo/welaser/compare/1.1.63...1.1.64) (2023-01-10)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.9.2 ([de04ac3](https://github.com/w4bo/welaser/commit/de04ac3908869a5f48915cce49ec9f3a9a49c663))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.16 ([cd5d14e](https://github.com/w4bo/welaser/commit/cd5d14ed085c5392be895b64e9170f80d5f3cfcf))
+* **deps:** update welaser/welaser-datamodels digest to eba7c8e ([e84b4c2](https://github.com/w4bo/welaser/commit/e84b4c2da532d022309f2990e8f9049aedd5aa55))
+
+## [1.1.63](https://github.com/w4bo/welaser/compare/1.1.62...1.1.63) (2023-01-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.2.2 ([264c7fc](https://github.com/w4bo/welaser/commit/264c7fcdcf41f867efe0744765d5e910ee35a59f))
+
+## [1.1.62](https://github.com/w4bo/welaser/compare/1.1.61...1.1.62) (2023-01-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.2.2 ([0468868](https://github.com/w4bo/welaser/commit/046886829c6ae8a2f30086f283aa4405a86bbd2c))
+
+
+### Dependency updates
+
+* **deps:** bump engine.io in /welaser/service-dashboard ([#321](https://github.com/w4bo/welaser/issues/321)) ([65b0a77](https://github.com/w4bo/welaser/commit/65b0a772670ff7035d766b8fcbce9608460d2ca4))
+* **deps:** bump engine.io in /welaser/service-kafkaproxy ([#322](https://github.com/w4bo/welaser/issues/322)) ([fb953cc](https://github.com/w4bo/welaser/commit/fb953cc0d7f6694ccac0f3f7a86086ef1704e2ef))
+* **deps:** update welaser/welaser-datamodels digest to 24a252c ([#347](https://github.com/w4bo/welaser/issues/347)) ([48afb22](https://github.com/w4bo/welaser/commit/48afb22dcbffd66d06c916383e30d4e1af1ccbf9))
+* **deps:** update welaser/welaser-datamodels digest to 4e835aa ([#349](https://github.com/w4bo/welaser/issues/349)) ([e76a92f](https://github.com/w4bo/welaser/commit/e76a92f266768b9318f9426203a03cac42e3d4cb))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.3.0 ([767984f](https://github.com/w4bo/welaser/commit/767984fac9160a0f08927fb80523abdfa3882eee))
+
 ## [1.1.61](https://github.com/w4bo/welaser/compare/1.1.60...1.1.61) (2022-12-13)
 
 
