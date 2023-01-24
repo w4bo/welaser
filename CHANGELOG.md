@@ -1,3 +1,15 @@
+## [1.1.69](https://github.com/w4bo/welaser/compare/1.1.68...1.1.69) (2023-01-24)
+
+
+### Bug Fixes
+
+* **mapbuilder:** fix the timestamp ([#380](https://github.com/w4bo/welaser/issues/380)) ([53278dd](https://github.com/w4bo/welaser/commit/53278dd82cdf0c6db0eb8d577094416f545c869d))
+
+
+### Dependency updates
+
+* **deps:** update dependency python-dotenv to v0.21.1 ([#375](https://github.com/w4bo/welaser/issues/375)) ([aecaf0c](https://github.com/w4bo/welaser/commit/aecaf0caaf69206a7418f25b7a97a34fb01006ac))
+
 ## [1.1.68](https://github.com/w4bo/welaser/compare/1.1.67...1.1.68) (2023-01-24)
 
 
