@@ -40,7 +40,7 @@ const missionplanner = {
     methods: {
         send() {
             const data = {}
-            data["timestamp"] = moment(this.date).format('x')
+            data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot["id"]
             data["agrifarm_id"] = this.farm
             data["from_place_id"] = this.from
