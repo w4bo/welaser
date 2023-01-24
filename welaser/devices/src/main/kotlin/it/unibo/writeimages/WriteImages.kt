@@ -56,7 +56,7 @@ fun upload(obj: JSONObject, async: Boolean = true) {
                     ftpClient.logout()
                     ftpClient.disconnect()
                 }
-                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/$filename"}"""
+                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
                 val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
                 if (async) {
                     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
