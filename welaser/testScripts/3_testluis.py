@@ -10,9 +10,9 @@ with open('../service-mapbuilder/Maps/MapCARIds2.geojson', 'r') as f:
     assert (response.status_code == 200)
 
 url = "http://{}:{}/data".format(conf["PLANNER_IP"], conf["PLANNER_PORT_EXT"])
-response = requests.post(url, json={"timestamp": "2022-12-12T14:00:57+01:00",
+response = requests.post(url, json={"timestamp": 1545730073,
                                     "agrifarm_id": "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055",
-                                    "from_place_id": "urn:ngsi-ld:Building:91f492de-7ffc-46f1-b78b-46b6d222ce8b",
+                                    "from_place_id": "urn:ngsi-ld:Building:44f0a460-30ec-431c-bb22-e30d73312c52",
                                     "agriparcel_id": "urn:ngsi-ld:AgriParcel:91f492de-7ffc-46f1-b78b-46b6d222ce8b",
                                     "roundtrip_flag": "true",
                                     "agrirobot_id": "AgriRobot:9ea60389-9246-4dda-a083-3e3bcb444131"})
