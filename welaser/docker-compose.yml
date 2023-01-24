@@ -260,7 +260,8 @@ services:
       FTP_MAX_CONNECTIONS: 5
       PUBLICHOST: "${IMAGESERVER_IP}"
     volumes:
-      - "./images-dump:/data"
+      # - "./images-dump:/data"
+      - "./images-dump:/home/${IMAGESERVER_USER}"
     ports:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
