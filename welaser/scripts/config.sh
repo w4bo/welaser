@@ -4,12 +4,13 @@ set -exo
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
 
+find . -type f -iname "*.sh" -exec chmod +x {} \;
+
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
 if [ -f "scripts/updatePwd.sh" ]; then
-    chmod +x scripts/updatePwd.sh
     . ./scripts/updatePwd.sh
 fi
 
@@ -30,10 +31,6 @@ rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32
 ls devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/ > devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/filelist.txt
 rm devices/.env || true
 ln .env devices/.env
-
-# Mission planner
-rm service-missionplanner/mission-123.json || true
-ln welaser-datamodels/Task/examples/mission-123.json service-missionplanner/mission-123.json
 
 # Node - visual dashboard
 cp service-dashboard/public/env.js.example service-dashboard/public/env.js

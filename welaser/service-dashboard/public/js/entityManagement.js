@@ -5,6 +5,7 @@ const entityManagement = {
             <v-col cols=5><entityupdate></entityupdate></v-col>
             <v-col cols=3><entitydownload></entitydownload></v-col>
             <v-col cols=3><missionplanner></missionplanner></v-col>
+            <v-col cols=3><mapbuilder></mapbuilder></v-col>
         </v-row>`,
     data() {
         return {}
@@ -13,7 +14,8 @@ const entityManagement = {
         missionplanner: missionplanner,
         entitycreate: entitycreate,
         entityupdate: entityupdate,
-        entitydownload: entitydownload
+        entitydownload: entitydownload,
+        mapbuilder: mapbuilder
     },
     methods: {},
     mounted() {

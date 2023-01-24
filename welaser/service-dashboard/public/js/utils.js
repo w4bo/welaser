@@ -28,6 +28,16 @@ utils.plannerCreatePlan = function (data, then, error) {
     })
 }
 
+utils.builderCreateMap = function (data, then, error) {
+    axios
+        .post(utils.builderurl, data)
+        .then(result => {
+            if (then) then(result)
+        }).catch(err => {
+        if (error) error(err)
+    })
+}
+
 utils.hashCode = function (s) {
     if (s) {
         let h;
@@ -171,7 +181,8 @@ utils.uuidv4 = function () {
 utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
 utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
 utils.orionurl = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
-utils.plannerurl = `http://${config.PLANNER_IP}:${config.PLANNER_PORT_EXT}`
+utils.plannerurl = `http://${config.PLANNER_IP}:${config.PLANNER_PORT_EXT}/data`
+utils.builderurl = `http://${config.BUILDER_IP}:${config.BUILDER_PORT_EXT}/data`
 utils.proxyurl = `http://${config.PROXY_IP}:${config.PROXY_PORT_EXT}`
 utils.jsonheaders = {'Content-Type': 'application/json'}
 utils.chartresolution = 5000
