@@ -1,3 +1,11 @@
+## [1.1.68](https://github.com/w4bo/welaser/compare/1.1.67...1.1.68) (2023-01-24)
+
+
+### Bug Fixes
+
+* **ftp:** trying another ftp server ([#378](https://github.com/w4bo/welaser/issues/378)) ([eb9b845](https://github.com/w4bo/welaser/commit/eb9b8457c76f5ccf528dd3478464c1c27c702782))
+* **mapbuilder:** integrating map builder and mission planner ([#371](https://github.com/w4bo/welaser/issues/371)) ([d71fa6e](https://github.com/w4bo/welaser/commit/d71fa6ea165aa1c1deeb829242fc78502d8a39bf))
+
 ## [1.1.67](https://github.com/w4bo/welaser/compare/1.1.66...1.1.67) (2023-01-23)
 
 
