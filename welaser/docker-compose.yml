@@ -228,9 +228,9 @@ services:
       - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
       - "./images-dump:/mnt/data"
-    depends_on:
-      ftp:
-        condition: service_healthy
+    # depends_on:
+    #   ftp:
+    #     condition: service_healthy
 
   ftp:
     hostname: ftp
@@ -266,10 +266,10 @@ services:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
       - "21000-21010:21000-21010/tcp"
-    healthcheck:
-      test: ftp -p localhost 21
-      interval: 5s
-      timeout: 10s
+    # healthcheck:
+    #   test: wget -O .dummy ftp://${IMAGESERVER_USER}:${IMAGESERVER_PWD}@localhost:21/.dummy
+    #   interval: 5s
+    #   timeout: 10s
 
 networks:
   default_net:
