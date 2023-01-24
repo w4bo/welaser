@@ -17,7 +17,7 @@ scripts/config.sh
 
 Note that this will replace the content of the `.env` file with `.env.example`. 
 Check the variables from the `.env` and `webserver/public/env.js` files and change IPs (if needed).
-If existing, `scripts/config.sh` also runs `scripts/updatePwd.sh` to automatically replace strings (e.g., password) that **must** note be stored into the `.env.example` file.
+If existing, `scripts/config.sh` also runs `scripts/updatePwd.sh` to automatically replace strings (e.g., password) that **must not** be stored into the `.env.example` file.
 
 ### (Optional) Mosquitto MQTT
 
