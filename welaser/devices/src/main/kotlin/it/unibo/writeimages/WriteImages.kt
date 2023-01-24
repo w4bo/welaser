@@ -13,6 +13,8 @@ import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
 import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 
@@ -56,7 +58,9 @@ fun upload(obj: JSONObject, async: Boolean = true) {
                     ftpClient.logout()
                     ftpClient.disconnect()
                 }
-                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/$filename"}"""
+
+                // val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${URLEncoder.encode(filename, StandardCharsets.UTF_8.toString())}"}"""
+                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
                 val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
                 if (async) {
                     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
