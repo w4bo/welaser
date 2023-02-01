@@ -36,9 +36,6 @@ mosquitto_passwd -c pwfile <user>
 
 Where `<user>` and `<pwd>` corresponds to `MOSQUITTO_USER` and `MOSQUITTO_PWD` variables defined in `.env`
 
-By default the MQTT broker is exposed on port `${MOSQUITTO_PORT_EXT}`.
-You can edit it in `.env`.
-
 Register a subscriber
 
 ```sh
