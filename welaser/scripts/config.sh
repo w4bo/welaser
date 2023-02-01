@@ -10,6 +10,9 @@ cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
+. scripts/loadEnv.sh
+echo  $(python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, v in os.environ.items() if "_EXT" in k or "_IP" in k})))') > service-dashboard/public/env.js
+
 if [ -f "scripts/updatePwd.sh" ]; then
     . ./scripts/updatePwd.sh
 fi
@@ -33,8 +36,6 @@ rm devices/.env || true
 ln .env devices/.env
 
 # Node - visual dashboard
-cp service-dashboard/public/env.js.example service-dashboard/public/env.js
-sed -i "s/127.0.0.1/$IP/g" service-dashboard/public/env.js
 rm service-dashboard/.env || true
 ln .env service-dashboard/.env
 

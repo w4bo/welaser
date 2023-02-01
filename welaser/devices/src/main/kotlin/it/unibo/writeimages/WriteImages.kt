@@ -26,7 +26,7 @@ fun createFTPClient(retry: Int = 3): FTPClient {
         ftpClient.connect(dotenv["IMAGESERVER_IP"], dotenv["IMAGESERVER_PORT_FTP21_EXT"].toInt())
         ftpClient.login(dotenv["IMAGESERVER_USER"], dotenv["IMAGESERVER_PWD"])
         ftpClient.enterLocalPassiveMode()
-        ftpClient.changeWorkingDirectory("/data")
+        // ftpClient.changeWorkingDirectory("/data")
         ftpClient
     } catch (e: Exception) {
         if (retry > 0) {
