@@ -179,7 +179,7 @@ utils.uuidv4 = function () {
     )
 }
 utils.agrifarm = "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055"
-utils.nodeurl = `http://${config.IP}:${config.WEB_SERVER_PORT_EXT}`
+utils.nodeurl = `http://${config.WEB_SERVER_IP}:${config.WEB_SERVER_PORT_EXT}`
 utils.orionurl = `http://${config.ORION_IP}:${config.ORION_PORT_EXT}/v2/`
 utils.plannerurl = `http://${config.PLANNER_IP}:${config.PLANNER_PORT_EXT}/data`
 utils.builderurl = `http://${config.BUILDER_IP}:${config.BUILDER_PORT_EXT}/data`

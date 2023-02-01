@@ -8,6 +8,6 @@ docker-compose up --build &>logs/docker-compose-$(date +%s).txt &
 ./wait-for-it.sh ${DRACO_IP}:${DRACO_PORT_EXT} --timeout=480 -- echo "ETL (old draco) is up"
 ./wait-for-it.sh ${MOSQUITTO_IP}:${MOSQUITTO_PORT_EXT} --timeout=480 -- echo "Mosquitto is up"
 ./wait-for-it.sh ${IOTA_IP}:${IOTA_NORTH_PORT} --timeout=480 -- echo "IoTA is up"
-./wait-for-it.sh ${IP}:${WEB_SERVER_PORT_EXT} --timeout=480 -- echo "NodeJS is up"
+./wait-for-it.sh ${WEB_SERVER_IP}:${WEB_SERVER_PORT_EXT} --timeout=480 -- echo "NodeJS is up"
 ./wait-for-it.sh ${PLANNER_IP}:${PLANNER_PORT_EXT} --timeout=480 -- echo "Mission planner is up"
 ./wait-for-it.sh ${BUILDER_IP}:${BUILDER_PORT_EXT} --timeout=480 -- echo "Map builder is up"

@@ -179,7 +179,7 @@ services:
     container_name: kafkaproxy
     build: ./service-kafkaproxy
     ports:
-      - "${PROXY_SERVER_PORT_EXT}:${PROXY_SERVER_PORT_INT}"
+      - "${PROXY_PORT_EXT}:${PROXY_PORT_INT}"
     networks:
       - default
     volumes:

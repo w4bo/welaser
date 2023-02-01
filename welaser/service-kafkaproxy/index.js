@@ -66,6 +66,6 @@ io.on("connection", function (socket) {
         prevTopic = topic
     })
 })
-server.listen(process.env.PROXY_SERVER_PORT_INT, '0.0.0.0', function () {
-    console.log('Node Server listening on port ' + process.env.PROXY_SERVER_PORT_INT)
+server.listen(process.env.PROXY_PORT_INT, '0.0.0.0', function () {
+    console.log('Node Server listening on port ' + process.env.PROXY_PORT_INT)
 })
