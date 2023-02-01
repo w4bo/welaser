@@ -48,7 +48,7 @@ idea {
 }
 
 dependencies {
-    implementation 'io.github.microutils:kotlin-logging-jvm:3.0.4'
+    implementation 'io.github.microutils:kotlin-logging-jvm:3.0.5'
     implementation 'khttp:khttp:1.0.0'
     implementation 'io.ktor:ktor-server-core:2.2.3'
     implementation 'io.ktor:ktor-server-netty:2.2.3'
