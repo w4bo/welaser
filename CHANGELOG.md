@@ -1,3 +1,10 @@
+## [1.1.72](https://github.com/w4bo/welaser/compare/1.1.71...1.1.72) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.github.microutils:kotlin-logging-jvm to v3.0.5 ([3601d60](https://github.com/w4bo/welaser/commit/3601d603799e4e0084ee58bbca17cdbfa78b9434))
+
 ## [1.1.71](https://github.com/w4bo/welaser/compare/1.1.70...1.1.71) (2023-02-01)
 
 
