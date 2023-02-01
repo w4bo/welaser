@@ -1,3 +1,10 @@
+## [1.1.71](https://github.com/w4bo/welaser/compare/1.1.70...1.1.71) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.2.3 ([e332625](https://github.com/w4bo/welaser/commit/e3326250281ab520d2275830e9da80538369a3fe))
+
 ## [1.1.70](https://github.com/w4bo/welaser/compare/1.1.69...1.1.70) (2023-02-01)
 
 
