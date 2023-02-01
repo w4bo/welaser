@@ -1,3 +1,16 @@
+## [1.1.70](https://github.com/w4bo/welaser/compare/1.1.69...1.1.70) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.2.3 ([eb8102b](https://github.com/w4bo/welaser/commit/eb8102b1d7989cf9ded726b176c984272b7741aa))
+
+
+### Dependency updates
+
+* **deps:** update fiware/orion docker tag to v3.8.0 ([950cc73](https://github.com/w4bo/welaser/commit/950cc737139ac2d01be38ce0e6c7286d943445eb))
+* **deps:** update welaser/welaser-datamodels digest to 46e6f69 ([d1719d6](https://github.com/w4bo/welaser/commit/d1719d64aa853f3bd5c107615ba19c2b84429a72))
+
 ## [1.1.69](https://github.com/w4bo/welaser/compare/1.1.68...1.1.69) (2023-01-24)
 
 
