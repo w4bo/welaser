@@ -2,7 +2,7 @@ const env = require('dotenv')
 const timelimit = 100000
 env.config()
 
-test('test kafka', async () => {
+test('test roundtrip', async () => {
     const topic = "test.kafkaproxy"
     const remoteSocket = require('socket.io-client')(`http://${process.env.PROXY_IP}:${process.env.PROXY_PORT_EXT}`)
     let c = 0
