@@ -28,7 +28,13 @@ const missiongui = {
                                     <!-- <tr><td>Bearing</td><td>{{device.data.bearing}}</td></tr>-->
                                     <tr v-if="is('choosemission')">
                                         <td><v-btn v-on:click="missionChosen()" class="m-1">Choose mission</v-btn></td>
-                                        <td><v-select :items="missions" item-value="id" item-text="name" v-model="mission" style="padding: 0" dense></v-select></td>
+                                        <td>
+                                            <v-autocomplete :items="missions" item-value="id" item-text="name" v-model="mission" style="padding: 0" dense>
+                                                <template v-slot:item="data">
+                                                    <autocompleteitem :data="data"></autocompleteitem>
+                                                </template>
+                                            </v-autocomplete>
+                                        </td>
                                     </tr>
                                     <template v-for="cmd in device.data.cmdList">
                                         <tr v-if="is(cmd)"><td colspan="2"><v-btn v-on:click="sendCommand(device.data.id, cmd)" class="m-1" style="width: 98%"> {{cmd}} </v-btn></td></tr>
@@ -82,7 +88,8 @@ const missiongui = {
     },
     components: {
         mymap: mymap,
-        entitymenu: entitymenu
+        entitymenu: entitymenu,
+        autocompleteitem: autocompleteitem
     },
     methods: {
         toggled(v) {

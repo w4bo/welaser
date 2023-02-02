@@ -3,7 +3,7 @@ const entitycreate = {
         <v-card>
             <v-card-title class="pb-0">Create entity</v-card-title>
             <v-card-text>
-                Select entity model<v-select :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)" style="padding: 0" dense></v-select>
+                Select entity model<v-autocomplete :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)" style="padding: 0" dense></v-autocomplete>
                 <div><!-- <div v-show="visibleCreate">-->
                     Fill the entity below
                     <div id="create"></div>
@@ -31,6 +31,7 @@ const entitycreate = {
             const tis = this
             const data = this.editorCreate.get()
             data["domain"] = this.agrifarm
+            data["dateCreated"] = moment().toISOString()
             utils.fiwareCreateEntity(data, function (res) {
                 tis.showModal = true
                 tis.success = true
@@ -48,7 +49,7 @@ const entitycreate = {
                 "id": `urn:nsgi-ld:${type}:${utils.uuidv4()}`,
                 "type": type,
                 "name": `User-friendly name here`,
-                "createdBy": ``
+                "createdBy": `A user from the web gui`
             }
             this.editorCreate.set(data)
         },

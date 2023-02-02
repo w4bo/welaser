@@ -3,7 +3,12 @@ const entityupdate = {
         <v-card>
             <v-card-title class="pb-0">Update entity</v-card-title>
             <v-card-text>
-                Select entity to update<v-select item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(utils.agrifarm, selectedentity)" style="padding: 0" dense></v-select>
+                Select entity to update
+                <v-autocomplete item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)" style="padding: 0" dense>
+                    <template v-slot:item="data">
+                        <autocompleteitem :data="data"></autocompleteitem>
+                    </template>
+                </v-autocomplete>
                 <div>
                     Modify the entity below
                     <div id="update"></div>
@@ -29,6 +34,8 @@ const entityupdate = {
         update() {
             this.visibleUpdate = false
             const tis = this
+            const entity = this.editorUpdate.get()
+            entity["dateModified"] = moment().toISOString()
             utils.fiwareUpdateEntity(this.editorUpdate.get(), function (res) {
                 tis.showModal = true
                 tis.success = true
@@ -84,5 +91,8 @@ const entityupdate = {
             }
         }
         this.editorUpdate = new JSONEditor(document.getElementById("update"), options)
+    },
+    components: {
+        autocompleteitem: autocompleteitem
     }
 }

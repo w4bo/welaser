@@ -3,7 +3,7 @@ const entitydownload = {
         <v-card>
             <v-card-title class="pb-0">Download entities</v-card-title>
             <v-card-text>
-                Entity type <v-select :items="entitytypes" v-model="entitytype" style="padding: 0" dense></v-select>
+                Entity type <v-autocomplete :items="entitytypes" v-model="entitytype" style="padding: 0" dense></v-autocomplete>
                 <div>Date range</div><v-date-picker v-model="dates" range></v-date-picker>
             </v-card-text>
             <v-card-actions class="flex-column align-center"><v-btn v-on:click="download(agrifarm, entitytype, dates[0], dates[1])">Download</v-btn></v-card-actions>
@@ -29,7 +29,11 @@ const entitydownload = {
         },
         download(domain, entitytype, datefrom, dateto) {
             const tis = this
-            axios.get(utils.nodeurl + `/api/download/${domain}/${entitytype}/${moment(datefrom).format('x')}/${moment(dateto).format('x')}/0/1000000`).then(entities => {
+            datefrom = moment(datefrom)
+            datefrom.set({hour: 0, minute: 0, second: 0, millisecond: 0})
+            dateto = moment(dateto)
+            dateto.set({hour: 23, minute: 59, second: 59, millisecond: 999})
+            axios.get(utils.nodeurl + `/api/download/${domain}/${entitytype}/${datefrom.format('x')}/${dateto.format('x')}/0/1000000`).then(entities => {
                 tis.downloadTextFile(JSON.stringify(entities.data), 'download.json')
             })
         },
