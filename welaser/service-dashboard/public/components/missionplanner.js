@@ -4,10 +4,13 @@ const missionplanner = {
           <v-card-title class="pb-0">Create mission plan</v-card-title>
           <v-card-text>
               Date <date-picker v-model="date" :config="options"/></v-col>
-              Robot <v-select item-text="name" item-value="id" :items="robots" v-model="robot" style="padding: 0" dense></v-select>
-              Farm <v-select :items="farms" v-model="farm" style="padding: 0" dense></v-select>
-              From (place) <v-select :items="froms" v-model="from" style="padding: 0" dense></v-select>
-              Parcel <v-select :items="parcels" v-model="parcel" style="padding: 0" dense></v-select>
+              Robot
+                  <v-autocomplete item-text="name" item-value="id" :items="robots" v-model="robot" style="padding: 0" dense>
+                      <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
+                  </v-autocomplete>
+              Farm <v-autocomplete :items="farms" v-model="farm" style="padding: 0" dense></v-autocomplete>
+              From (place) <v-autocomplete :items="froms" v-model="from" style="padding: 0" dense></v-autocomplete>
+              Parcel <v-autocomplete :items="parcels" v-model="parcel" style="padding: 0" dense></v-autocomplete>
               <div><div style="float: left">Roundtrip</div> <v-checkbox v-model="roundtrip"></v-checkbox></div>
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
@@ -76,4 +79,7 @@ const missionplanner = {
             this.robot = this.robots[0]
         })
     },
+    components: {
+        autocompleteitem: autocompleteitem
+    }
 }

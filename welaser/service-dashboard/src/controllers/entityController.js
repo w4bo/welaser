@@ -34,7 +34,7 @@ exports.downloadDistinctFromTo = async function (req, res) {
                     '$lte': parseInt(req.params.datetimeto)
                 }
             }, function (err, result) {
-                send(res, err, result)
+                send(res, err, result.sort())
             })
     })
 }
@@ -52,7 +52,7 @@ exports.downloadCountFromTo = async function (req, res) {
                     '$lte': parseInt(req.params.datetimeto)
                 }
             }, function (err, result) {
-                send(res, err, result)
+                send(res, err, result.sort())
             })
     })
 }
@@ -74,7 +74,7 @@ exports.downloadFromdateTodateSkipLimit = async function (req, res) {
             .skip(parseInt(req.params.skip))
             .limit(parseInt(req.params.limit))
             .toArray(function (err, result) {
-                send(res, err, result)
+                send(res, err, result.sort())
             })
     })
 }
@@ -97,7 +97,7 @@ exports.downloadTypeFromdateTodateSkipLimit = async function (req, res) {
             .skip(parseInt(req.params.skip))
             .limit(parseInt(req.params.limit))
             .toArray(function (err, result) {
-                send(res, err, result)
+                send(res, err, result.sort())
             })
     })
 }
@@ -122,7 +122,7 @@ exports.entitytypes = async function (req, res) {
     const domain = req.params.domain
     connect(function (dbo) {
         dbo.collection(domain).distinct('type', function (err, result) {
-            send(res, err, result)
+            send(res, err, result.sort())
         })
     })
 }
@@ -146,7 +146,7 @@ exports.entities = async function (req, res) {
                     }
                     data.push(inner)
                 }
-                send(res, err, data)
+                send(res, err, data.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)))
             })
     })
 }
