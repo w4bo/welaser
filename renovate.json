@@ -16,7 +16,7 @@
       "semanticCommitType": "ci"
     }
   ],
-  "ignorePaths": ["**/service-dashboard/**", "**/service-kafkaproxy/**"],
+  "ignorePaths": ["**/service-dashboard/**"],
   "prConcurrentLimit": 25,
   "prHourlyLimit": 0,
   "separateMajorMinor": true,

@@ -107,6 +107,8 @@ services:
     depends_on:
       orion:
         condition: service_healthy
+      kafkaproxy:
+        condition: service_healthy
     env_file:
       - .env
     healthcheck:
@@ -189,6 +191,10 @@ services:
     depends_on:
       orion:
         condition: service_healthy
+    healthcheck:
+      test: curl --fail -s http://localhost:${PROXY_PORT_INT}
+      interval: 5s
+      timeout: 10s
 
   writeimages:
     init: true
