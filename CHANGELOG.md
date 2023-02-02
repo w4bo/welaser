@@ -1,3 +1,10 @@
+## [1.1.74](https://github.com/w4bo/welaser/compare/1.1.73...1.1.74) (2023-02-02)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix message error ([#393](https://github.com/w4bo/welaser/issues/393)) ([d988a44](https://github.com/w4bo/welaser/commit/d988a444d61a0f515cc7c19f909b6487d0c922d3))
+
 ## [1.1.73](https://github.com/w4bo/welaser/compare/1.1.72...1.1.73) (2023-02-02)
 
 
