@@ -3,6 +3,6 @@ WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install
 COPY . .
-CMD ["npm", "start"]
+CMD ["npm", "run", "mystart"]
 
 USER node
