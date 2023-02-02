@@ -13,6 +13,7 @@ To do the mandatory configuration, run:
 
 ```sh
 scripts/config.sh
+scripts/submodule.sh
 ```
 
 Note that this will replace the content of the `.env` file with `.env.example`. 
