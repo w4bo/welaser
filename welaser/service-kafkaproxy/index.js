@@ -31,8 +31,16 @@ io.on("connection", function (socket) {
     socket.on("publish", function (data) { // when the socket receives a message with topic "publish"
         producerKafka.send({topic: data.topic, messages: [{value: JSON.stringify(data.data)}]}) // send it to kafka
     })
-    socket.on("newtopic", function (topic) { // when the socket receives a message with topic "newtopic"
+    socket.on("newtopic", async function (topic) { // when the socket receives a message with topic "newtopic"
         if (typeof consumers[topic] === "undefined") { // if there is no costumer for the requested topic...
+            // https://stackoverflow.com/questions/63566301/waiting-for-leadership-elections-in-kafkajs
+            const admin = kafka.admin()
+            await admin.connect()
+            if (!(await admin.listTopics()).some((t) => topic === t)) { // create the topic if not exists
+                await admin.createTopics({ waitForLeaders: true, topics: [ { topic: topic } ] })
+            }
+            await admin.disconnect()
+            // --- end
             const groupId = topic + ".group." + uuid.v4() // create a unique consumer group
             console.log("Registering a new Kafka consumer with group: " + groupId)
             const consumer = kafka.consumer({groupId}) // initialize the consumer

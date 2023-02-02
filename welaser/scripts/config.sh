@@ -5,14 +5,14 @@ DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
 
 find . -path ./mongodb -prune -o -type f -iname "*.sh" -exec chmod +x {} \;
-# find . -name \.env -type f -delete
+find . -path ./mongodb -prune -o -name \.env -type f -exec rm {} \;
 
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
 
 . scripts/loadEnv.sh
-echo $(python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, v in os.environ.items() if "_EXT" in k or "_IP" in k})))') > service-dashboard/public/env.js
+python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, v in os.environ.items() if "_EXT" in k or "_IP" in k})))' > service-dashboard/public/env.js
 
 if [ -f "scripts/updatePwd.sh" ]; then
     . ./scripts/updatePwd.sh
