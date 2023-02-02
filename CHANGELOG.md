@@ -1,3 +1,10 @@
+## [1.1.75](https://github.com/w4bo/welaser/compare/1.1.74...1.1.75) (2023-02-02)
+
+
+### Bug Fixes
+
+* **service-kafkaproxy:** error on leader election ([#394](https://github.com/w4bo/welaser/issues/394)) ([faab9d2](https://github.com/w4bo/welaser/commit/faab9d245cb1ab059eb03ea61e9d7649a33158f7))
+
 ## [1.1.74](https://github.com/w4bo/welaser/compare/1.1.73...1.1.74) (2023-02-02)
 
 
