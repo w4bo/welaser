@@ -1,3 +1,10 @@
+## [1.1.73](https://github.com/w4bo/welaser/compare/1.1.72...1.1.73) (2023-02-02)
+
+
+### Bug Fixes
+
+* **service-dashboard:** update the web gui ([#392](https://github.com/w4bo/welaser/issues/392)) ([0176055](https://github.com/w4bo/welaser/commit/0176055b1d40d2b742461fd9d8251742c43b6b0b))
+
 ## [1.1.72](https://github.com/w4bo/welaser/compare/1.1.71...1.1.72) (2023-02-01)
 
 
