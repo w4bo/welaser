@@ -99,7 +99,7 @@ services:
     container_name: node
     build: ./service-dashboard
     ports:
-      - ${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}
+      - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
     networks:
       - default
     volumes:
