@@ -16,7 +16,10 @@ const entityupdate = {
                 <p v-if="showModal"></p>
                 <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
             </v-card-text>
-            <v-card-actions class="flex-column align-center"><v-btn v-on:click="update()">Update</v-btn></v-card-actions>
+            <v-card-actions class="flex-inline justify-content-center align-center">
+                <v-btn v-on:click="update()">Update</v-btn>
+                <v-btn v-on:click="download()">Download JSON</v-btn>
+            </v-card-actions>
         </v-card>`,
     data() {
         return {
@@ -31,6 +34,9 @@ const entityupdate = {
         }
     },
     methods: {
+        download() {
+            utils.downloadJSON(this.editorUpdate.get())
+        },
         update() {
             this.visibleUpdate = false
             const tis = this

@@ -173,6 +173,16 @@ utils.formatDateTime = function (timestampMs, includeDate = true, includeTime = 
     return (includeDate ? d : "") + (includeTime ? t : "")
 }
 
+utils.downloadJSON = function (json, name="download") {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json))
+    var downloadAnchorNode = document.createElement('a')
+    downloadAnchorNode.setAttribute("href", dataStr)
+    downloadAnchorNode.setAttribute("download", name + ".json")
+    document.body.appendChild(downloadAnchorNode)
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
+}
+
 utils.uuidv4 = function () {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
