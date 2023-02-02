@@ -8,6 +8,9 @@ const {Kafka, logLevel} = require("kafkajs")
 const uuid = require('uuid');
 app.use(cors({origin: '*'})) // enable cross domain requests
 app.use(express.json())
+app.disable('etag');
+app.get('/', function (req, res) { res.status(200).json({}) })
+
 env.config() // load the environment variables
 const kafkaBrokers = [process.env.KAFKA_IP + ":" + process.env.KAFKA_PORT_EXT]
 const kafka = new Kafka({
@@ -37,6 +40,7 @@ io.on("connection", function (socket) {
             const admin = kafka.admin()
             await admin.connect()
             if (!(await admin.listTopics()).some((t) => topic === t)) { // create the topic if not exists
+                console.log("Creating the topic: " + topic)
                 await admin.createTopics({ waitForLeaders: true, topics: [ { topic: topic } ] })
             }
             await admin.disconnect()
@@ -58,7 +62,6 @@ io.on("connection", function (socket) {
                 consumer.run({
                     eachMessage: ({message}) => { // forward the message to the socket
                         io.to(topic).emit(topic, message.value.toString()) // broadcast the message to the room
-                        // socket.emit(topic, message.value.toString())
                     }
                 })
             }

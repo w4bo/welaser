@@ -33,10 +33,11 @@ find welaser-datamodels -iname "*.json" -type f -exec ln "{}" devices/src/main/r
 rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/package*.json  # these are not entities
 rm devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/renovate*.json  # these are not entities
 ls devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/ > devices/src/main/resources/datamodels/urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055/filelist.txt
-ln .env devices/.env
 
-# Node - visual dashboard
+# Copy the .env file where needed
+ln .env devices/.env
 ln .env service-dashboard/.env
+ln .env service-kafkaproxy/.env
 
 # Mosquitto
 cp mosquitto/pwfile.example mosquitto/pwfile
