@@ -48,7 +48,7 @@ class IOTA {
     }
 
     fun startServer() {
-        server = embeddedServer(Netty, port = IOTA_NORTH_PORT, host = "0.0.0.0") {
+        server = embeddedServer(Netty, port = IOTA_PORT_EXT, host = "0.0.0.0") {
             routing {
                 get("/") {
                     call.respondText("")

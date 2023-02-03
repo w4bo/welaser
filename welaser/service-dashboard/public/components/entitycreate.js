@@ -4,14 +4,17 @@ const entitycreate = {
             <v-card-title class="pb-0">Create entity</v-card-title>
             <v-card-text>
                 Select entity model<v-autocomplete :items="entitytypes" v-model="entitytype" @input="setSelectedCreate(agrifarm, entitytype)" style="padding: 0" dense></v-autocomplete>
-                <div><!-- <div v-show="visibleCreate">-->
+                <div>
                     Fill the entity below
                     <div id="create"></div>
                 </div>
                 <p v-if="showModal"></p>
                 <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
             </v-card-text>
-            <v-card-actions class="flex-column align-center"><v-btn v-on:click="create()">Create</v-btn></v-card-actions>
+            <v-card-actions class="flex-inline justify-content-center align-center">
+                <v-btn v-on:click="create()">Create</v-btn>
+                <v-btn v-on:click="download()">Download JSON</v-btn>
+            </v-card-actions>
         </v-card>`,
     data() {
         return {
@@ -26,6 +29,9 @@ const entitycreate = {
         }
     },
     methods: {
+        download() {
+            utils.downloadJSON(this.editorCreate.get())
+        },
         create() {
             this.visibleCreate = false
             const tis = this

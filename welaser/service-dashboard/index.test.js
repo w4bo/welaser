@@ -3,7 +3,7 @@ const timelimit = 100000
 env.config()
 
 test('test roundtrip', async () => {
-    const topic = "test.kafkaproxy"
+    const topic = "test.dashboard"
     const remoteSocket = require('socket.io-client')(`http://${process.env.PROXY_IP}:${process.env.PROXY_PORT_EXT}`)
     let c = 0
     remoteSocket.on(topic, _ => c++) // register a subscriber to the kafka proxy

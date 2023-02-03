@@ -42,12 +42,11 @@ services:
     networks:
       - default
     expose:
-      - "${IOTA_NORTH_PORT}"
+      - "${IOTA_PORT_EXT}"
     ports:
-      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}"
-      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}"
+      - "${IOTA_PORT_EXT}:${IOTA_PORT_EXT}"
     healthcheck:
-      test: curl --fail -s http://${IOTA_IP}:${IOTA_NORTH_PORT}
+      test: curl --fail -s http://${IOTA_IP}:${IOTA_PORT_EXT}
       interval: 5s
       timeout: 10s
 
@@ -99,13 +98,13 @@ services:
     container_name: node
     build: ./service-dashboard
     ports:
-      - ${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}
+      - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
     networks:
       - default
     volumes:
       - ./service-dashboard:/code
     depends_on:
-      orion:
+      kafkaproxy:
         condition: service_healthy
     env_file:
       - .env
@@ -186,9 +185,10 @@ services:
       - ./service-kafkaproxy:/code
     env_file:
       - .env
-    depends_on:
-      orion:
-        condition: service_healthy
+    healthcheck:
+      test: curl --fail -s http://localhost:${PROXY_PORT_INT}
+      interval: 5s
+      timeout: 10s
 
   writeimages:
     init: true
