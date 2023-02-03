@@ -2,6 +2,11 @@ const env = require('dotenv')
 const timelimit = 100000
 env.config()
 
+test('test dotenv', async () => {
+    expect(parseInt(process.env.WEB_SERVER_PORT_EXT)).toBeGreaterThan(0)
+    expect(parseInt(process.env.WEB_SERVER_PORT_EXT)).toBe(8080) // need this, since this port is required in the package.json file
+})
+
 test('test roundtrip', async () => {
     const topic = "test.dashboard"
     const remoteSocket = require('socket.io-client')(`http://${process.env.PROXY_IP}:${process.env.PROXY_PORT_EXT}`)
