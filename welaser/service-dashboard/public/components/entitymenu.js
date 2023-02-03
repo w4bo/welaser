@@ -9,7 +9,10 @@ const entitymenu = {
                                 <div>
                                     <input v-if="type.exclusive"  :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="radio">
                                     <input v-if="!type.exclusive" :id="device.data.id" :value="getName(device.data)" v-model="selectedbytype[type.name]" type="checkbox">
-                                    <label :for="device.data.id">{{ getName(device.data) }}</label>
+                                    <label>
+                                        <v-list-item-title v-html="getName(device.data)"></v-list-item-title>
+                                        <v-list-item-subtitle v-html="device.data.id"></v-list-item-subtitle>
+                                    </label>
                                 </div>
                             </v-list-item-content>
                         </v-list-item>
