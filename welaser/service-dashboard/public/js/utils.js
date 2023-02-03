@@ -174,8 +174,8 @@ utils.formatDateTime = function (timestampMs, includeDate = true, includeTime = 
 }
 
 utils.downloadJSON = function (json, name="download") {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json))
-    var downloadAnchorNode = document.createElement('a')
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json))
+    const downloadAnchorNode = document.createElement('a')
     downloadAnchorNode.setAttribute("href", dataStr)
     downloadAnchorNode.setAttribute("download", name + ".json")
     document.body.appendChild(downloadAnchorNode)
