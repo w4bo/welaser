@@ -1,7 +1,7 @@
 #!/bin/bash
 set -exo
 . ./scripts/loadEnv.sh
-docker-compose up --build &>logs/docker-compose-$(date +%s).txt &
+docker-compose up --build --remove-orphans &>logs/docker-compose-$(date +%s).txt &
 ./wait-for-it.sh ${IMAGESERVER_IP}:${IMAGESERVER_PORT_FTP21_EXT} --timeout=480 -- echo "FTP server is up"
 ./wait-for-it.sh ${IMAGESERVER_IP}:${IMAGESERVER_PORT_HTTP_EXT} --timeout=480 -- echo "Nginx is up"
 ./wait-for-it.sh ${ORION_IP}:${ORION_PORT_EXT} --timeout=480 -- echo "OCB is up"
