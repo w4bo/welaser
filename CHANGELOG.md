@@ -1,3 +1,16 @@
+## [1.1.76](https://github.com/w4bo/welaser/compare/1.1.75...1.1.76) (2023-02-03)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix the generated env.js ([#398](https://github.com/w4bo/welaser/issues/398)) ([a92b862](https://github.com/w4bo/welaser/commit/a92b862fd6e43da0fa25e7781b90dbfbae0ca320))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.14 ([9e8f50e](https://github.com/w4bo/welaser/commit/9e8f50ef492b6011e2c7e30c22a5a5a9477c82be))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.10 ([#395](https://github.com/w4bo/welaser/issues/395)) ([3069000](https://github.com/w4bo/welaser/commit/3069000b5985c684e0cfd421828b92871d1ff675))
+
 ## [1.1.75](https://github.com/w4bo/welaser/compare/1.1.74...1.1.75) (2023-02-02)
 
 
