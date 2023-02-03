@@ -1,3 +1,10 @@
+## [1.1.77](https://github.com/w4bo/welaser/compare/1.1.76...1.1.77) (2023-02-03)
+
+
+### Bug Fixes
+
+* **ci:** testing the web applications ([04a9b7f](https://github.com/w4bo/welaser/commit/04a9b7fccabb994ed6ed530fee1ab43f1452f3b9))
+
 ## [1.1.76](https://github.com/w4bo/welaser/compare/1.1.75...1.1.76) (2023-02-03)
 
 
