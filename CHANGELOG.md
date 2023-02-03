@@ -1,3 +1,16 @@
+## [1.1.78](https://github.com/w4bo/welaser/compare/1.1.77...1.1.78) (2023-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v11 ([ff08423](https://github.com/w4bo/welaser/commit/ff084239d619c6489790c027ea1356ff3024589c))
+
+
+### Dependency updates
+
+* **deps:** update node.js to v19 ([72aa4d0](https://github.com/w4bo/welaser/commit/72aa4d0f3bc1b24cdbf92960771fc413878a3d61))
+* **deps:** update welaser/welaser-datamodels digest to 53309d5 ([11f6ef8](https://github.com/w4bo/welaser/commit/11f6ef83e19077719d40c9cdbc2d9580cefc5c0a))
+
 ## [1.1.77](https://github.com/w4bo/welaser/compare/1.1.76...1.1.77) (2023-02-03)
 
 
