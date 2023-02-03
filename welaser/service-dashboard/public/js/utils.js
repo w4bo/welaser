@@ -145,7 +145,7 @@ utils.getDevices = function (tis, type, acc, then) {
         .then(devices => {
             devices = devices.data
             devices.forEach(function (device, index) {
-                if (device["domain"] === utils.agrifarm) {
+                if (device["domain"] === utils.agrifarm || device["areaServed"] === utils.agrifarm) {
                     tis.$set(acc, device.id, {'data': device, 'color': utils.getRandomColor(device.type)})
                 }
             })
