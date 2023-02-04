@@ -1,3 +1,10 @@
+## [1.1.79](https://github.com/w4bo/welaser/compare/1.1.78...1.1.79) (2023-02-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v12 ([f4f549b](https://github.com/w4bo/welaser/commit/f4f549b94ef4f565522859f73fbd7c4c70c8bc40))
+
 ## [1.1.78](https://github.com/w4bo/welaser/compare/1.1.77...1.1.78) (2023-02-03)
 
 
