@@ -1,3 +1,10 @@
+## [1.1.84](https://github.com/w4bo/welaser/compare/1.1.83...1.1.84) (2023-02-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency http-status-codes to v2 ([cb229f3](https://github.com/w4bo/welaser/commit/cb229f3366c025c75d1c4a2b9a9c94b6f4637ba1))
+
 ## [1.1.83](https://github.com/w4bo/welaser/compare/1.1.82...1.1.83) (2023-02-05)
 
 
