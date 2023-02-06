@@ -32,15 +32,16 @@ curl -iX POST \
   "subject": { "entities": [{ "idPattern": ".*" }], "condition": { "attrs": [ "cmd" ] }},
   "notification": { "http": { "url": "http://'${IOTA_IP}':'${IOTA_PORT_EXT}'/" }, "attrsFormat" : "keyValues", "attrs" : ["cmd"] }
 }'
-cd devices
-./gradlew --stacktrace --scan
 
-run_mission=0
-while getopts "s" opt
+devices/gradlew -p devices --stacktrace --scan
+
+run_tests=0
+while getopts "st" opt
 do
     case $opt in
-    (s) run_mission=1 ;;
+    (s) devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt & ;;
+    (t) run_tests=1 ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
     esac
 done
-((run_mission)) && ./gradlew runMission --stacktrace &>../logs/mission-$(date +%s)-devices.txt &
+((run_tests)) && scripts/runTests.sh

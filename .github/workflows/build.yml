@@ -27,9 +27,7 @@ jobs:
         run: |
           cd welaser
           scripts/config.sh
-          ./launch.sh -s
-          pip install -r testScripts/requirements.txt
-          scripts/runTests.sh
+          ./launch.sh -ts
           scripts/mongodb-dump.sh
           ./stop.sh
   release:
