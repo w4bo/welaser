@@ -55,6 +55,7 @@ Execute all the containers
 
 ```sh
 ./launch.sh -s # also simulates a mission
+./launch.sh -t # run the tests
 ./launch.sh # skips the simulation
 
 ```
