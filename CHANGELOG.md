@@ -1,3 +1,10 @@
+## [1.1.86](https://github.com/w4bo/welaser/compare/1.1.85...1.1.86) (2023-02-06)
+
+
+### Bug Fixes
+
+* **ci:** adding the test flag ([#421](https://github.com/w4bo/welaser/issues/421)) ([25eb26e](https://github.com/w4bo/welaser/commit/25eb26e060baacf5d2f3d2743ddcc58b4bf93106))
+
 ## [1.1.85](https://github.com/w4bo/welaser/compare/1.1.84...1.1.85) (2023-02-06)
 
 
