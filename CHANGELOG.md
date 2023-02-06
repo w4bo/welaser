@@ -1,3 +1,15 @@
+## [1.1.85](https://github.com/w4bo/welaser/compare/1.1.84...1.1.85) (2023-02-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v27 ([36c26a8](https://github.com/w4bo/welaser/commit/36c26a8981d4e29496252842d92f2ca3f7962e72))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to c7f9cf5 ([9c024d0](https://github.com/w4bo/welaser/commit/9c024d0db0220fce44cf0ac2d833e10ad523e6c6))
+
 ## [1.1.84](https://github.com/w4bo/welaser/compare/1.1.83...1.1.84) (2023-02-05)
 
 
