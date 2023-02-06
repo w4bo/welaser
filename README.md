@@ -54,10 +54,9 @@ docker run -it --rm efrecon/mqtt-client pub -h ${MOSQUITTO_IP} -p ${MOSQUITTO_PO
 Execute all the containers
 
 ```sh
-./launch.sh -s # also simulates a mission
-./launch.sh -t # run the tests
-./launch.sh # skips the simulation
-
+./launch.sh # launch the ecosystem
+./launch.sh -s # also simulate a mission
+./launch.sh -st # ... and run the tests
 ```
 
 Shut down the environment
