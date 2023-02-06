@@ -35,11 +35,13 @@ curl -iX POST \
 
 devices/gradlew -p devices --stacktrace --scan
 
+run_tests=0
 while getopts "st" opt
 do
     case $opt in
     (s) devices/gradlew runMission -p devices --stacktrace --scan &>../logs/mission-$(date +%s)-devices.txt & ;;
-    (t) scripts/runTests.sh ;;
+    (t) run_tests=1 ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
     esac
 done
+((run_tests)) && scripts/runTests.sh
