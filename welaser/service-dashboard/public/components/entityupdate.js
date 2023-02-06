@@ -65,7 +65,9 @@ const entityupdate = {
         axios.get(utils.nodeurl + `/api/entities/${utils.agrifarm}`).then(result => {
             this.selectableentities = result.data
             this.selectedentity = result.data[0]
-            this.setSelectedUpdate(utils.agrifarm, this.selectedentity["id"])
+            if (typeof this.selectedentity !== "undefined") {
+                this.setSelectedUpdate(utils.agrifarm, this.selectedentity["id"])
+            }
         })
         const options = {
             mode: 'tree',
