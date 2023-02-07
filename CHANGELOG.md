@@ -1,3 +1,10 @@
+## [1.1.90](https://github.com/w4bo/welaser/compare/1.1.89...1.1.90) (2023-02-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mongodb:mongo-java-driver to v3.12.12 ([590a123](https://github.com/w4bo/welaser/commit/590a123784214b5594f70c493491dad0468680ae))
+
 ## [1.1.89](https://github.com/w4bo/welaser/compare/1.1.88...1.1.89) (2023-02-07)
 
 
