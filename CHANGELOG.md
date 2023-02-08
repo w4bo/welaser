@@ -1,3 +1,10 @@
+## [1.1.92](https://github.com/w4bo/welaser/compare/1.1.91...1.1.92) (2023-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mongodb to v4 ([4549d23](https://github.com/w4bo/welaser/commit/4549d23b86c19dd8972e35266188a740475b3a6b))
+
 ## [1.1.91](https://github.com/w4bo/welaser/compare/1.1.90...1.1.91) (2023-02-08)
 
 
