@@ -1,3 +1,10 @@
+## [1.1.93](https://github.com/w4bo/welaser/compare/1.1.92...1.1.93) (2023-02-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency socket.io to v4 ([a9e0e29](https://github.com/w4bo/welaser/commit/a9e0e29313e20e9e4e8fd2bf3fc9459f4faf0c40))
+
 ## [1.1.92](https://github.com/w4bo/welaser/compare/1.1.91...1.1.92) (2023-02-08)
 
 
