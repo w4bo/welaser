@@ -1,6 +1,6 @@
 #!/bin/bash
 set -exo
 
-cd service-dashboard
+cd ../service-dashboard
 npm test
 cd -
