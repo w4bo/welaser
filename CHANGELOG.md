@@ -1,3 +1,15 @@
+## [1.1.95](https://github.com/w4bo/welaser/compare/1.1.94...1.1.95) (2023-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency vue to v3 ([e020bbc](https://github.com/w4bo/welaser/commit/e020bbc929b546c1a62df2085f06ffac5ef09013))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.7.0 ([2e853c7](https://github.com/w4bo/welaser/commit/2e853c7e912bd6bb34a93838e9907ea68beadd9b))
+
 ## [1.1.94](https://github.com/w4bo/welaser/compare/1.1.93...1.1.94) (2023-02-15)
 
 
