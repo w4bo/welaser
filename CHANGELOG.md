@@ -1,3 +1,10 @@
+## [1.1.94](https://github.com/w4bo/welaser/compare/1.1.93...1.1.94) (2023-02-15)
+
+
+### Bug Fixes
+
+* **service-kafkaproxy:** fixing the socketio version ([#424](https://github.com/w4bo/welaser/issues/424)) ([b9b1a11](https://github.com/w4bo/welaser/commit/b9b1a1152b9b8aebe6b82ab7645dd0ae6f801b96))
+
 ## [1.1.93](https://github.com/w4bo/welaser/compare/1.1.92...1.1.93) (2023-02-09)
 
 
