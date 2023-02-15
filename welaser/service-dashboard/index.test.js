@@ -18,5 +18,6 @@ test('test roundtrip', async () => {
         await new Promise((r) => setTimeout(r, (timelimit * 0.98) / retry)) // ... wait
         remoteSocket.emit("publish", {topic: topic, data: {}})
     }
+    remoteSocket.close()
     expect(c).toBeGreaterThan(0) // some message should have been received on the same topic
 }, timelimit)

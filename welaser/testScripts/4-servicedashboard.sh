@@ -1,6 +1,5 @@
 #!/bin/bash
 set -exo
 
-cd ../service-dashboard
-npm test
-cd -
+docker exec kafkaproxy npm test
+docker exec node npm test
