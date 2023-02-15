@@ -19,6 +19,7 @@ pwfile
 core-site.xml
 hdfs-site.xml
 welaser/draco/config
+**/devices/src/main/resources/foo
 .idea/
 **/conf/archive
 **/keys
