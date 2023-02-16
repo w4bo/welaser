@@ -1,3 +1,15 @@
+## [1.1.96](https://github.com/w4bo/welaser/compare/1.1.95...1.1.96) (2023-02-16)
+
+
+### Bug Fixes
+
+* **ftp:** organize images in the following folder hierarchy `agrifarmid/entityid/YYYY-MM-DD/` ([2a4358f](https://github.com/w4bo/welaser/commit/2a4358f6610a42a784cdeacdbb4e01f52321d86e))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to f356594 ([86b99b9](https://github.com/w4bo/welaser/commit/86b99b990aa66e4bbccf0ac94577f168cd7daad6))
+
 ## [1.1.95](https://github.com/w4bo/welaser/compare/1.1.94...1.1.95) (2023-02-15)
 
 
