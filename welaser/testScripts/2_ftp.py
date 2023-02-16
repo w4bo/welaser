@@ -10,6 +10,7 @@ ftp.login(conf["IMAGESERVER_USER"], conf["IMAGESERVER_PWD"])
 i = 20
 dir_list = []
 while i > 0 and len(dir_list) < 2:
+    i = i - 1
     time.sleep(1)
     dir_list = []
     ftp.dir(dir_list.append)
