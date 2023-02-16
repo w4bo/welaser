@@ -52,7 +52,7 @@ fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
     val date = Date(System.currentTimeMillis())
     val jdf = SimpleDateFormat("yyyy-MM-dd")
     val jdf2 = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss")
-    return domain + "/" + jdf.format(date) + "/" + id + "_" + jdf2.format(date) + "_" + attr + ext
+    return "${domain}/${id}/" + jdf.format(date) + "/" + jdf2.format(date) + "_" + id + "_" + attr + ext
 }
 
 fun upload(obj: JSONObject, async: Boolean = true): List<String> {
