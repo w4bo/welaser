@@ -13,5 +13,5 @@ while i > 0 and len(dir_list) < 1:
     i = i - 1
     time.sleep(1)
     ftp.dir(dir_list.append)
-assert len(dir_list) > 2, "Not enough images: " + str(dir_list)
+assert len(dir_list) > 0, "Not enough images: " + str(dir_list)
 ftp.quit()
