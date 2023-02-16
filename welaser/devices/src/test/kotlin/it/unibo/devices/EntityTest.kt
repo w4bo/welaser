@@ -6,14 +6,15 @@ import it.unibo.devices.EntityFactory.createAll
 import it.unibo.devices.EntityFactory.createFromFile
 import it.unibo.devices.EntityFactory.readJsonFromFile
 import it.unibo.writeimages.createFTPClient
+import it.unibo.writeimages.ftpImageName
+import it.unibo.writeimages.getExt
 import it.unibo.writeimages.upload
 import org.json.JSONArray
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.*
 import java.net.URL
 import java.util.*
 
@@ -103,12 +104,15 @@ class EntityTest {
             val path = "$DATA_MODEL_FOLDER/camera2.json"
             val e = createFromFile(path, 1, 1)
             val camera = readJsonFromFile(path)
-            upload(camera, async = false)
+
             // Test FTP
+            val uploaded = upload(camera, async = false)
             val ftpClient = createFTPClient()
-            ftpClient.listFiles().forEach { println(it.name) }
-            assertTrue(ftpClient.listFiles().any { it.isFile && java.net.URLDecoder.decode(it.name, "utf-8").contains(camera.getString("id")) })
+            val outputStream1: OutputStream = BufferedOutputStream(FileOutputStream(File("src/main/resources/foo")))
+            assertTrue(ftpClient.retrieveFile(uploaded[0], outputStream1))
+            outputStream1.close()
             ftpClient.disconnect()
+
             // Test HTTP
             URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
                 var itemCount = 0

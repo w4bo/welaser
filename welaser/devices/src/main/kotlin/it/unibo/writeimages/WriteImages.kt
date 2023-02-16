@@ -13,6 +13,8 @@ import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.Executors
 
 
@@ -40,21 +42,44 @@ fun createFTPClient(retry: Int = 3): FTPClient {
     }
 }
 
-fun upload(obj: JSONObject, async: Boolean = true) {
+fun getExt(curUrl: String): String {
+    return curUrl.substring(curUrl.lastIndexOf("."))
+}
+
+fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
+    val id = obj.getString("id")
+    val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
+    val date = Date(System.currentTimeMillis())
+    val jdf = SimpleDateFormat("yyyy-MM-dd")
+    val jdf2 = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss")
+    return "${domain}/${id}/" + jdf.format(date) + "/" + jdf2.format(date) + "_" + id + "_" + attr + ext
+}
+
+fun upload(obj: JSONObject, async: Boolean = true): List<String> {
+    val uploaded = mutableListOf<String>()
     listOf(IMAGE_URL).filter { attr -> obj.has(attr) }.forEach { attr ->
         val curUrl = obj.getString(attr)
         if (curUrl.isNotEmpty() && !curUrl.contains(dotenv["IMAGESERVER_IP"])) {
-            // URL(curUrl).openStream().use { Files.copy(it, Paths.get("foo.png")) }
             try {
                 val id = obj.getString("id")
-                val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
-                val filename = domain + "_" +  id + "_" + System.currentTimeMillis() + "_" + attr + curUrl.substring(curUrl.lastIndexOf("."))
+                val filename = ftpImageName(obj, attr, getExt(curUrl))
                 URL(curUrl).openStream().use {
                     val ftpClient = createFTPClient()
-                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                    ftpClient.storeFile(filename, it)
+                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE)
+                    var cd = "/"
+                    val dirs = filename.split('/')
+                    dirs.subList(0, dirs.size - 1).filter { it.isNotEmpty() }.forEach {
+                        cd += "/$it"
+                        ftpClient.makeDirectory(cd)
+                    }
+                    val res = ftpClient.storeFile(filename, it)
                     ftpClient.logout()
                     ftpClient.disconnect()
+                    if (!res) {
+                        throw java.lang.IllegalArgumentException("Cannot store the file: $filename")
+                    } else {
+                        uploaded.add(filename)
+                    }
                 }
                 val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
                 val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
@@ -72,6 +97,7 @@ fun upload(obj: JSONObject, async: Boolean = true) {
             }
         }
     }
+    return uploaded
 }
 
 fun main() {

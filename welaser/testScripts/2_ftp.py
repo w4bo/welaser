@@ -9,9 +9,9 @@ ftp.login(conf["IMAGESERVER_USER"], conf["IMAGESERVER_PWD"])
 # ftp.cwd('/data')
 i = 20
 dir_list = []
-while i > 0 and len(dir_list) < 2:
+while i > 0 and len(dir_list) < 1:
+    i = i - 1
     time.sleep(1)
-    dir_list = []
     ftp.dir(dir_list.append)
-assert len(dir_list) > 2, "Not enough images: " + str(dir_list)
+assert len(dir_list) > 0, "Not enough images: " + str(dir_list)
 ftp.quit()
