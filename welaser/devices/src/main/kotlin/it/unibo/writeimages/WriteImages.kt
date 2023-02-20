@@ -51,7 +51,7 @@ fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
     val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
     val date = Date(System.currentTimeMillis())
     val jdf = SimpleDateFormat("yyyy-MM-dd")
-    val jdf2 = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")
+    val jdf2 = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ")
     return "${domain}/${id}/" + jdf.format(date) + "/" + jdf2.format(date) + "_" + id + "_" + attr + ext
 }
 
