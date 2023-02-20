@@ -82,13 +82,13 @@ class EntityTest {
         return d
     }
 
-    fun waitDevice(d: Device): String {
+    fun waitDevice(d: Device, sleep: Long = 100): String {
         var s = "foo"
         var i = 0
         println("Waiting for ${d.id}")
         while (!s.contains(d.id) && i++ <= 50) {
             if (i > 1) {
-                Thread.sleep(100)
+                Thread.sleep(sleep)
             }
             val url = "${ORION_URL}entities?id=${d.id}&options=keyValues"
             println("Looking for ${d.id} at $url")
@@ -124,7 +124,7 @@ class EntityTest {
                 assertTrue(itemCount > 1) // the page also contains <a href="../">../</a>
             }
             // Test update of the URL
-            val t = waitDevice(e)
+            val t = waitDevice(e, 1000L)
             val obj = JSONArray(t).getJSONObject(0)
             assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
             assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
