@@ -56,6 +56,9 @@ const missiongui = {
                             <v-list-item v-if="robot.data.warnings" v-for="warning in robot.data.warnings" style="background-color: #ff9966" class="p-1">
                                 <v-list-item-content>{{warning}}</v-list-item-content>
                             </v-list-item>
+                            <v-list-item v-if="robot.data.infos" v-for="info in robot.data.infos" style="background-color: #ffffff" class="p-1">
+                                <v-list-item-content>{{info}}</v-list-item-content>
+                            </v-list-item>
                         </template>
                     </v-card>
                 </v-col>

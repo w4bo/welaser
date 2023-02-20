@@ -43,6 +43,7 @@ class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(
             initStatus.put("heading", Math.random())
             initStatus.put(ERRORS, if (r.nextDouble() > 0.95) listOf("Obstacle detected") else listOf())
             initStatus.put(WARNINGS, if (r.nextDouble() > 0.90) listOf("Low connection", "Bumpy field").subList(0, r.nextInt(2) + 1) else listOf())
+            initStatus.put(INFOS, if (r.nextDouble() > 0.50) listOf("Laser activated") else listOf())
             updatePosition()
         }
         find(initStatus, HEARTBEAT, h.sense(), prop = "serviceProvided", mod = "status")
