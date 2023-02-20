@@ -1,3 +1,11 @@
+## [1.1.97](https://github.com/w4bo/welaser/compare/1.1.96...1.1.97) (2023-02-20)
+
+
+### Bug Fixes
+
+* **kafkaproxy:** run tests from docker compose ([#431](https://github.com/w4bo/welaser/issues/431)) ([64e4b20](https://github.com/w4bo/welaser/commit/64e4b2089946f9332834cc4a30754a330352d055))
+* **welaser-datamodels:** update the agrirobot with `infos` attribute ([#432](https://github.com/w4bo/welaser/issues/432)) ([5a174c7](https://github.com/w4bo/welaser/commit/5a174c78757ab588723fd23081f6fa96655cbd1f))
+
 ## [1.1.96](https://github.com/w4bo/welaser/compare/1.1.95...1.1.96) (2023-02-16)
 
 
