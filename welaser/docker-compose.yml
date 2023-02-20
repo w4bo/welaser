@@ -186,9 +186,9 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: curl --fail -s http://localhost:${PROXY_PORT_INT}
-      interval: 5s
-      timeout: 10s
+      test: npm test
+      interval: 60s
+      timeout: 60s
 
   writeimages:
     init: true

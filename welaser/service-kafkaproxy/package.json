@@ -1,12 +1,12 @@
 {
   "name": "KafkaProxy",
   "version": "0.1.0",
-  "description": "Proxy message from/to Browser to/from Kafka",
+  "description": "Proxy from/to Browser to/from Kafka",
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
     "start": "node index.js",
-    "mystart": "start-server-and-test start http://0.0.0.0:12345 test && npm start"
+    "mystart": "npm start"
   },
   "dependencies": {
     "cors": "^2.8.5",
