@@ -26,10 +26,14 @@ jobs:
       - name: Launch and test
         run: |
           cd welaser
-          scripts/config.sh
-          ./launch.sh -ts
-          scripts/mongodb-dump.sh
-          ./stop.sh
+          for i in $(seq 2)
+          do
+            echo "Run $i"
+            scripts/config.sh
+            ./launch.sh -ts
+            scripts/mongodb-dump.sh
+            ./stop.sh
+          done
   release:
     needs:
       - build
