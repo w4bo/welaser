@@ -1,3 +1,15 @@
+## [1.1.98](https://github.com/w4bo/welaser/compare/1.1.97...1.1.98) (2023-02-20)
+
+
+### Bug Fixes
+
+* **ci:** run the build twice ([#435](https://github.com/w4bo/welaser/issues/435)) ([b49a415](https://github.com/w4bo/welaser/commit/b49a41538997dafc96b87753a4857357acfa3a59))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to 85e0583 ([#433](https://github.com/w4bo/welaser/issues/433)) ([ecad950](https://github.com/w4bo/welaser/commit/ecad950c752b79d78da359834f9f0bdadd99059a))
+
 ## [1.1.97](https://github.com/w4bo/welaser/compare/1.1.96...1.1.97) (2023-02-20)
 
 
