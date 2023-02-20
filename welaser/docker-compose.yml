@@ -103,9 +103,6 @@ services:
       - default
     volumes:
       - ./service-dashboard:/code
-    depends_on:
-      kafkaproxy:
-        condition: service_healthy
     env_file:
       - .env
     healthcheck:
