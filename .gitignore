@@ -2,9 +2,9 @@
 **/datamodels/**/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
+**/images-dump/**
+!**/images-dump/.dummy
 **/mongodb/*
-**/images-dump/*.jpg
-**/images-dump/*.png
 !**/mongodb/.dummy
 **/welaser_robot_replay
 createmission.txt
