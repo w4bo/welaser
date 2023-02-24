@@ -9,6 +9,8 @@ filelist.txt
 **/mongodb/**
 !**/mongodb/.dummy
 **/mongodb-dump/**
+**/portainer/**
+!**/portainer/.dummy
 **/welaser_robot_replay
 createmission.txt
 createdomain.txt
@@ -18,7 +20,6 @@ dump.txt
 pwfile
 core-site.xml
 hdfs-site.xml
-welaser/draco/config
 **/devices/src/main/resources/foo
 **/conf/archive
 **/keys

@@ -111,13 +111,16 @@ services:
       timeout: 10s
 
   portainer:
+    init: true
+    hostname: portainer
+    container_name: portainer
     image: portainer/portainer-ce:latest
     ports:
       - 9443:9443
     volumes:
         - ./mounts/portainer:/data
         - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    restart: always
 
   etl:
     init: true
@@ -247,20 +250,23 @@ services:
     hostname: nginx
     container_name: nginx
     init: true
+    restart: always
     image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
     ports:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
-      - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
+      # - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
       - "./mounts/images-dump:/mnt/data"
-    # depends_on:
-    #   ftp:
-    #     condition: service_healthy
+    # healthcheck:
+    #   test: curl --fail -s http://localhost:80
+    #   interval: 5s
+    #   timeout: 10s
 
   ftp:
     hostname: ftp
     container_name: ftp
     init: true
+    restart: always
     image: stilliard/pure-ftpd
     environment:
       FTP_USER_NAME: "${IMAGESERVER_USER}"
