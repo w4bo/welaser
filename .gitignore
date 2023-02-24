@@ -1,38 +1,35 @@
+.idea/
+filelist.txt
 **/scripts/updatePwd.sh
 **/datamodels/**/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
 **/images-dump/**
 !**/images-dump/.dummy
-**/mongodb/*
+**/mongodb/**
 !**/mongodb/.dummy
+**/mongodb-dump/**
+**/portainer/**
+!**/portainer/.dummy
 **/welaser_robot_replay
 createmission.txt
 createdomain.txt
-flow.xml.gz
-flow.xml
-orig.flow.xml
 env.js
 dump.txt
 .env
 pwfile
 core-site.xml
 hdfs-site.xml
-welaser/draco/config
 **/devices/src/main/resources/foo
-.idea/
 **/conf/archive
 **/keys
 **/venv
 **/*.swp
 **/conf/archive/*
-filelist.txt
 **/service-missionplanner/*.json
 **/devices-python/*.json
 **/devices-python/*.png
 **/devices-python/*.jpg
-dump/
-mongodb-dump/
 
 # Created by https://www.toptal.com/developers/gitignore/api/venv,node,java,scala,macos,linux,gradle,python,windows,virtualenv,microsoftoffice,intellij,webstorm,pycharm
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,node,java,scala,macos,linux,gradle,python,windows,virtualenv,microsoftoffice,intellij,webstorm,pycharm

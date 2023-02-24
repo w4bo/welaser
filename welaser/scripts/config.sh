@@ -4,8 +4,8 @@ set -exo
 DEFIP=$(hostname -I | cut -d' ' -f1)
 IP=${1:-$DEFIP}
 
-find . -path ./mongodb -prune -o -type f -iname "*.sh" -exec chmod +x {} \;
-find . -path ./mongodb -prune -o -name \.env -type f -exec rm {} \;
+find . -type d \( -name mongodb -o -name portainer \) -prune -o -type f -iname "*.sh" -exec chmod +x {} \;
+find . -type d \( -name mongodb -o -name portainer \) -prune -o -name \.env -type f -exec rm {} \;
 
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
