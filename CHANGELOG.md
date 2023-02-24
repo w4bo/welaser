@@ -1,3 +1,16 @@
+## [1.1.99](https://github.com/w4bo/welaser/compare/1.1.98...1.1.99) (2023-02-24)
+
+
+### Bug Fixes
+
+* **portainer:** add portainer to monitor the running containers ([#438](https://github.com/w4bo/welaser/issues/438)) ([8478470](https://github.com/w4bo/welaser/commit/8478470b7615647d177321a9540f331ddec85125))
+
+
+### Dependency updates
+
+* **deps:** update dependency jsoneditor to v9.10.0 ([4d644f3](https://github.com/w4bo/welaser/commit/4d644f3f7e78d3f17f3afc7190bb5ca19ec338cb))
+* **deps:** update dependency python-dotenv to v1 ([#437](https://github.com/w4bo/welaser/issues/437)) ([96c4b3e](https://github.com/w4bo/welaser/commit/96c4b3e2d4328892d5bbd497bdf6b297b51ffc1d))
+
 ## [1.1.98](https://github.com/w4bo/welaser/compare/1.1.97...1.1.98) (2023-02-20)
 
 
