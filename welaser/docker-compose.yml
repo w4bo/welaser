@@ -275,6 +275,7 @@ services:
       FTP_PASSIVE_PORTS: "21000:21099"
       FTP_MAX_CLIENTS: 50
       FTP_MAX_CONNECTIONS: 20
+      ADDED_FLAGS: "-d -d"
       PUBLICHOST: "${IMAGESERVER_IP}"
     volumes:
       - "./mounts/images-dump:/data"
