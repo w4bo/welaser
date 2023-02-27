@@ -1,3 +1,15 @@
+## [1.1.100](https://github.com/w4bo/welaser/compare/1.1.99...1.1.100) (2023-02-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency start-server-and-test to v2 ([66b0f6d](https://github.com/w4bo/welaser/commit/66b0f6d4e50f6481e0d643b54a0a72a7eba2acd0))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.6.1 ([83407c8](https://github.com/w4bo/welaser/commit/83407c82480559db70f654737f8304f27c11f894))
+
 ## [1.1.99](https://github.com/w4bo/welaser/compare/1.1.98...1.1.99) (2023-02-24)
 
 
