@@ -1,3 +1,10 @@
+## [1.1.101](https://github.com/w4bo/welaser/compare/1.1.100...1.1.101) (2023-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.json:json to v20230227 ([b167ddd](https://github.com/w4bo/welaser/commit/b167ddd80c233842e85e47eda0efe4d576a00862))
+
 ## [1.1.100](https://github.com/w4bo/welaser/compare/1.1.99...1.1.100) (2023-02-27)
 
 
