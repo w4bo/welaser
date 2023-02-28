@@ -1,3 +1,10 @@
+## [1.1.102](https://github.com/w4bo/welaser/compare/1.1.101...1.1.102) (2023-02-28)
+
+
+### Bug Fixes
+
+* **mapbuilder:** update the services ([#444](https://github.com/w4bo/welaser/issues/444)) ([6441cd9](https://github.com/w4bo/welaser/commit/6441cd9d2eae8d03f38ef85fa4462d5e3039b9b0))
+
 ## [1.1.101](https://github.com/w4bo/welaser/compare/1.1.100...1.1.101) (2023-02-28)
 
 
