@@ -1,3 +1,11 @@
+## [1.1.105](https://github.com/w4bo/welaser/compare/1.1.104...1.1.105) (2023-03-02)
+
+
+### Bug Fixes
+
+* **mapbuilder:** update ([4564f4f](https://github.com/w4bo/welaser/commit/4564f4f9df1afd85e9db4d972d833af86c9e4040))
+* **service-dashboard:** show infos/warnings/errors only for the selected robot ([4dc8a35](https://github.com/w4bo/welaser/commit/4dc8a35ee780233b20346ddabe767b8fc06a4194))
+
 ## [1.1.104](https://github.com/w4bo/welaser/compare/1.1.103...1.1.104) (2023-03-01)
 
 
