@@ -1,3 +1,15 @@
+## [1.1.106](https://github.com/w4bo/welaser/compare/1.1.105...1.1.106) (2023-03-03)
+
+
+### Bug Fixes
+
+* **service-writeimages:** fix image extension in the url ([bf4ee39](https://github.com/w4bo/welaser/commit/bf4ee39510b51fe6566723b3c53dde2349c6128c))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to 41d1ced ([#446](https://github.com/w4bo/welaser/issues/446)) ([2b0308e](https://github.com/w4bo/welaser/commit/2b0308eee03a8ebfe360a058570ed1d57413ddf1))
+
 ## [1.1.105](https://github.com/w4bo/welaser/compare/1.1.104...1.1.105) (2023-03-02)
 
 
