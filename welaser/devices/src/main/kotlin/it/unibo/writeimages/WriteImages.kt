@@ -42,8 +42,14 @@ fun createFTPClient(retry: Int = 3): FTPClient {
     }
 }
 
+/**
+ * Return the extension if known
+ * E.g., it should return no extension for URLs like http://81.60.229.210:12356/snapshot?topic%3D/front_camera_rgb
+ */
 fun getExt(curUrl: String): String {
-    return curUrl.substring(curUrl.lastIndexOf("."))
+    val knownExts = listOf("jpg", "png", "tif", "svg", "gif")
+    val ext = curUrl.substring(curUrl.lastIndexOf(".") + 1)
+    return if (knownExts.contains(ext)) ".$ext" else ""
 }
 
 fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
