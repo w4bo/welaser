@@ -1,4 +1,11 @@
 #!/bin/bash
 set -exo
-docker stop ${1}
-docker-compose up --detach --build ${1}
+# for var in "$@"
+# do
+#     echo "Restarting $var"
+#     docker stop $var
+#     docker-compose up --detach --build $var
+# done
+docker-compose stop $@
+docker-compose rm --force $@
+docker-compose up --detach --build $@
