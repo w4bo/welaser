@@ -1,7 +1,7 @@
 const navbar = {
     template: `
         <div style="z-index: 10">
-            <v-navigation-drawer v-model="drawer" absolute temporary>
+            <v-navigation-drawer v-model="drawer" fixed temporary>
                 <v-list nav dense>
                     <v-list-item link><v-list-item-content><router-link class="nav-link" to="/">Mission GUI</router-link></v-list-item-content></v-list-item>
                     <v-list-item link><v-list-item-content><router-link class="nav-link" to="/devicedata">Device data</router-link></v-list-item-content></v-list-item>
