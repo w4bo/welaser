@@ -1,3 +1,15 @@
+## [1.1.107](https://github.com/w4bo/welaser/compare/1.1.106...1.1.107) (2023-03-06)
+
+
+### Bug Fixes
+
+* **service-dashboard:** shrink the cameras ([d3f32ea](https://github.com/w4bo/welaser/commit/d3f32ea27d30254f696e33e1c4488114f74f7dd1))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.7.1 ([89d2a28](https://github.com/w4bo/welaser/commit/89d2a28637dacbc1ef53db59250364fd2b3537b5))
+
 ## [1.1.106](https://github.com/w4bo/welaser/compare/1.1.105...1.1.106) (2023-03-03)
 
 
