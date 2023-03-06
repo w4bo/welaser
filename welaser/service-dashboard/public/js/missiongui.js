@@ -63,7 +63,7 @@ const missiongui = {
                     </v-card>
                 </v-col>
                 <template v-for="device in Object.values(devices)">
-                    <v-col cols=3 v-if="isSelected(device.data)">
+                    <v-col cols=2 v-if="isSelected(device.data)">
                         <v-card :color="device.color" elevation="2">
                             <v-card-title class="p-0">{{getName(device.data)}}</v-card-title>
                             <v-card-text class="p-0">
