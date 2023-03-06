@@ -7,7 +7,7 @@ const recursivetable = {
               <iframe v-else-if="k === 'streamURL' && v != ''" :src="v" width="100%" />  
               <div v-else v-html="display()"></div>
           </td>
-          <recursivetable v-if="typeof v === 'object'" v-for="(value, key) in v" :v="typeof value === 'number'? ('' + value) : value" :k="key" :key="prevkey + '.' + key"></recursivetable>
+          <recursivetable v-if="typeof v === 'object'" v-for="(value, key) in Object.keys(v).sort().reduce((obj, key) => { obj[key] = v[key]; return obj;}, {})" :v="typeof value === 'number'? ('' + value) : value" :k="key" :key="prevkey + '.' + key"></recursivetable>
       </tr>
     `,
     methods: {
