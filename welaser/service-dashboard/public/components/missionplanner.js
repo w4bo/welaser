@@ -9,8 +9,12 @@ const missionplanner = {
                       <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
                   </v-autocomplete>
               Farm <v-autocomplete :items="farms" v-model="farm" style="padding: 0" dense></v-autocomplete>
-              From (place) <v-autocomplete :items="froms" v-model="from" style="padding: 0" dense></v-autocomplete>
-              Parcel <v-autocomplete :items="parcels" v-model="parcel" style="padding: 0" dense></v-autocomplete>
+              From (place) <v-autocomplete :items="froms" item-text="name" item-value="id" v-model="from" style="padding: 0" dense>
+                  <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
+              </v-autocomplete>
+              Parcel <v-autocomplete :items="parcels" item-text="name" item-value="id"  v-model="parcel" style="padding: 0" dense>
+                  <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
+              </v-autocomplete>
               <div><div style="float: left">Roundtrip</div> <v-checkbox v-model="roundtrip"></v-checkbox></div>
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
@@ -63,13 +67,35 @@ const missionplanner = {
     },
     mounted() {
         // get the agrifarm and its components
-        axios.get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`).then(agrifarm => {
-            agrifarm = agrifarm.data
-            this.froms = [].concat(agrifarm.hasAgriParcel, agrifarm.hasBuilding, agrifarm.hasRoadSegment)
-            this.parcels = agrifarm.hasAgriParcel
-            this.from = this.froms[0]
-            this.parcel = this.parcels[0]
-        })
+        // axios.get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`).then(agrifarm => {
+        //     // agrifarm = agrifarm.data
+        //     // this.froms = [].concat(agrifarm.hasAgriParcel, agrifarm.hasBuilding, agrifarm.hasRoadSegment)
+        //     // this.parcels = agrifarm.hasAgriParcel
+        //     // this.from = this.froms[0]
+        //     // this.parcel = this.parcels[0]
+        // })
+        const tis = this;
+        function rec(l) {
+            if (l.length === 0) {
+                tis.froms = tis.froms.sort((a, b) => a.name > b.name)
+                tis.from = tis.froms[0]
+                tis.parcels = tis.parcels.sort((a, b) => a.name > b.name)
+                tis.parcel = tis.parcels[0]
+            } else {
+                const type = l.pop()
+                utils.getDevices(tis, type, {}, function (acc) {
+                    Object.values(acc).forEach(function (entity) {
+                        if (type === "AgriParcel") {
+                            tis.parcels.push(entity.data)
+                        }
+                        tis.froms.push(entity.data)
+                    })
+                    rec(l)
+                })
+            }
+        }
+        rec(["AgriParcel", "Building", "RoadSegment"])
+
         // get the agrirobots
         axios.get(utils.orionurl + `entities?type=AgriRobot&options=keyValues&limit=1000`).then(robots => {
             robots = robots.data
