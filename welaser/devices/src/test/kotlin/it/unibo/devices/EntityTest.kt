@@ -127,6 +127,7 @@ class EntityTest {
             val t = waitDevice(e, 1000L)
             val obj = JSONArray(t).getJSONObject(0)
             assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
+            assertTrue(obj.has(TIMESTAMP))
             assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
         } catch (e: Exception) {
             e.printStackTrace()
