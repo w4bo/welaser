@@ -69,7 +69,7 @@ const missiongui = {
                             <v-card-text class="p-0">
                                 <iframe v-if="device.data.streamURL" :src="device.data.streamURL" width="100%"></iframe>
                                 <img v-if="(typeof device.data.streamURL === 'undefined' || device.data.streamURL === '') && device.data.imageSnapshot" :src="device.data.imageSnapshot" width="100%" />
-                                Update: {{ formatDateTime(device.data.timestamp) }}
+                                <div v-if="device.data.timestamp">Update: {{ formatDateTime(device.data.timestamp) }}</div>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -99,7 +99,11 @@ const missiongui = {
             return v === 'on' || v === true || v === 'true'
         },
         formatDateTime(value) {
-            return utils.formatDateTime(value, false)
+            if (value) {
+                return utils.formatDateTime(value, false)
+            } else {
+                return ""
+            }
         },
         sendCommand(id, cmd) {
             let payload = {}
