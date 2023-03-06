@@ -1,3 +1,11 @@
+## [1.1.108](https://github.com/w4bo/welaser/compare/1.1.107...1.1.108) (2023-03-06)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix the key order ([38489fe](https://github.com/w4bo/welaser/commit/38489fef9b1e417712572776e47ac4a2981c15bf))
+* **service-dashboard:** fix visualization of imageSnapshot attribute when no extension is provided ([7e78807](https://github.com/w4bo/welaser/commit/7e788076be3204eaf06f7af04ee188cd899c6cf6))
+
 ## [1.1.107](https://github.com/w4bo/welaser/compare/1.1.106...1.1.107) (2023-03-06)
 
 
