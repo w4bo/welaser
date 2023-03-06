@@ -1,3 +1,12 @@
+## [1.1.109](https://github.com/w4bo/welaser/compare/1.1.108...1.1.109) (2023-03-06)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix the formatting of the timestamp ([968faf2](https://github.com/w4bo/welaser/commit/968faf29f5802cc111e2feef375e6e936e497ae4))
+* **service-dashboard:** make the menu fixed ([0d14095](https://github.com/w4bo/welaser/commit/0d1409573f96da9a480739b506f861872d2f8494))
+* **service-dashboard:** show the names and ids from the mission planner ([391c7ae](https://github.com/w4bo/welaser/commit/391c7aeeafcc2797b6314bc3a8b7cf2267c33185))
+
 ## [1.1.108](https://github.com/w4bo/welaser/compare/1.1.107...1.1.108) (2023-03-06)
 
 
