@@ -87,8 +87,8 @@ const entitycreate = {
 
         const options = {
             schema: schema,
-            mode: 'tree',
-            modes: ['tree', 'view'], // 'code',
+            mode: 'code',
+            modes: ['code', 'tree', 'view'],
             onValidate: function (json) {
                 // rules:
                 // - team, names, and ages must be filled in and be of correct type

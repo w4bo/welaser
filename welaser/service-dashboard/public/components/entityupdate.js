@@ -70,8 +70,8 @@ const entityupdate = {
             }
         })
         const options = {
-            mode: 'tree',
-            modes: ['tree', 'view'], // 'code',
+            mode: 'code',
+            modes: ['code', 'tree', 'view'],
             onEditable: function (node) {
                 // node is an object like:
                 //   {
