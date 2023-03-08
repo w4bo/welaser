@@ -1,3 +1,15 @@
+## [1.1.111](https://github.com/w4bo/welaser/compare/1.1.110...1.1.111) (2023-03-08)
+
+
+### Bug Fixes
+
+* **service-dashboard:** remove timestamp ([62462ef](https://github.com/w4bo/welaser/commit/62462ef10b853e61a84862e50edf22afd784e1d4))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.15 ([e6c4a19](https://github.com/w4bo/welaser/commit/e6c4a194f0c97905ee5f62b5dc5b7e2745a2ef46))
+
 ## [1.1.110](https://github.com/w4bo/welaser/compare/1.1.109...1.1.110) (2023-03-07)
 
 
