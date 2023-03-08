@@ -1,3 +1,15 @@
+## [1.1.110](https://github.com/w4bo/welaser/compare/1.1.109...1.1.110) (2023-03-07)
+
+
+### Bug Fixes
+
+* **service-dashboard:** directly write json code into entity create/update ([51deff1](https://github.com/w4bo/welaser/commit/51deff11e00e5504e274836e955402cfeab617b7))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.3 ([2e2000f](https://github.com/w4bo/welaser/commit/2e2000f7e589a09a0683a2ffc943e0f8ddd5abdf))
+
 ## [1.1.109](https://github.com/w4bo/welaser/compare/1.1.108...1.1.109) (2023-03-06)
 
 
