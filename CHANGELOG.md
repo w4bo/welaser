@@ -1,3 +1,11 @@
+## [1.1.112](https://github.com/w4bo/welaser/compare/1.1.111...1.1.112) (2023-03-08)
+
+
+### Bug Fixes
+
+* **service-dashboard:** add weeding heatmap ([bd21fa8](https://github.com/w4bo/welaser/commit/bd21fa8d91e4e63c9c29f22c9b5b6652b36e1077))
+* **welaser-datamodels:** update ([aa6b35b](https://github.com/w4bo/welaser/commit/aa6b35bcf59d872a9277376903f2b0ce0770c524))
+
 ## [1.1.111](https://github.com/w4bo/welaser/compare/1.1.110...1.1.111) (2023-03-08)
 
 
