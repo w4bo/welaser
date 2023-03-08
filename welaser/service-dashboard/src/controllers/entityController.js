@@ -116,6 +116,19 @@ exports.entity = async function (req, res) {
 }
 
 /**
+ * Return the entity with a given id
+ */
+exports.historicEntities = async function (req, res) {
+    const domain = req.params.domain
+    const id = req.params.id
+    connect(function (dbo) {
+        dbo.collection(domain).find({"id": id}, {fields: {"_id": 0}}).toArray(function (err, result) {
+            send(res, err, result)
+        })
+    })
+}
+
+/**
  * Return the distinct entity types from the given domain
  */
 exports.entitytypes = async function (req, res) {

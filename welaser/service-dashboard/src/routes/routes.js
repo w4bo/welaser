@@ -6,6 +6,7 @@ module.exports = function (app) {
     app.route('/api/download/distinct/:domain/:datetimefrom/:datetimeto').get(entityController.downloadDistinctFromTo)
     app.route('/api/entitytypes/:domain').get(entityController.entitytypes)
     app.route('/api/entities/:domain').get(entityController.entities)
+    app.route('/api/entities/:domain/:id').get(entityController.historicEntities)
     app.route('/api/entity/:domain/:id').get(entityController.entity)
     app.use(function (req, res) {
         res.sendFile(appRoot + '/www/index.html')
