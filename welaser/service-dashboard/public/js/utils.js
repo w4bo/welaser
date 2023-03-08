@@ -75,6 +75,7 @@ utils.round = function (v, mult) {
 }
 
 utils.getRandomColor = function (v) {
+    if (v === "Camera") return utils.colors[5]
     return utils.colors[utils.hashCode(v) % utils.colors.length]
 }
 
