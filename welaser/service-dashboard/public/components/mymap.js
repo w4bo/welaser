@@ -108,7 +108,7 @@ const mymap = {
                         if (agrifarm[attr]) {
                             agrifarm[attr].forEach(function (id, index) {
                                 axios
-                                    .get(utils.orionurl + `entities/${id}?options=keyValues&attrs=location`)
+                                    .get(utils.orionurl + `entities/${id}?options=keyValues&attrs=location,name`)
                                     .then(loc => {
                                         let color = utils.colors[9]
                                         const type = loc.data.type
@@ -127,7 +127,7 @@ const mymap = {
                                             "properties": {},
                                             "geometry": { "type": loc.data.location.type,  "coordinates": loc.data.location.coordinates }
                                         }
-                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.id).addTo(tis.layerBoundary)
+                                        L.geoJSON(geojson, {style: myStyle}).bindPopup(loc.data.name).addTo(tis.layerBoundary)
                                     })
                             })
                         }
