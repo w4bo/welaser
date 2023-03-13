@@ -40,7 +40,7 @@ exports.downloadDistinctFromTo = async function (req, res) {
 }
 
 /**
- * Given a domain (i.e., collection), download all the entities within the selected time interval
+ * Given a domain (i.e., collection), count all the entities within the selected time interval
  */
 exports.downloadCountFromTo = async function (req, res) {
     connect(async function (dbo) {
@@ -53,6 +53,31 @@ exports.downloadCountFromTo = async function (req, res) {
                 }
             }, function (err, result) {
                 send(res, err, result.sort())
+            })
+    })
+}
+
+/**
+ * Given a domain (i.e., collection), count all the entities within the selected time interval
+ */
+exports.downloadStatsFromTo = async function (req, res) {
+    const pipeline = [
+        {
+            $match: {
+                'timestamp': {
+                    '$gte': parseInt(req.params.datetimefrom),
+                    '$lte': parseInt(req.params.datetimeto)
+                }
+            }
+        },
+        { $group: { "_id": { "$multiply": [{ "$round": [{ "$divide": ["$timestamp", 1000 * req.params.timestep] }, 0] }, 1000 * req.params.timestep] }, count: { $sum: 1 }, avg_delay_ocb: { $avg: { $subtract: ['$timestamp_subscription', '$timestamp'] } }, avg_delay_kafka: { $avg: { $subtract: ['$timestamp_kafka', '$timestamp'] } } } }
+    ];
+    connect(async function (dbo) {
+        await dbo
+            .collection(req.params.domain)
+            .aggregate(pipeline)
+            .toArray(function (err, data) {
+                send(res, err, data)
             })
     })
 }
