@@ -1,3 +1,11 @@
+## [1.1.113](https://github.com/w4bo/welaser/compare/1.1.112...1.1.113) (2023-03-08)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix color of the camera ([e0b6b5d](https://github.com/w4bo/welaser/commit/e0b6b5d695f3006032d29b6696a32ea58142ca31))
+* **service-dashboard:** fix the names on the tooltips ([4867498](https://github.com/w4bo/welaser/commit/486749836e3220480f0b53bc6b5f2e10153bc7ca))
+
 ## [1.1.112](https://github.com/w4bo/welaser/compare/1.1.111...1.1.112) (2023-03-08)
 
 
