@@ -30,8 +30,8 @@ exports.downloadDistinctFromTo = async function (req, res) {
             .collection(req.params.domain)
             .distinct("id", {
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             }, function (err, result) {
                 send(res, err, result.sort())
@@ -48,8 +48,8 @@ exports.downloadCountFromTo = async function (req, res) {
             .collection(req.params.domain)
             .count({
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             }, function (err, result) {
                 send(res, err, result.sort())
@@ -97,8 +97,8 @@ exports.downloadFromdateTodateSkipLimit = async function (req, res) {
             .collection(req.params.domain)
             .find({
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             })
             .sort({'timestamp_subscription': 1})
@@ -120,8 +120,8 @@ exports.downloadTypeFromdateTodateSkipLimit = async function (req, res) {
             .find({
                 'type': req.params.entitytype,
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             })
             .sort({'timestamp_subscription': 1})
