@@ -30,8 +30,8 @@ exports.downloadDistinctFromTo = async function (req, res) {
             .collection(req.params.domain)
             .distinct("id", {
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             }, function (err, result) {
                 send(res, err, result.sort())
@@ -48,8 +48,8 @@ exports.downloadCountFromTo = async function (req, res) {
             .collection(req.params.domain)
             .count({
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             }, function (err, result) {
                 send(res, err, result.sort())
@@ -61,21 +61,27 @@ exports.downloadCountFromTo = async function (req, res) {
  * Given a domain (i.e., collection), count all the entities within the selected time interval
  */
 exports.downloadStatsFromTo = async function (req, res) {
-    const pipeline = [
-        {
-            $match: {
-                'timestamp': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
-                }
-            }
-        },
-        { $group: { "_id": { "$multiply": [{ "$round": [{ "$divide": ["$timestamp", 1000 * req.params.timestep] }, 0] }, 1000 * req.params.timestep] }, count: { $sum: 1 }, avg_delay_ocb: { $avg: { $subtract: ['$timestamp_subscription', '$timestamp'] } }, avg_delay_kafka: { $avg: { $subtract: ['$timestamp_kafka', '$timestamp'] } } } }
-    ];
     connect(async function (dbo) {
         await dbo
             .collection(req.params.domain)
-            .aggregate(pipeline)
+            .aggregate([
+                {
+                    $match: {
+                        'timestamp': {
+                            '$gte': parseFloat(req.params.datetimefrom),
+                            '$lte': parseFloat(req.params.datetimeto)
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        "_id": {"$multiply": [{"$round": [{"$divide": ["$timestamp", 1000 * req.params.timestep]}, 0]}, 1000 * req.params.timestep]},
+                        count: {$sum: 1},
+                        avg_delay_ocb: {$avg: {$subtract: ['$timestamp_subscription', '$timestamp']}},
+                        avg_delay_kafka: {$avg: {$subtract: ['$timestamp_kafka', '$timestamp']}}
+                    }
+                }
+            ])
             .toArray(function (err, data) {
                 send(res, err, data)
             })
@@ -91,8 +97,8 @@ exports.downloadFromdateTodateSkipLimit = async function (req, res) {
             .collection(req.params.domain)
             .find({
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             })
             .sort({'timestamp_subscription': 1})
@@ -114,8 +120,8 @@ exports.downloadTypeFromdateTodateSkipLimit = async function (req, res) {
             .find({
                 'type': req.params.entitytype,
                 'timestamp_subscription': {
-                    '$gte': parseInt(req.params.datetimefrom),
-                    '$lte': parseInt(req.params.datetimeto)
+                    '$gte': parseFloat(req.params.datetimefrom),
+                    '$lte': parseFloat(req.params.datetimeto)
                 }
             })
             .sort({'timestamp_subscription': 1})

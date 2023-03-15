@@ -4,6 +4,7 @@ filelist.txt
 **/datamodels/**/*.json
 **/testScripts/*.svg
 **/testScripts/*.pdf
+**/testScripts/*.csv
 **/images-dump/**
 !**/images-dump/.dummy
 **/mongodb/**
