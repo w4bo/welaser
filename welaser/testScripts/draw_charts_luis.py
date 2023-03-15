@@ -19,9 +19,9 @@ response = requests.request("GET", url)
 assert (response.status_code == 200)
 df = pd.DataFrame.from_records(json.loads(response.text)).sort_values(by=["_id"]).rename({"_id": "timestamp"}, axis=1)
 assert (len(df) > 0)
-df["timestamp"] = df["timestamp"].apply(lambda x: dt.datetime.fromtimestamp(x / 1000))
+df = df.round(2)
+df["timestamp"] = df["timestamp"].apply(lambda x: dt.datetime.fromtimestamp(x / 1000) + dt.timedelta(microseconds = 1))
 name = "stats-{}-{}-{}".format(fromdate, todate, timestep)
-print(df)
 df.to_csv("{}.csv".format(name), index=False)
 
 fig, axs = plt.subplots(1, 2, figsize=(4 * 2, 3 * 1))
@@ -35,7 +35,7 @@ axs[1].set_title("Delay (ms) by time")
 axs[1].set_ylabel("Delay (ms)")
 
 for ax in axs:
-    ax.set_xlabel('Time (s)')
+    ax.set_xlabel('Time')
     xfmt = md.DateFormatter('%Y-%m-%d %H:%M:%S')
     ax.xaxis.set_major_formatter(xfmt)
     # show the grid
