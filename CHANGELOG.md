@@ -1,3 +1,15 @@
+## [1.1.114](https://github.com/w4bo/welaser/compare/1.1.113...1.1.114) (2023-03-15)
+
+
+### Bug Fixes
+
+* **service-dashboard:** export stats ([99199fe](https://github.com/w4bo/welaser/commit/99199fe3709f764362d2e86dc168b2a498e673f0))
+
+
+### Dependency updates
+
+* **deps:** update dependency urllib3 to v1.26.15 ([66f7208](https://github.com/w4bo/welaser/commit/66f7208479b9270caca57486a6a117e7eb3a0f6f))
+
 ## [1.1.113](https://github.com/w4bo/welaser/compare/1.1.112...1.1.113) (2023-03-08)
 
 
