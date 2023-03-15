@@ -1,3 +1,11 @@
+## [1.1.115](https://github.com/w4bo/welaser/compare/1.1.114...1.1.115) (2023-03-15)
+
+
+### Bug Fixes
+
+* **imagewriter:** do not push the updated links back to the OCB ([#461](https://github.com/w4bo/welaser/issues/461)) ([6ec570b](https://github.com/w4bo/welaser/commit/6ec570b81ebb555de9a7a85a3b31254cc25bf951))
+* **service-dashboard:** add API to download statistics ([#459](https://github.com/w4bo/welaser/issues/459)) ([3a0e9bb](https://github.com/w4bo/welaser/commit/3a0e9bb973da78cb1855472bbe50f00793080f27))
+
 ## [1.1.114](https://github.com/w4bo/welaser/compare/1.1.113...1.1.114) (2023-03-15)
 
 
