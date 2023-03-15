@@ -5,6 +5,10 @@ package it.unibo.writetomongo
 import com.mongodb.client.MongoClients
 import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.DOMAIN
+import it.unibo.IMAGE_URL
+import it.unibo.writeimages.ftpImageName
+import it.unibo.writeimages.getExt
+import it.unibo.writeimages.upload
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -13,6 +17,7 @@ import org.bson.Document
 import org.json.JSONObject
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.regex.Pattern
 
 // NB: comments from the dotenv file will be loaded as strings as well! Be careful!
@@ -66,10 +71,19 @@ fun consumeFromKafka(group: String, consume: (JSONObject) -> Unit) {
 fun main() {
     // create a mongodb client
     val mongoClient = MongoClients.create("mongodb://${dotenv["MONGO_DB_PERS_IP"]}:${dotenv["MONGO_DB_PERS_PORT_EXT"]}")
+    val executor = Executors.newFixedThreadPool(5) // .newCachedThreadPool() Need this to limit the connections
     consumeFromKafka("writetomongo") { data ->
-        mongoClient
-            .getDatabase(dotenv["MONGO_DB_PERS_DB"])
-            .getCollection(data.getString(DOMAIN))
-            .insertOne(Document.parse(data.toString()))
+        executor.submit {
+            // if the object has an imageSnapshot, replace it in the historic data
+            if (data.has(IMAGE_URL)) {
+                val filename = ftpImageName(data, IMAGE_URL, getExt(data.getString(IMAGE_URL)))
+                data.put(IMAGE_URL, "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}")
+            }
+            mongoClient
+                    .getDatabase(dotenv["MONGO_DB_PERS_DB"])
+                    .getCollection(data.getString(DOMAIN))
+                    .insertOne(Document.parse(data.toString()))
+        }
     }
+    mongoClient.close()
 }

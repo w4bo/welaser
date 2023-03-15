@@ -67,7 +67,8 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
         val curUrl = obj.getString(attr)
         if (curUrl.isNotEmpty() && !curUrl.contains(dotenv["IMAGESERVER_IP"])) {
             try {
-                val id = obj.getString("id")
+                // val id = obj.getString("id")
+                // println("Received")
                 val filename = ftpImageName(obj, attr, getExt(curUrl))
                 URL(curUrl).openStream().use {
                     val ftpClient = createFTPClient()
@@ -86,17 +87,22 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
                     } else {
                         uploaded.add(filename)
                     }
+                    // println("Written $filename")
                 }
-                val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
-                val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
-                if (async) {
-                    khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
-                } else {
-                    val r = khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
-                    if (r.statusCode != 204) {
-                        throw IllegalArgumentException(r.text)
-                    }
-                }
+                // DO NOT UPDATE THE ENTITY ON FIWARE, the entity will be uploaded not on fiware but on the historic data
+                // by write to mongo. This is necessary to avoid burdening the OCB with unnecessary data. Also, if this process
+                // is slower than then GUI, then on the GUI the user will perceive delayed image updates (e.g., the user is seeing image#10,
+                // but then it receives an update for image#4
+                // val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
+                // val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
+                // if (async) {
+                //     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
+                // } else {
+                //     val r = khttp.patch(url, mapOf(CONTENTTYPE), data = payload)
+                //     if (r.statusCode != 204) {
+                //         throw IllegalArgumentException(r.text)
+                //     }
+                // }
             } catch (e: Exception) {
                 print(e.message)
                 e.printStackTrace()
@@ -107,7 +113,7 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
 }
 
 fun main() {
-    val executor = Executors.newFixedThreadPool(3)
+    val executor = Executors.newFixedThreadPool(5) // .newCachedThreadPool() Need this to limit the connections
     consumeFromKafka("writeimages") { obj ->
         executor.submit { upload(obj) }
     }
