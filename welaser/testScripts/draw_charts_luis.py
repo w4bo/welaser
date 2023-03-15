@@ -21,7 +21,7 @@ df = pd.DataFrame.from_records(json.loads(response.text)).sort_values(by=["_id"]
 assert (len(df) > 0)
 df["timestamp"] = df["timestamp"].apply(lambda x: dt.datetime.fromtimestamp(x / 1000))
 name = "stats-{}-{}-{}".format(fromdate, todate, timestep)
-
+print(df)
 df.to_csv("{}.csv".format(name), index=False)
 
 fig, axs = plt.subplots(1, 2, figsize=(4 * 2, 3 * 1))
@@ -45,4 +45,3 @@ for ax in axs:
 fig.tight_layout()
 fig.savefig("{}.svg".format(name))
 fig.savefig("{}.pdf".format(name))
-print(df)
