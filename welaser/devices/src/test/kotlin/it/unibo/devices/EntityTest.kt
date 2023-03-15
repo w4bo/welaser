@@ -123,12 +123,12 @@ class EntityTest {
                 }
                 assertTrue(itemCount > 1) // the page also contains <a href="../">../</a>
             }
-            // Test update of the URL
-            val t = waitDevice(e, 1000L)
-            val obj = JSONArray(t).getJSONObject(0)
-            assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
-            assertTrue(obj.has(TIMESTAMP))
-            assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
+            // Test update of the URL. NO, the URL is not uploaded in FIWARE
+            // val t = waitDevice(e, 1000L)
+            // val obj = JSONArray(t).getJSONObject(0)
+            // assertTrue(obj.getString(IMAGE_URL).contains(dotenv["IMAGESERVER_IP"]), obj.getString(IMAGE_URL))
+            // assertTrue(obj.has(TIMESTAMP))
+            // assertEquals(khttp.get(obj.getString(IMAGE_URL)).statusCode, 200)
         } catch (e: Exception) {
             e.printStackTrace()
             fail(e.message)
