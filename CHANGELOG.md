@@ -1,3 +1,10 @@
+## [1.1.120](https://github.com/w4bo/welaser/compare/1.1.119...1.1.120) (2023-03-16)
+
+
+### Bug Fixes
+
+* **service-dashboard:** handle missions from multiple robots ([e0a7957](https://github.com/w4bo/welaser/commit/e0a795763a6a33b97a1d28d509395b098ea560eb))
+
 ## [1.1.119](https://github.com/w4bo/welaser/compare/1.1.118...1.1.119) (2023-03-16)
 
 
