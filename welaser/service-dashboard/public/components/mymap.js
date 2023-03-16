@@ -4,7 +4,7 @@ const mymap = {
         return {
             layerBoundary: null,
             layerStream: null,
-            layerHeatmap: null,
+            // layerHeatmap: null,
             layerControl: null,
             map: null,
             devicesLocation: {},
@@ -32,72 +32,64 @@ const mymap = {
             // creating the layers
             this.layerBoundary = L.layerGroup([]) // empty layer
             this.layerStream = L.layerGroup([]) // empty layer
-            this.layerHeatmap = L.layerGroup([]) // empty layer
+            // this.layerHeatmap = L.layerGroup([]) // empty layer
             const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
             // creating the map
             this.map = L.map('map', {center: utils.mapcenter, zoom: 17, layers: [satellite, this.layerBoundary, this.layerStream]})
             // add the layers to the group
             const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
-            const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream, "Weeding Heatmap": this.layerHeatmap }
+            const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream } // , "Weeding Heatmap": this.layerHeatmap
             this.layerControl = L.control.layers(baseMaps, overlayMaps).addTo(this.map)
         },
         updateAgriFarm() {
             const tis = this
             this.map.removeLayer(this.layerBoundary) // remove the layer, do not plot it twice
             this.map.removeLayer(this.layerStream) // remove the layer, do not plot it twice
-            this.map.removeLayer(this.layerHeatmap) // remove the layer, do not plot it twice
+            // this.map.removeLayer(this.layerHeatmap) // remove the layer, do not plot it twice
             this.layerControl.removeLayer(this.layerBoundary) // clean the existing layers
             this.layerControl.removeLayer(this.layerStream) // clean the existing layers
-            this.layerControl.removeLayer(this.layerHeatmap) // clean the existing layers
+            // this.layerControl.removeLayer(this.layerHeatmap) // clean the existing layers
             this.layerBoundary = L.layerGroup([]) // add the layer to the layer group
             this.layerStream = L.layerGroup([]) // add the layer to the layer group
 
 
-            var cfg = {
-                // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-                // if scaleRadius is false it will be the constant radius used in pixels
-                "radius": 20,
-                "maxOpacity": .8,
-                // scales the radius based on map zoom
-                // "scaleRadius": true,
-                // if set to false the heatmap uses the global maximum for colorization
-                // if activated: uses the data maximum within the current map boundaries
-                //   (there will always be a red spot with useLocalExtremas true)
-                // "useLocalExtrema": true,
-                // which field name in your data represents the latitude - default "lat"
-                latField: 'lat',
-                // which field name in your data represents the longitude - default "lng"
-                lngField: 'lng',
-                // which field name in your data represents the data value - default "value"
-                valueField: 'count'
-            };
-            this.layerHeatmap = new HeatmapOverlay(cfg);
+            // const cfg = {
+            //    // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+            //    // if scaleRadius is false it will be the constant radius used in pixels
+            //    "radius": 20,
+            //    "maxOpacity": .8,
+            //    // scales the radius based on map zoom
+            //    // "scaleRadius": true,
+            //    // if set to false the heatmap uses the global maximum for colorization
+            //    // if activated: uses the data maximum within the current map boundaries
+            //    //   (there will always be a red spot with useLocalExtremas true)
+            //    // "useLocalExtrema": true,
+            //    // which field name in your data represents the latitude - default "lat"
+            //    latField: 'lat',
+            //    // which field name in your data represents the longitude - default "lng"
+            //    lngField: 'lng',
+            //    // which field name in your data represents the data value - default "value"
+            //    valueField: 'count'
+            // }
+            // this.layerHeatmap = new HeatmapOverlay(cfg);
             this.layerControl.addOverlay(this.layerBoundary, "Boundaries")  // add the new layer
             this.layerControl.addOverlay(this.layerStream, "Stream")  // add the new layer
-            this.layerControl.addOverlay(this.layerHeatmap, "Weeding Heatmap")  // add the new layer
+            // this.layerControl.addOverlay(this.layerHeatmap, "Weeding Heatmap")  // add the new layer
             this.layerBoundary.addTo(this.map) // make the layer visible
             this.layerStream.addTo(this.map) // make the layer visible
-            this.layerHeatmap.addTo(this.map) // make the layer visible
+            // this.layerHeatmap.addTo(this.map) // make the layer visible
             
-            // don't forget to include leaflet-heatmap.js
-            const testData = {
-                max: 300,
-                data: []
-            };
-            
-            
-
-         
-            axios.get(utils.nodeurl + `/api/entities/${utils.agrifarm}/urn:ngsi-ld:Device:Laser-123`).then(entities => {
-                allentities = entities.data
-                console.log(entities)
-                allentities.forEach(entities => testData.data.push({"lat": entities.location.coordinates[1], "lng": entities.location.coordinates[0], "count": entities.value[0]}))
-                console.log(testData)
-                this.layerHeatmap.setData(testData);
-            })
-            
-
+            // Get laser data to fill the heatmap
+            // const testData = {
+            //     max: 300,
+            //     data: []
+            // }
+            // axios.get(utils.nodeurl + `/api/entities/${utils.agrifarm}/urn:ngsi-ld:Device:Laser-123`).then(entities => {
+            //     const allentities = entities.data
+            //     allentities.forEach(entities => testData.data.push({"lat": entities.location.coordinates[1], "lng": entities.location.coordinates[0], "count": entities.value[0]}))
+            //     this.layerHeatmap.setData(testData);
+            // })
 
             axios // get the selected agrifarm
                 .get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`)

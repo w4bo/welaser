@@ -197,7 +197,6 @@ const mapDashboard = {
                 if (m["name"] === mission || m["id"] === mission) {
                     this.dates.fromdate = moment(m["actualBeginTime"])
                     this.dates.todate = moment(m["actualEndTime"])
-                    return
                 }
             })
         },
