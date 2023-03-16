@@ -1,3 +1,11 @@
+## [1.1.119](https://github.com/w4bo/welaser/compare/1.1.118...1.1.119) (2023-03-16)
+
+
+### Bug Fixes
+
+* **service-dashboard:** refresh the gui with the latest robot command ([a574f90](https://github.com/w4bo/welaser/commit/a574f907043896c0b2b9cc364b8fc4dd908db173))
+* **service-dashboard:** remove the weeding heatmap ([78b1ad4](https://github.com/w4bo/welaser/commit/78b1ad4b2e75d52b5c192628262f91a1652a5863))
+
 ## [1.1.118](https://github.com/w4bo/welaser/compare/1.1.117...1.1.118) (2023-03-16)
 
 
