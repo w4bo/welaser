@@ -1,3 +1,10 @@
+## [1.1.118](https://github.com/w4bo/welaser/compare/1.1.117...1.1.118) (2023-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.5.0 ([#464](https://github.com/w4bo/welaser/issues/464)) ([bd28a84](https://github.com/w4bo/welaser/commit/bd28a84cbfa49073e3a0d11da6979140507e828e))
+
 ## [1.1.117](https://github.com/w4bo/welaser/compare/1.1.116...1.1.117) (2023-03-16)
 
 
