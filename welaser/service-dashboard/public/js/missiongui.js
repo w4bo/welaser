@@ -86,7 +86,8 @@ const missiongui = {
             pause: false,
             resume: false,
             mission: "",
-            missions: []
+            missions: [],
+            prevCommand: ""
         }
     },
     components: {
@@ -105,7 +106,7 @@ const missiongui = {
                 return ""
             }
         },
-        sendCommand(id, cmd) {
+        sendCommand(id, cmd, onelyrefreshgui=false) {
             let payload = {}
             if (cmd === "execute_mission") {
                 this.missionStarted()
@@ -125,7 +126,7 @@ const missiongui = {
             } else if (cmd === "resume") {
                 this.missionStarted()
             }
-            return utils.sendCommand(id, cmd, payload)
+            if (!onelyrefreshgui) utils.sendCommand(id, cmd, payload)
         },
         missionChosen() {
             this.choosemission = false
@@ -156,6 +157,13 @@ const missiongui = {
             let list = this.devices
             if (data.type === "AgriRobot") {
                 list = this.robots
+                if (this.isSelected(data)) {
+                    const lastCommand = Object.keys(data.cmd)[0]
+                    if (lastCommand !== this.prevCommand) {
+                        this.sendCommand(data.id, Object.keys(data.cmd)[0], true)
+                        this.prevCommand = lastCommand
+                    }
+                }
             }
             if (list[data.id]) { // if the device is known, update its data content
                 list[data.id]["data"] = data
@@ -177,7 +185,6 @@ const missiongui = {
             })
             tis.mission = tis.missions[0].id
         })
-        const remoteSocket = io.connect(utils.proxyurl) // connect to the Kafka proxy server
-        utils.kafkaProxyNewTopic(remoteSocket, config.DRACO_RAW_TOPIC + "." + utils.agrifarm, this.handleStreamData)
+        utils.kafkaProxyNewTopic(io.connect(utils.proxyurl) , config.DRACO_RAW_TOPIC + "." + utils.agrifarm, this.handleStreamData)
     }
 }
