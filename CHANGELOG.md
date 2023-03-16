@@ -1,3 +1,10 @@
+## [1.1.117](https://github.com/w4bo/welaser/compare/1.1.116...1.1.117) (2023-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency kafkajs to v2.2.4 ([09bd6b5](https://github.com/w4bo/welaser/commit/09bd6b5b96dbd6816a45c5381aef7b1f06322832))
+
 ## [1.1.116](https://github.com/w4bo/welaser/compare/1.1.115...1.1.116) (2023-03-16)
 
 
