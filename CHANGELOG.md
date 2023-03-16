@@ -1,3 +1,15 @@
+## [1.1.116](https://github.com/w4bo/welaser/compare/1.1.115...1.1.116) (2023-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.4.3 ([5e1f96c](https://github.com/w4bo/welaser/commit/5e1f96cee7b78f1869d86611fbbcf1ca9e0a5670))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.4.0 ([076aca1](https://github.com/w4bo/welaser/commit/076aca17a8c03b2c85f2a165a110c1ff40e0066b))
+
 ## [1.1.115](https://github.com/w4bo/welaser/compare/1.1.114...1.1.115) (2023-03-15)
 
 
