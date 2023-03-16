@@ -26,8 +26,8 @@ const missiongui = {
                                     <tr><td>Emergency</td><td>{{ device.data.status[device.data.serviceProvided.indexOf('emergency')]}}</td></tr>
                                     <!-- <tr><td>Speed</td><td>{{device.data.speed}}</td></tr>-->
                                     <!-- <tr><td>Bearing</td><td>{{device.data.bearing}}</td></tr>-->
-                                    <tr v-if="is('choosemission')">
-                                        <td><v-btn v-on:click="missionChosen()" class="m-1">Choose mission</v-btn></td>
+                                    <tr v-if="is(robots[device.data.id], 'choosemission')">
+                                        <td><v-btn v-on:click="missionChosen(robots[device.data.id])" class="m-1">Choose mission</v-btn></td>
                                         <td>
                                             <v-autocomplete :items="missions" item-value="id" item-text="name" v-model="mission" style="padding: 0" dense>
                                                 <template v-slot:item="data">
@@ -37,7 +37,7 @@ const missiongui = {
                                         </td>
                                     </tr>
                                     <template v-for="cmd in device.data.cmdList">
-                                        <tr v-if="is(cmd)"><td colspan="2"><v-btn v-on:click="sendCommand(device.data.id, cmd)" class="m-1" style="width: 98%"> {{cmd}} </v-btn></td></tr>
+                                        <tr v-if="is(robots[device.data.id], cmd)"><td colspan="2"><v-btn v-on:click="sendCommand(robots[device.data.id], cmd)" class="m-1" style="width: 98%"> {{cmd}} </v-btn></td></tr>
                                     </template>
                                 </table> 
                             </v-card-text>
@@ -80,14 +80,8 @@ const missiongui = {
         return {
             devices: {},
             robots: {},
-            choosemission: true,
-            execute_mission: false,
-            abort: false,
-            pause: false,
-            resume: false,
             mission: "",
-            missions: [],
-            prevCommand: ""
+            missions: []
         }
     },
     components: {
@@ -106,44 +100,48 @@ const missiongui = {
                 return ""
             }
         },
-        sendCommand(id, cmd, onelyrefreshgui=false) {
+        sendCommand(robot, cmd, onelyrefreshgui=false) {
             let payload = {}
             if (cmd === "execute_mission") {
-                this.missionStarted()
+                this.missionStarted(robot)
                 payload = {"missionid": this.mission}
             } else if (cmd === "abort") {
-                this.choosemission = true
-                this.execute_mission = false
-                this.abort = false
-                this.pause = false
-                this.resume = false
+                robot.choosemission = true
+                robot.execute_mission = false
+                robot.abort = false
+                robot.pause = false
+                robot.resume = false
             } else if (cmd === "pause") {
-                this.choosemission = false
-                this.execute_mission = false
-                this.abort = true
-                this.pause = false
-                this.resume = true
+                robot.choosemission = false
+                robot.execute_mission = false
+                robot.abort = true
+                robot.pause = false
+                robot.resume = true
             } else if (cmd === "resume") {
-                this.missionStarted()
+                this.missionStarted(robot)
             }
-            if (!onelyrefreshgui) utils.sendCommand(id, cmd, payload)
+            if (!onelyrefreshgui) {
+                utils.sendCommand(robot.data.id, cmd, payload)
+            }
         },
-        missionChosen() {
-            this.choosemission = false
-            this.execute_mission = true
-            this.abort = false
-            this.pause = false
-            this.resume = false
+        missionChosen(robot) {
+            robot.choosemission = false
+            robot.execute_mission = true
+            robot.abort = false
+            robot.pause = false
+            robot.resume = false
         },
-        missionStarted() {
-            this.choosemission = false
-            this.execute_mission = false
-            this.abort = true
-            this.pause = true
-            this.resume = false
+        missionStarted(robot) {
+            robot.choosemission = false
+            robot.execute_mission = false
+            robot.abort = true
+            robot.pause = true
+            robot.resume = false
         },
-        is(str) {
-            return this[str]
+        is(robot, str) {
+            // console.log(JSON.parse(JSON.stringify(robot)))
+            // console.log(str)
+            return robot[str]
         },
         getName(device) {
             return utils.getName(device)
@@ -157,25 +155,36 @@ const missiongui = {
             let list = this.devices
             if (data.type === "AgriRobot") {
                 list = this.robots
-                if (this.isSelected(data)) {
-                    const lastCommand = Object.keys(data.cmd)[0]
-                    if (lastCommand !== this.prevCommand) {
-                        this.sendCommand(data.id, Object.keys(data.cmd)[0], true)
-                        this.prevCommand = lastCommand
-                    }
-                }
             }
             if (list[data.id]) { // if the device is known, update its data content
                 list[data.id]["data"] = data
             } else { // else, create it
                 this.$set(list, data.id, {'data': data, 'color': utils.getRandomColor(data.type)})
             }
+
+            if (data.type === "AgriRobot") {
+                const robot = list[data.id]
+                const lastCommand = Object.keys(data.cmd)[0]
+                if (lastCommand !== robot.prevCommand) {
+                    this.sendCommand(robot, Object.keys(data.cmd)[0], true)
+                    robot.prevCommand = lastCommand
+                }
+            }
         },
     },
     mounted() {
         const tis = this
         utils.getDevices(this, "Camera", this.devices)
-        utils.getDevices(this, "AgriRobot", this.robots)
+        utils.getDevices(this, "AgriRobot", this.robots, robots => {
+            Object.values(robots).forEach(robot => {
+                robot.choosemission = true
+                robot.execute_mission = false
+                robot.abort = false
+                robot.pause = false
+                robot.resume = false
+                robot.prevCommand = ""
+            })
+        })
         utils.getDevices(this, "Task", {}, function(acc) {
             Object.values(acc).forEach(function(task) {
                 task = task.data
