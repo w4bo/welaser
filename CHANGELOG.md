@@ -1,3 +1,16 @@
+## [1.1.121](https://github.com/w4bo/welaser/compare/1.1.120...1.1.121) (2023-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.7 ([898c235](https://github.com/w4bo/welaser/commit/898c235a9c875c7632bbeb50e690c2ec3df083f7))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.17 ([#466](https://github.com/w4bo/welaser/issues/466)) ([975e20a](https://github.com/w4bo/welaser/commit/975e20a060e12a2581752ad4d608b72537c49544))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.19 ([f890b1b](https://github.com/w4bo/welaser/commit/f890b1b7672eeb779804f0165701ae4f32365f91))
+
 ## [1.1.120](https://github.com/w4bo/welaser/compare/1.1.119...1.1.120) (2023-03-16)
 
 
