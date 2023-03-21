@@ -11,7 +11,7 @@ conf = dotenv_values("../.env")
 orion_url = "http://{}:{}/v2/".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
 options = "&options=keyValues&limit=1000"
 url_farm = orion_url + "entities?type=AgriFarm" + options
-url_therm = orion_url + "entities?type=MQTT-Thermometer" + options
+url_therm = orion_url + "entities?q=createdBy==MQTT" + options
 url_agrirobot = orion_url + "entities?type=AgriRobot" + options
 
 
@@ -33,7 +33,7 @@ def wait_for(description, url, attr_dom_name="foo", domain="bar", check_domain=T
 
 
 domain = wait_for("Looking for farm at: ", url_farm, check_domain=False)["id"]
-thermometer = wait_for("Looking for MQTT-Thermometer at: ", url_therm, attr_dom_name="areaServed", domain=domain)
+thermometer = wait_for("Looking for MQTT Thermometer at: ", url_therm, attr_dom_name="areaServed", domain=domain)
 thermometer_id = thermometer["id"]
 assert (len(thermometer_id) > 0)
 assert (thermometer["location"]["coordinates"][0] >= -180)  # longitude

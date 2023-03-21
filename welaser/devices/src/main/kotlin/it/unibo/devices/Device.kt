@@ -449,8 +449,9 @@ class DeviceMQTT(
     override fun getStatus(): String {
         return """{
                 ${updateSensor()},
-                "status":       "$status",
-                "$TIMESTAMP":   ${System.currentTimeMillis()},
+                "createdBy":  "MQTT",
+                "status":     "$status",
+                "$TIMESTAMP": ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
                     "coordinates": [
