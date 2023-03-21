@@ -107,7 +107,7 @@ class IOTA {
                     khttp.async.post(
                             "${ORION_URL}op/update?options=keyValues",
                             mapOf("Content-Type" to "application/json"),
-                            data = payload.toString().replace("=", "%3D").replace("%", "%25"),
+                            data = payload.toString().replace("%", "%25").replace("=", "%3D"),
                             onResponse = {
                                 if ((statusCode / 100) != 2) {
                                     println("Error [$statusCode] $text $payload")
