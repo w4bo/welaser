@@ -6,8 +6,8 @@ conf = dotenv_values("../.env")
 
 dict = {}
 m, i = -1, 0
-url = "http://{}:{}/v2/entities?type=MQTT-Thermometer&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
-print("Looking for at least 5 pings from MQTT-Thermometer at: " + url)
+url = "http://{}:{}/v2/entities?q=createdBy==MQTT&options=keyValues&limit=1000".format(conf["ORION_IP"], conf["ORION_PORT_EXT"])
+print("Looking for at least 5 pings from MQTT Thermometer at: " + url)
 while i < 180 and m < 5:
     if i > 0:
         time.sleep(1)
