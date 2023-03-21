@@ -91,8 +91,10 @@ utils.renderRows = function(data, hideDetails) {
             if (typeof value === "object") {
                 html += utils.renderRows(value, hideDetails)
             } else {
-                if (typeof value == 'string') value = decodeURI(value.trim())
-                const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+                if (typeof value == 'string') {
+                    try { value = decodeURI(value.trim()) } catch (e) {}
+                }
+                const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
                 if (value !== "") {
                     if (typeof value === 'string' && value.length > 100 && base64regex.test(value)) {
                         html += `<img src="data:image/png;base64,${value}" width="100%" alt="Broken image: ${value}">`
