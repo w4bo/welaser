@@ -1,3 +1,10 @@
+## [1.1.123](https://github.com/w4bo/welaser/compare/1.1.122...1.1.123) (2023-03-21)
+
+
+### Bug Fixes
+
+* **iota:** allows to create new attributes in entities ([#470](https://github.com/w4bo/welaser/issues/470)) ([40e6ef8](https://github.com/w4bo/welaser/commit/40e6ef8940e539bf69a8e5cae977dc634605ff2c))
+
 ## [1.1.122](https://github.com/w4bo/welaser/compare/1.1.121...1.1.122) (2023-03-21)
 
 
