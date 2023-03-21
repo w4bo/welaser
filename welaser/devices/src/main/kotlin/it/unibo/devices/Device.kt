@@ -63,6 +63,7 @@ fun createEntity(id: String, type: String, domain: String, status: String, latit
                 ${if (append != "") ", $append" else { "" }}
             }""".replace("\\s+".toRegex(), " ")
 }
+
 /**
  * Some entity types
  */
@@ -270,7 +271,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    open val id: String = "urn:ngsi-ld:" + getType().toString() + getId()
+    open val id: String = "urn:ngsi-ld:Device:" + getType().toString() + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -443,13 +444,14 @@ class DeviceMQTT(
     override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
     override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
 
-    override fun getRegister(): String = createEntity(id, "MQTT-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
+    override fun getRegister(): String = createEntity(id, "Device", domain, status.toString(), latitude, longitude, append = updateSensor())
 
     override fun getStatus(): String {
         return """{
                 ${updateSensor()},
-                "status":          "$status",
-                "$TIMESTAMP":       ${System.currentTimeMillis()},
+                "createdBy":  "MQTT",
+                "status":     "$status",
+                "$TIMESTAMP": ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
                     "coordinates": [

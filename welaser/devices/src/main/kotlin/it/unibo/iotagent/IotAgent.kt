@@ -2,6 +2,7 @@
 
 package it.unibo.iotagent
 
+import com.mongodb.util.JSON
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -9,6 +10,9 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.ID
+import it.unibo.TIMESTAMP_IOTA
+import it.unibo.TYPE
 import it.unibo.devices.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -86,13 +90,29 @@ class IOTA {
         client.subscribe("#", 0) { topic, message ->
             if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
                 try {
-                    val deviceid = topic.split("/")[2]
-                    val payload = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
-                    payload.put("timestamp_iota", System.currentTimeMillis())
-                    khttp.async.patch(
-                        "${ORION_URL}entities/$deviceid/attrs?options=keyValues",
-                        mapOf("Content-Type" to "application/json"),
-                        data = payload.toString().replace("=", "%3D")
+                    val entity = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
+                    entity.put(TIMESTAMP_IOTA, System.currentTimeMillis())
+                    if (!entity.has(ID)) {
+                        entity.put(ID, topic.split("/")[2])
+                    }
+                    if (!entity.has(TYPE)) { // we assume the id to be urn:ngsi-ld:<TYPE>:<whatever>
+                        entity.put(TYPE, topic.split("/")[2].split(":")[2])
+                    }
+                    val payload = JSONObject()
+                    // https://fiware-orion.readthedocs.io/en/1.15.1/user/update_action_types/index.html
+                    payload.put("actionType", "append")
+                    payload.put("entities", listOf(entity))
+                    // Cannot use patch, some attributes might not be defined
+                    // khttp.async.patch("${ORION_URL}entities/$deviceid/attrs?options=keyValues",
+                    khttp.async.post(
+                            "${ORION_URL}op/update?options=keyValues",
+                            mapOf("Content-Type" to "application/json"),
+                            data = payload.toString().replace("=", "%3D"),
+                            onResponse = {
+                                if ((statusCode / 100) != 2) {
+                                    println("Error [$statusCode] $text $payload")
+                                }
+                            }
                     )
                 } catch (e: Exception) {
                     println(e.message)
