@@ -2,8 +2,8 @@
 
 package it.unibo.devices
 
-import it.unibo.DATA_MODEL_FOLDER
 import it.unibo.AGRI_FARM
+import it.unibo.DATA_MODEL_FOLDER
 import it.unibo.FARM_LATITUDE
 import it.unibo.FARM_LONGITUDE
 import java.lang.Math.pow

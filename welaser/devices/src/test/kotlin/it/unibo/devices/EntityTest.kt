@@ -64,9 +64,9 @@ class EntityTest {
             val r = createFromFile("$folder/$ROBOT_FILE", 1, times = 1000)
             r.exec(ROBOT_CMD_START, """{"missionid": "$MISSION_ID"}""")
             r.run()
-            khttp.async.patch("${ORION_URL}entities/${ROBOT_ID}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
+            khttp.async.patch("${ORION_URL}entities/${ROBOT_ID}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"$CMD": {"$ROBOT_CMD_PAUSE" : {}}}""", onResponse = {
                 waitFor(r, STATUS.OFF)
-                khttp.async.patch("${ORION_URL}entities/${ROBOT_ID}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
+                khttp.async.patch("${ORION_URL}entities/${ROBOT_ID}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"$CMD": {"$ROBOT_CMD_RESUME" : {}}}""", onResponse = {
                     waitFor(r, STATUS.ON)
                 })
             })
@@ -142,9 +142,9 @@ class EntityTest {
             val s = waitDevice(d)
             assertTrue(s.contains(d.id))
             assertTrue(d.status == STATUS.ON)
-            khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"off" : {}}}""", onResponse = {
+            khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"$CMD": {"off" : {}}}""", onResponse = {
                 waitFor(d, STATUS.OFF)
-                khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"cmd": {"on" : {}}}""", onResponse = {
+                khttp.async.patch("${ORION_URL}entities/${d.id}/attrs?options=keyValues", mapOf(CONTENTTYPE), data = """{"$CMD": {"on" : {}}}""", onResponse = {
                     waitFor(d, STATUS.ON)
                 })
             })

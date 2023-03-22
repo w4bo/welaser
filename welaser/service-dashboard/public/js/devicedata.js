@@ -26,7 +26,7 @@ const devicedata = {
         return {
             devices: {},
             options: utils.dataTimeOptions,
-            fromdate: moment().subtract(1, "days"),
+            fromdate: moment().subtract(5, "minutes"), // moment().subtract(1, "days"),
             todate: moment(),
             charts: []
         }
@@ -42,76 +42,111 @@ const devicedata = {
             // for each device from the history... if the device has some controlled properties
             if (device.controlledProperty) { // this is not a nested device
                 let i = 0 // for each controlled property
-                device.controlledProperty.forEach(function (property) {
-                    // set the controlled properties in the root
-                    let props = tis.devices[root.id].controlledProperty
-                    if (typeof props === "undefined") {
-                        props = []
-                        tis.$set(tis.devices[root.id], "controlledProperty", props)
-                    }
-                    if (!props.includes(property)) {
-                        props.push(property)
-                    }
+                try {
+                    device.controlledProperty.forEach(function (property) {
+                        // set the controlled properties in the root
+                        let props = tis.devices[root.id].controlledProperty
+                        if (typeof props === "undefined") {
+                            props = []
+                            tis.$set(tis.devices[root.id], "controlledProperty", props)
+                        }
+                        if (!props.includes(property)) {
+                            props.push(property)
+                        }
 
-                    let p = tis.devices[root.id][property] // check if the property has been collected
-                    if (typeof p === "undefined") {
-                        p = {"notempty": false}
-                        tis.$set(tis.devices[root.id], property, p)
-                    }
-                    p = p[device.name] // check if the current id has been collected
-                    if (typeof p === "undefined") {
-                        p = {'timestamp': [], 'value': []}
-                        tis.$set(tis.devices[root.id][property], device.name, p)
-                    }
-                    if (!isNaN(device.value[i])) {
-                        tis.devices[root.id][property].notempty = true
-                        p.value.push(device.value[i])
-                        if (device.timestamp) { p.timestamp.push(utils.round(device.timestamp, 1))}
-                        else { p.timestamp.push(utils.round(root.timestamp, 1)) }
-                    }
-                    i += 1
-                })
+                        let p = tis.devices[root.id][property] // check if the property has been collected
+                        if (typeof p === "undefined") {
+                            p = {"notempty": false}
+                            tis.$set(tis.devices[root.id], property, p)
+                        }
+                        p = p[device.name] // check if the current id has been collected
+                        if (typeof p === "undefined") {
+                            p = {'timestamp': [], 'value': []}
+                            tis.$set(tis.devices[root.id][property], device.name, p)
+                        }
+                        if (!isNaN(device.value[i])) {
+                            tis.devices[root.id][property].notempty = true
+                            p.value.push(device.value[i])
+                            if (device.timestamp) { p.timestamp.push(utils.round(device.timestamp, 1))}
+                            else { p.timestamp.push(utils.round(root.timestamp, 1)) }
+                        }
+                        i += 1
+                    })
+                } catch (e) {
+                    console.log(e)
+                    console.log(device)
+                }
             } else { // this is a nested device (i.e., a list of devices)
-                device.value.forEach(function (nesteddevice) {
-                    tis.iterate(nesteddevice, tis, root)
-                })
+                try {
+                    device.value.forEach(function (nesteddevice) {
+                        tis.iterate(nesteddevice, tis, root)
+                    })
+                } catch (e) {
+                    console.log(e)
+                    console.log(device)
+                }
             }
         },
         plot() {
             const tis = this
             for (const [deviceid, device] of Object.entries(tis.devices)) {
-                device.controlledProperty.forEach(function (property) {
-                    const datasets = {
-                        fill: false,
-                        datasets: []
-                    }
-                    let i = 0
-                    for (const [name, p] of Object.entries(device[property])) {
-                        if (name !== "notempty") {
-                            datasets.labels = p.timestamp
-                            datasets.datasets.push({
-                                data: p.value,
-                                label: name,
-                                borderColor: utils.colors[i],
-                                backgroundColor: utils.colors[i++ % utils.colors.length]
-                            })
+                try {
+                    device.controlledProperty.forEach(function (property) {
+                        const datasets = {
+                            fill: false,
+                            datasets: []
                         }
-                    }
-                    const ctx = document.getElementById(deviceid + "-" + property).getContext("2d");
-                    const c = new Chart(ctx, {
-                        type: 'line', data: datasets, options: {
-                            animation: false,
-                            responsive: true,
-                            legend: {position: 'bottom'},
-                            hover: {mode: 'label'},
-                            scales: {
-                                x: {display: true},
-                                y: {display: true}
-                            },
+                        let i = 0
+                        for (const [name, p] of Object.entries(device[property])) {
+                            if (name !== "notempty") {
+                                datasets.labels = p.timestamp
+                                datasets.datasets.push({
+                                    data: p.value,
+                                    label: name,
+                                    borderColor: utils.colors[i],
+                                    backgroundColor: utils.colors[i++ % utils.colors.length]
+                                })
+                            }
                         }
+                        const ctx = document.getElementById(deviceid + "-" + property).getContext("2d");
+                        console.log("foo")
+                        const c = new Chart(ctx, {
+                            type: 'line', data: datasets, options: {
+                                animation: false,
+                                responsive: true,
+                                legend: {position: 'bottom'},
+                                hover: {mode: 'label'},
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        type: 'time',
+                                        time: {
+                                            unit: 'second',
+                                            parsing: false,
+                                            displayFormats: {
+                                                'millisecond': 'YYYY-MM-DD hh:mm:ss',
+                                                'second': 'YYYY-MM-DD hh:mm:ss',
+                                                'minute': 'YYYY-MM-DD hh:mm:ss',
+                                                'hour': 'YYYY-MM-DD hh:mm:ss',
+                                                'day': 'YYYY-MM-DD hh:mm:ss',
+                                                'week': 'YYYY-MM-DD hh:mm:ss',
+                                                'month': 'YYYY-MM-DD hh:mm:ss',
+                                                'quarter': 'YYYY-MM-DD hh:mm:ss',
+                                                'year': 'YYYY-MM-DD hh:mm:ss'
+                                            }
+                                        },
+
+                                    },
+                                    y: {display: true}
+                                },
+                            }
+                        })
+                        tis.charts.push(c)
                     })
-                    tis.charts.push(c)
-                })
+                } catch (e) {
+                    console.log(e)
+                    console.log(device)
+                }
             }
         },
         update() {
@@ -123,12 +158,12 @@ const devicedata = {
             const tis = this
             const min = parseFloat(moment(this.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x'))
             const max = parseFloat(moment(this.todate, 'DD/MM/YYYY HH:mm:ss').format('x'))
-            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000000`)
+            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000`)
                 .then(entities => {
                     entities.data.forEach(function (device) {
                         tis.iterate(device, tis, device)
                     })
-                    this.$forceUpdate();
+                    this.$forceUpdate()
                     setTimeout(this.plot, 1000)
                 })
         }
