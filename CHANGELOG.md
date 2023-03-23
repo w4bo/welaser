@@ -1,3 +1,10 @@
+## [1.1.124](https://github.com/w4bo/welaser/compare/1.1.123...1.1.124) (2023-03-23)
+
+
+### Bug Fixes
+
+* **iota:** ingest and visualize device data from MQTT ([#471](https://github.com/w4bo/welaser/issues/471)) ([e114085](https://github.com/w4bo/welaser/commit/e1140858cdd4d6f84cb672ae0acf0169dd5653b7))
+
 ## [1.1.123](https://github.com/w4bo/welaser/compare/1.1.122...1.1.123) (2023-03-21)
 
 
