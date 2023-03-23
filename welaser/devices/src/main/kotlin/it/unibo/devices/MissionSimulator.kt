@@ -6,7 +6,6 @@ import it.unibo.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
-import org.json.JSONObject
 import java.util.concurrent.Executors
 
 fun main(args: Array<String>) {

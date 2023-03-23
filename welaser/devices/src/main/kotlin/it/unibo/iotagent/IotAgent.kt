@@ -2,7 +2,6 @@
 
 package it.unibo.iotagent
 
-import com.mongodb.util.JSON
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -10,6 +9,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.CMD
 import it.unibo.ID
 import it.unibo.TIMESTAMP_IOTA
 import it.unibo.TYPE
@@ -66,7 +66,7 @@ class IOTA {
                             val payload = JSONObject(call.receive<String>())
                             payload.getJSONArray("data").forEach {
                                 val o = JSONObject(it.toString())
-                                client.publish("/$FIWARE_API_KEY/${o.getString("id")}/cmd", MqttMessage(payload.toString().toByteArray()))
+                                client.publish("/$FIWARE_API_KEY/${o.getString("id")}/$CMD", MqttMessage(payload.toString().toByteArray()))
                             }
                             call.respondText("")
                         } catch (e: Exception) {
@@ -88,7 +88,7 @@ class IOTA {
         client.connect(connOpts)
         // subscribe to all mqtt messages
         client.subscribe("#", 0) { topic, message ->
-            if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/cmd")) {
+            if (topic.contains(FIWARE_API_KEY) && !topic.endsWith("/$CMD")) {
                 try {
                     val entity = JSONObject(String(message!!.payload)) // check that this is a valid JSON object
                     entity.put(TIMESTAMP_IOTA, System.currentTimeMillis())

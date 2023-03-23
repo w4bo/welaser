@@ -10,7 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import it.unibo.*
 import mu.KotlinLogging
-import org.apache.commons.io.IOUtils
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.eclipse.paho.client.mqttv3.IMqttClient
@@ -46,13 +45,15 @@ val CONTENTTYPE = "Content-Type" to "application/json"
 
 fun createEntity(id: String, type: String, domain: String, status: String, latitude: Double, longitude: Double, append: String = ""): String {
     return """{
-                "id":              "$id",
-                "$TYPE":           "$type",
+                "$ID":             "$id",
+                "$NAME":           "${id.subSequence(id.lastIndexOf(":") + 1, id.length)}",
+                "$TYPE":           "$DEVICE",
+                "$CREATED_BY":     "$type",
                 "status":          "$status",                      
                 "$TIMESTAMP":      ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
-                    "coordinates": [
+                    "$COORDINATES": [
                         $longitude,
                         $latitude
                     ]
@@ -271,7 +272,7 @@ abstract class Device(
     val p: IProtocol,
     val times: Int = 1000
 ) : ISensor by s, IActuator, IProtocol by p {
-    open val id: String = "urn:ngsi-ld:Device:" + getType().toString() + getId()
+    open val id: String = "urn:ngsi-ld:$DEVICE:" + getType().toString() + getId()
     open val sendTopic: String = ""
     open val listenTopic: String = ""
     open val listenCallback: (commandName: String, payload: String) -> Unit = { _, _ -> }
@@ -312,10 +313,11 @@ abstract class Device(
      * Update sensor value
      */
     open fun updateSensor(): String {
+        val prop = if (getType() == EntityType.Image) { IMAGE } else { TEMPERATURE }
         return when (status) {
             STATUS.ON -> {
                 updatePosition()
-                sensedValue = if (getType() == EntityType.Image) { "\"$IMAGE\"" } else { "\"$TEMPERATURE\"" } + ": \"${s.sense()}\""
+                sensedValue = """"$CONTROLLED_PROPERTY": ["$prop"], "$VALUE": ["${s.sense()}"]"""
                 sensedValue
             }
             else -> sensedValue
@@ -357,7 +359,7 @@ class DeviceSubscription(
     domain: String,
     s: ISensor
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolSubscription()) {
-    override fun getStatus(): String = """{"data": [${createEntity(id, "Sub-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())}]}"""
+    override fun getStatus(): String = """{"data": [${createEntity(id, "Subscription", domain, status.toString(), latitude, longitude, append = updateSensor())}]}"""
 }
 
 open class DeviceHTTP(
@@ -415,7 +417,7 @@ open class DeviceHTTP(
         }
     }
 
-    override fun getStatus(): String = createEntity(id, "OCB-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
+    override fun getStatus(): String = createEntity(id, "OCB", domain, status.toString(), latitude, longitude, append = updateSensor())
 }
 
 class DeviceKafka(
@@ -427,7 +429,7 @@ class DeviceKafka(
     domain: String,
     s: ISensor
 ) : DeviceHTTP(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolKafka()) {
-    override fun getStatus(): String = createEntity(id, "KAFKA-${getType()}", domain, status.toString(), latitude, longitude, append = updateSensor())
+    override fun getStatus(): String = createEntity(id, "KAFKA", domain, status.toString(), latitude, longitude, append = updateSensor())
 }
 
 class DeviceMQTT(
@@ -441,20 +443,19 @@ class DeviceMQTT(
     times: Int = 1000
 ) : Device(status, timeoutMs, moving, latitude, longitude, domain, s, ProtocolMQTT(), times = times) {
     override val sendTopic = "/$FIWARE_API_KEY/$id/attrs"
-    override val listenTopic: String = "/$FIWARE_API_KEY/$id/cmd"
+    override val listenTopic: String = "/$FIWARE_API_KEY/$id/$CMD"
     override val listenCallback: (commandName: String, payload: String) -> Unit = { c, p -> exec(c, p) }
 
-    override fun getRegister(): String = createEntity(id, "Device", domain, status.toString(), latitude, longitude, append = updateSensor())
+    override fun getRegister(): String = createEntity(id, "MQTT", domain, status.toString(), latitude, longitude, append = updateSensor())
 
     override fun getStatus(): String {
         return """{
                 ${updateSensor()},
-                "createdBy":  "MQTT",
                 "status":     "$status",
                 "$TIMESTAMP": ${System.currentTimeMillis()},
                 "$LOCATION": {
                     "type": "Point",
-                    "coordinates": [
+                    "$COORDINATES": [
                         $longitude,
                         $latitude
                     ]

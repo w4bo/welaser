@@ -39,7 +39,9 @@ assert (len(thermometer_id) > 0)
 assert (thermometer["location"]["coordinates"][0] >= -180)  # longitude
 assert (thermometer["location"]["coordinates"][1] >= -90)  # latitude
 assert (thermometer["status"])
-assert (int(thermometer["temperature"]) >= 0)
+assert (len(thermometer["controlledProperty"]) > 0)
+assert (len(thermometer["value"]) > 0)
+assert (int(thermometer["value"][0]) > 0)
 wait_for("Looking for AgriRobot: ", url_agrirobot, attr_dom_name="hasFarm", domain=domain)
 wait_for("Wait for carob: ", orion_url + "entities?id=carob-python&options=keyValues&limit=1000", attr_dom_name="hasFarm", domain=domain)
 

@@ -60,21 +60,20 @@ class Heartbeat(val timestamp: Boolean = false) : ISensor {
 /**
  * An aggregate sensor
  */
-class AggSensor: ISensor {
+class AggSensor : ISensor {
     override fun getType(): EntityType = EntityType.AggDevice
     override fun sense(): Any {
         val ret = JSONArray()
-        listOf("CO2", "Temperature").forEach { s ->
-            (0.. 3).forEach {
+        listOf(CO2, TEMPERATURE).forEach { s ->
+            (0..3).forEach {
                 val o = JSONObject()
-                o.put((DEVICE + ID).lowercase(), "urn:ngsi-ld:Device:$s$it")
+                o.put((DEVICE + ID).lowercase(), "urn:ngsi-ld:$DEVICE:$s$it")
                 o.put(NAME, "$s h${it}0")
                 o.put(CONTROLLED_PROPERTY, JSONArray("[$s]"))
                 o.put(VALUE, JSONArray("[${r.nextInt(30)}]"))
                 ret.put(o)
             }
         }
-
         return ret
     }
 }

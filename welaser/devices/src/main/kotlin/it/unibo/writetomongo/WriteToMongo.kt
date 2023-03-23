@@ -6,9 +6,9 @@ import com.mongodb.client.MongoClients
 import io.github.cdimascio.dotenv.Dotenv
 import it.unibo.DOMAIN
 import it.unibo.IMAGE_URL
+import it.unibo.TIMESTAMP_KAFKA
 import it.unibo.writeimages.ftpImageName
 import it.unibo.writeimages.getExt
-import it.unibo.writeimages.upload
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -58,7 +58,7 @@ fun consumeFromKafka(group: String, consume: (JSONObject) -> Unit) {
                 // println("Consumer Record:(%d, %s, %d, %d)\n" + record.key() + record.value() + record.partition() + record.offset())
                 val data = JSONObject(record.value())
                 // add the kafka timestamp
-                data.put("timestamp_kafka", System.currentTimeMillis())
+                data.put(TIMESTAMP_KAFKA, System.currentTimeMillis())
                 // write to mongo
                 consume(data)
             }

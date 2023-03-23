@@ -1,4 +1,6 @@
 import io.github.cdimascio.dotenv.Dotenv
+import it.unibo.CONTROLLED_PROPERTY
+import it.unibo.TYPE
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.File
@@ -81,14 +83,14 @@ class DeviceMeasurement: Loadable {
 
         var query = ("insert into $MEASUREMENT_TYPE(${id(MEASUREMENT_TYPE)}, unit) values (?, ?)")
         var preparedStmt = to.prepareStatement(query)
-        preparedStmt.setString(1, from["controlledProperty"].toString())
+        preparedStmt.setString(1, from[CONTROLLED_PROPERTY].toString())
         preparedStmt.setString(2, from["unit"].toString())
         preparedStmt.execute()
 
         query = ("insert into $MEASUREMENT(${id(ASSIGNED_DEVICE)}, ${id(MEASUREMENT_TYPE)}, measurement_value, sensing_timestamp, reception_timestamp, ${id(LOCATION)}) values (?, ?, ?, ?, ?, ?)")
         preparedStmt = to.prepareStatement(query)
         preparedStmt.setString(1, from["refDevice"].toString())
-        preparedStmt.setString(2, from["controlledProperty"].toString())
+        preparedStmt.setString(2, from[CONTROLLED_PROPERTY].toString())
         preparedStmt.setString(3, from["numValue"].toString())
         preparedStmt.setLong(4, System.currentTimeMillis())
         preparedStmt.setLong(5, System.currentTimeMillis())
@@ -99,7 +101,7 @@ class DeviceMeasurement: Loadable {
 
 class Device: Loadable {
     override fun load(from: JSONObject, to: Connection) {
-        var props = from.getJSONArray("controlledProperty").map { it.toString() }.toList()
+        var props = from.getJSONArray(CONTROLLED_PROPERTY).map { it.toString() }.toList()
         var values = from["value"].toString().replace("%3B", ";").replace("%3D", "=").split(";").map { it.split("=")[1] }
 
         // optional measurements
@@ -178,7 +180,7 @@ fun load(path: String, conn: Connection) {
     val bufferedReader: BufferedReader = File(path).bufferedReader()
     val inputString = bufferedReader.use { it.readText() }
     val obj = JSONObject(inputString)
-    val type = obj["type"]
+    val type = obj[TYPE]
     when (type) {
         "AgriFarm" -> AgriFarm().load(obj, conn)
         "AgriParcel" -> AgriParcel().load(obj, conn)
