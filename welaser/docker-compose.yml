@@ -8,7 +8,7 @@ services:
   orion:
     init: true
     restart: always
-    image: fiware/orion:3.8.0              # This variable `${ORION_VERSION}` is drawn from the `.env` file
+    image: fiware/orion:3.8.1              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
     depends_on:
