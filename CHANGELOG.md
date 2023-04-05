@@ -1,3 +1,26 @@
+## [1.1.125](https://github.com/w4bo/welaser/compare/1.1.124...1.1.125) (2023-04-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mongodb to v4.15.0 ([dc4d560](https://github.com/w4bo/welaser/commit/dc4d56012b9bcdc23d8c8ea3e5b0b6142354592f))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.0 ([70d8f58](https://github.com/w4bo/welaser/commit/70d8f585f37b1050f862286be562edbeeeab1d79))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2 ([f51acd7](https://github.com/w4bo/welaser/commit/f51acd7233e1865a45127b456d2343363fffa8d4))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.20 ([a76261c](https://github.com/w4bo/welaser/commit/a76261ccaf20d224aaf64afd13c9def4a75f55b5))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.21 ([54e47e7](https://github.com/w4bo/welaser/commit/54e47e7e5a6425dab0533f0cce9e224ee634c33b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.22 ([2f75496](https://github.com/w4bo/welaser/commit/2f754964ce6169606ab5b92b9b29e91d1c06a347))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.23 ([a72e5f1](https://github.com/w4bo/welaser/commit/a72e5f1f187454f72e3dfecb7d0edeb94429f9c9))
+* **deps:** update fiware/orion docker tag to v3.8.1 ([1df1074](https://github.com/w4bo/welaser/commit/1df1074c47f8fbfa1e397a931cb5a7c30910f6a8))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.20 ([97cfafb](https://github.com/w4bo/welaser/commit/97cfafb15dec152e74648d9969b1d4d2c0c950c2))
+
 ## [1.1.124](https://github.com/w4bo/welaser/compare/1.1.123...1.1.124) (2023-03-23)
 
 
