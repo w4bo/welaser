@@ -1,3 +1,21 @@
+## [1.1.126](https://github.com/w4bo/welaser/compare/1.1.125...1.1.126) (2023-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mongodb:mongo-java-driver to v3.12.13 ([49feca2](https://github.com/w4bo/welaser/commit/49feca28461e658ceb5148a7ca5eb981faa34254))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.1 ([b663662](https://github.com/w4bo/welaser/commit/b663662e2b21fdb47eacebf4c144872e6c4f96c4))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v6.5.4 ([3cef7f4](https://github.com/w4bo/welaser/commit/3cef7f45109008b5a652e77f09f57f342170f569))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.25 ([e9218b9](https://github.com/w4bo/welaser/commit/e9218b94cbf25e72371a7b8b094c778b4e06a755))
+
 ## [1.1.125](https://github.com/w4bo/welaser/compare/1.1.124...1.1.125) (2023-04-05)
 
 
