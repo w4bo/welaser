@@ -3,10 +3,10 @@ set -exo
 
 . ./scripts/loadEnv.sh
 
-if [ -f mosquitto/pwfile ]; then
+if [ -f mosquitto/config/pwfile ]; then
     echo "pwfile ok"
 else
-    echo "Could not find the mosquitto/pwfile file"
+    echo "Could not find the mosquitto/config/pwfile file"
     exit 1
 fi
 

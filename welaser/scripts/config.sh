@@ -40,6 +40,6 @@ ln .env service-dashboard/.env
 ln .env service-kafkaproxy/.env
 
 # Mosquitto
-if [ ! -f "mosquitto/pwfile" ]; then
-    cp mosquitto/pwfile.example mosquitto/pwfile
+if [ ! -f "mosquitto/config/pwfile" ]; then
+    cp mosquitto/config/pwfile.example mosquitto/config/pwfile
 fi
