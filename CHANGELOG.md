@@ -1,3 +1,20 @@
+## [1.1.127](https://github.com/w4bo/welaser/compare/1.1.126...1.1.127) (2023-04-13)
+
+
+### Bug Fixes
+
+* **mosquitto:** enabling both mqtt and mqtts ([#488](https://github.com/w4bo/welaser/issues/488)) ([1fa1ab9](https://github.com/w4bo/welaser/commit/1fa1ab9e5606166dc5f7ee3bc1ada6baa27a7b1d))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.16 ([#486](https://github.com/w4bo/welaser/issues/486)) ([365a4f6](https://github.com/w4bo/welaser/commit/365a4f667d86e2653d0e1de29e88a435d5364835))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.2 ([#487](https://github.com/w4bo/welaser/issues/487)) ([73b5f3b](https://github.com/w4bo/welaser/commit/73b5f3bafe00f2e029914cfb806aa93c5bd86865))
+
 ## [1.1.126](https://github.com/w4bo/welaser/compare/1.1.125...1.1.126) (2023-04-13)
 
 
