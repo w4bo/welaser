@@ -15,9 +15,8 @@ filelist.txt
 **/mosquitto/data/**
 **/mosquitto/log/**
 !.dummy
-!mosquitto.conf
+!mosquitto-*.conf
 !pwfile.example
-
 **/welaser_robot_replay
 createmission.txt
 createdomain.txt

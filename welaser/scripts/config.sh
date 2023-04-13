@@ -40,6 +40,13 @@ ln .env service-dashboard/.env
 ln .env service-kafkaproxy/.env
 
 # Mosquitto
-if [ ! -f "mosquitto/config/pwfile" ]; then
-    cp mosquitto/config/pwfile.example mosquitto/config/pwfile
+cd mosquitto/config
+if [ ! -f "pwfile" ]; then
+    cp pwfile.example pwfile
 fi
+if [ -f "certs/rootCA.crt" ]; then
+    cp mosquitto-tls.conf mosquitto.conf
+else
+    cp mosquitto-plain.conf mosquitto.conf
+fi
+cd -
