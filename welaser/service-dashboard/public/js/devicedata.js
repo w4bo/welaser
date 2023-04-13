@@ -109,7 +109,6 @@ const devicedata = {
                             }
                         }
                         const ctx = document.getElementById(deviceid + "-" + property).getContext("2d");
-                        console.log("foo")
                         const c = new Chart(ctx, {
                             type: 'line', data: datasets, options: {
                                 animation: false,
