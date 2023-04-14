@@ -8,12 +8,14 @@ const missionplanner = {
                   <v-autocomplete item-text="name" item-value="id" :items="robots" v-model="robot" style="padding: 0" dense>
                       <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
                   </v-autocomplete>
-              From (place) <v-autocomplete :items="froms" item-text="name" item-value="id" v-model="from" style="padding: 0" dense>
-                  <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
-              </v-autocomplete>
-              Parcel <v-autocomplete :items="parcels" item-text="name" item-value="id"  v-model="parcel" style="padding: 0" dense>
-                  <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
-              </v-autocomplete>
+              From (place)
+                  <v-autocomplete :items="froms" item-text="name" item-value="id" v-model="from" style="padding: 0" dense>
+                      <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
+                  </v-autocomplete>
+              Parcel 
+                  <v-autocomplete :items="parcels" item-text="name" item-value="id"  v-model="parcel" style="padding: 0" dense>
+                      <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
+                  </v-autocomplete>
               <div><div style="float: left">Roundtrip</div> <v-checkbox v-model="roundtrip"></v-checkbox></div>
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
