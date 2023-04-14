@@ -17,8 +17,8 @@ const entityupdate = {
                 <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
             </v-card-text>
             <v-card-actions class="flex-inline justify-content-center align-center">
-                <v-btn v-on:click="update()">Update</v-btn>
-                <v-btn v-on:click="download()">Download JSON</v-btn>
+                <v-btn v-on:click="update()" :disabled="selectableentities.length == 0">Update</v-btn>
+                <v-btn v-on:click="download()" :disabled="selectableentities.length == 0">Download JSON</v-btn>
             </v-card-actions>
         </v-card>`,
     data() {
