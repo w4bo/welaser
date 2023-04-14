@@ -201,7 +201,6 @@ utils.jsonheaders = {'Content-Type': 'application/json'}
 utils.chartresolution = 5000
 utils.charthistorylength = 25
 utils.colors = d3.schemeTableau10
-utils.mapcenter = [40.3128, -3.482]
 utils.selectedbytype = {}
 utils.missionguitypes = [
     {name: 'AgriRobot', exclusive: true},
@@ -209,3 +208,113 @@ utils.missionguitypes = [
     // {name: 'AgriParcel', exclusive: true},
     // {name: 'Device', exclusive: false}
 ]
+utils.copenhagenFarm = {
+    "id": "urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055",
+    "type": "AgriFarm",
+    "name": "AgriFarm in Copenhagen",
+    "description": "Area of action",
+    "location": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    12.523593028993389,
+                    55.66648764057112
+                ],
+                [
+                    12.53013613698991,
+                    55.66783217186864
+                ],
+                [
+                    12.53102376791972,
+                    55.67074993194308
+                ],
+                [
+                    12.518317965182263,
+                    55.67190839398245
+                ],
+                [
+                    12.51722744718299,
+                    55.66959143560365
+                ],
+                [
+                    12.523593028993389,
+                    55.66648764057112
+                ]
+            ]
+        ]
+    },
+    "landLocation": {
+        "properties": {
+            "zoom": 15
+        },
+        "coordinates": [
+            12.524196878622917,
+            55.66950516174697
+        ],
+        "type": "Point"
+    },
+    "ownedBy": "",
+    "hasBuilding": [],
+    "hasAgriParcel": [],
+    "hasRestrictedTrafficArea": [],
+    "hasRoadSegment": []
+}
+utils.defaultGeoJSON = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "stroke": "#000000",
+                "stroke-width": 2,
+                "stroke-opacity": 1,
+                "fill": "#ffffff",
+                "fill-opacity": 0.5,
+                "type": "AgriFarm",
+                "description": "Area of action",
+                "id": utils.agrifarm,
+                "landLocation": {
+                    "geometry": {
+                        "coordinates": [
+                            12.523593028993389,
+                            55.66648764057112
+                        ],
+                        "type": "Point"
+                    }
+                }
+            },
+            "geometry": {
+                "coordinates": [
+                    [
+                        [
+                            12.523593028993389,
+                            55.66648764057112
+                        ],
+                        [
+                            12.53013613698991,
+                            55.66783217186864
+                        ],
+                        [
+                            12.53102376791972,
+                            55.67074993194308
+                        ],
+                        [
+                            12.518317965182263,
+                            55.67190839398245
+                        ],
+                        [
+                            12.51722744718299,
+                            55.66959143560365
+                        ],
+                        [
+                            12.523593028993389,
+                            55.66648764057112
+                        ]
+                    ]
+                ],
+                "type": "Polygon"
+            }
+        }
+    ]
+}

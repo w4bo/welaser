@@ -38,25 +38,7 @@ const mapbuilder = {
     mounted() {
         this.editorCreate = new JSONEditor(document.getElementById("geojson"), {mode: 'code', modes: ['tree', 'code']})
         this.showModal = false
-        const data = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {
-                    "id": `urn:nsgi-ld:AgriParcel:${utils.uuidv4()}`,
-                    "type": "AgriParcel",
-                    "name": "User-friendly name here",
-                    "createdBy": ""
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        79.8046875,
-                        54.97761367069628
-                    ]
-                }
-            }]
-        }
+        const data = utils.defaultGeoJSON
         this.editorCreate.set(data)
     }
 }
