@@ -29,8 +29,6 @@ object EntityFactory {
 }
 
 class Robot(fileName: String, timeoutMs: Int, times: Int = 1000) : EntityFIWARE(fileName, timeoutMs, times) {
-
-    val c = Camera(onBoard = true)
     val h = Heartbeat()
     var missionPlan: JSONObject = JSONObject()
     var coords: MutableList<Any> = mutableListOf()
