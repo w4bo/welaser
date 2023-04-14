@@ -53,20 +53,16 @@ const entityupdate = {
             })
         },
         setSelectedUpdate(domain, id) {
-            axios.get(utils.nodeurl + `/api/entity/${domain}/${id}`).then(entity => {
-                this.visibleUpdate = true
-                this.showModal = false
-                this.editorUpdate.set(entity.data)
-            })
+            this.editorUpdate.set(this.selectableentities.filter(entity=> entity["id"] === id)[0])
         },
     },
     mounted() {
         // load the distinct entity names
-        axios.get(utils.nodeurl + `/api/entities/${utils.agrifarm}`).then(result => {
+        axios.get(utils.orionurl + `entities?options=keyValues&limit=1000`).then(result => {
             this.selectableentities = result.data
-            this.selectedentity = result.data[0]
-            if (typeof this.selectedentity !== "undefined") {
-                this.setSelectedUpdate(utils.agrifarm, this.selectedentity["id"])
+            if (result.data.length > 0) {
+                this.selectedentity = result.data[0]["id"]
+                this.setSelectedUpdate(utils.agrifarm, this.selectedentity)
             }
         })
         const options = {
