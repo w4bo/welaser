@@ -8,7 +8,6 @@ const missionplanner = {
                   <v-autocomplete item-text="name" item-value="id" :items="robots" v-model="robot" style="padding: 0" dense>
                       <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
                   </v-autocomplete>
-              Farm <v-autocomplete :items="farms" v-model="farm" style="padding: 0" dense></v-autocomplete>
               From (place) <v-autocomplete :items="froms" item-text="name" item-value="id" v-model="from" style="padding: 0" dense>
                   <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
               </v-autocomplete>
@@ -19,7 +18,7 @@ const missionplanner = {
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
           </v-card-text>
-          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()">Create</v-btn></v-card-actions>
+          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from && to)">Create</v-btn></v-card-actions>
         </v-card>
     `,
     data() {
@@ -28,15 +27,14 @@ const missionplanner = {
                 format: 'DD/MM/YYYY HH:mm:ss',
                 useCurrent: true,
             },
-            robot: "",
+            robot: undefined,
             farm: utils.agrifarm,
-            to: "",
-            from: "",
+            from: undefined,
             robots: [],
-            farms: [utils.agrifarm],
+            // farms: [utils.agrifarm],
             froms: [],
             parcels: [],
-            parcel: "",
+            parcel: undefined,
             response: "",
             showModal: true,
             success: true,
@@ -66,15 +64,7 @@ const missionplanner = {
         },
     },
     mounted() {
-        // get the agrifarm and its components
-        // axios.get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`).then(agrifarm => {
-        //     // agrifarm = agrifarm.data
-        //     // this.froms = [].concat(agrifarm.hasAgriParcel, agrifarm.hasBuilding, agrifarm.hasRoadSegment)
-        //     // this.parcels = agrifarm.hasAgriParcel
-        //     // this.from = this.froms[0]
-        //     // this.parcel = this.parcels[0]
-        // })
-        const tis = this;
+        const tis = this
         function rec(l) {
             if (l.length === 0) {
                 tis.froms = tis.froms.sort((a, b) => a.name > b.name)
