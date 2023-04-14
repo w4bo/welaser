@@ -28,10 +28,8 @@ const missionplanner = {
                 useCurrent: true,
             },
             robot: undefined,
-            farm: utils.agrifarm,
             from: undefined,
             robots: [],
-            // farms: [utils.agrifarm],
             froms: [],
             parcels: [],
             parcel: undefined,
@@ -47,7 +45,7 @@ const missionplanner = {
             const data = {}
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot["id"]
-            data["agrifarm_id"] = this.farm
+            data["agrifarm_id"] = utils.agrifarm
             data["from_place_id"] = this.from
             data["agriparcel_id"] = this.parcel
             data["roundtrip_flag"] = "" + this.roundtrip
