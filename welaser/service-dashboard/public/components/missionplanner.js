@@ -18,7 +18,7 @@ const missionplanner = {
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
           </v-card-text>
-          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from && to)">Create</v-btn></v-card-actions>
+          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from)">Create</v-btn></v-card-actions>
         </v-card>
     `,
     data() {
