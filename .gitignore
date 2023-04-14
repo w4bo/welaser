@@ -1,4 +1,5 @@
 .idea/
+madrid.js
 filelist.txt
 **/scripts/updatePwd.sh
 **/datamodels/**/*.json

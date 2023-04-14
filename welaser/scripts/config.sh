@@ -18,6 +18,10 @@ if [ -f "scripts/updatePwd.sh" ]; then
     . ./scripts/updatePwd.sh
 fi
 
+# Node
+echo "madridGeoJSON = " > service-dashboard/public/maps/madrid.js
+cat service-mapbuilder/Maps/Map_CAR_real_test.geojson >> service-dashboard/public/maps/madrid.js
+
 # Devices python
 rm devices-python/carob-1.json || true
 ln welaser-datamodels/AgriRobot/examples/carob-1.json devices-python/carob-1.json

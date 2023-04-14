@@ -95,7 +95,7 @@ const mymap = {
                 .get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
-                    const farmLoc = agrifarm.landLocation
+                    const farmLoc = agrifarm.location // agrifarm.landLocation
                     tis.map.setView(
                         new L.LatLng(farmLoc.coordinates[1], farmLoc.coordinates[0]), // map center
                         (farmLoc.properties && farmLoc.properties.zoom) ? farmLoc.properties.zoom : 17 // zoom level

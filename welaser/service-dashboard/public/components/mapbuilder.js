@@ -38,7 +38,6 @@ const mapbuilder = {
     mounted() {
         this.editorCreate = new JSONEditor(document.getElementById("geojson"), {mode: 'code', modes: ['tree', 'code']})
         this.showModal = false
-        const data = utils.defaultGeoJSON
-        this.editorCreate.set(data)
+        this.editorCreate.set(madridGeoJSON)
     }
 }
