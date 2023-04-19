@@ -1,3 +1,16 @@
+## [1.1.128](https://github.com/w4bo/welaser/compare/1.1.127...1.1.128) (2023-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mongodb to v4.16.0 ([6e71772](https://github.com/w4bo/welaser/commit/6e71772ba54fd9598f2bae5eb1bf2cc28965038e))
+
+
+### Dependency updates
+
+* **deps:** update welaser/welaser-datamodels digest to 5cbe579 ([0353850](https://github.com/w4bo/welaser/commit/03538503cf355211b4dce40a8d056becf9bce105))
+* **deps:** update welaser/welaser-datamodels digest to ff15641 ([07246e0](https://github.com/w4bo/welaser/commit/07246e0340a6d576984d32554a87de61926d7b74))
+
 ## [1.1.127](https://github.com/w4bo/welaser/compare/1.1.126...1.1.127) (2023-04-13)
 
 
