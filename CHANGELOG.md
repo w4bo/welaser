@@ -1,3 +1,17 @@
+## [1.1.129](https://github.com/w4bo/welaser/compare/1.1.128...1.1.129) (2023-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.3.0 ([1544df5](https://github.com/w4bo/welaser/commit/1544df5acc03e148001c01f299d7ceaf97c81852))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.0.1 ([dcaeee1](https://github.com/w4bo/welaser/commit/dcaeee1a91d7d1ad4603b1c797d93e194007cfd9))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.21 ([6c1ab10](https://github.com/w4bo/welaser/commit/6c1ab10dac84edf299608adbc6d41974b41a4dd4))
+* **deps:** update welaser/welaser-datamodels digest to 58a2e1d ([a60b784](https://github.com/w4bo/welaser/commit/a60b784b4ff3c8d19758eacade3d292d4b21efa1))
+
 ## [1.1.128](https://github.com/w4bo/welaser/compare/1.1.127...1.1.128) (2023-04-19)
 
 
