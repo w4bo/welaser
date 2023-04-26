@@ -1,3 +1,16 @@
+## [1.1.130](https://github.com/w4bo/welaser/compare/1.1.129...1.1.130) (2023-04-26)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.9.3 ([#501](https://github.com/w4bo/welaser/issues/501)) ([16ad52a](https://github.com/w4bo/welaser/commit/16ad52ae3f5ecac70816722b4e586f465f564cc8))
+* **welaser:** improvements ([#502](https://github.com/w4bo/welaser/issues/502)) ([53efcde](https://github.com/w4bo/welaser/commit/53efcdead3a3ec4d1b3f2aa7157841ce87f88793))
+
+
+### Dependency updates
+
+* **deps:** update node.js to v20 ([#497](https://github.com/w4bo/welaser/issues/497)) ([02d6c69](https://github.com/w4bo/welaser/commit/02d6c69687030d94a1c7aab97bd1bda30fa11c80))
+
 ## [1.1.129](https://github.com/w4bo/welaser/compare/1.1.128...1.1.129) (2023-04-25)
 
 
