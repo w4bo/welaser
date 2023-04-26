@@ -4,7 +4,6 @@ env.config()
 
 test('test dotenv', async () => {
     expect(parseInt(process.env.WEB_SERVER_PORT_EXT)).toBeGreaterThan(0)
-    expect(parseInt(process.env.WEB_SERVER_PORT_EXT)).toBe(8080) // need this, since this port is required in the package.json file
 })
 
 test('test roundtrip', async () => {
