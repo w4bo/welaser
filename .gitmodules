@@ -7,3 +7,6 @@
 [submodule "welaser/service-missionplanner"]
 	path = welaser/service-missionplanner
 	url = git@github.com:luisemmi/service-missionplanner.git
+[submodule "welaser/service-missionsupervisor"]
+	path = welaser/service-missionsupervisor
+	url = git@github.com:luisemmi/service-missionsupervisor.git

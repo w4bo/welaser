@@ -4,7 +4,7 @@ const entityupdate = {
             <v-card-title class="pb-0">Update entity</v-card-title>
             <v-card-text>
                 Select entity to update
-                <v-autocomplete item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)" style="padding: 0" dense>
+                <v-autocomplete :filter="customFilter" item-text="name" item-value="id" :items="selectableentities" v-model="selectedentity" @change="setSelectedUpdate(agrifarm, selectedentity)" style="padding: 0" dense>
                     <template v-slot:item="data">
                         <autocompleteitem :data="data"></autocompleteitem>
                     </template>
@@ -34,6 +34,17 @@ const entityupdate = {
         }
     },
     methods: {
+        customFilter(item, queryText, itemText) {
+            const q = new Set(queryText.toLowerCase().split(' '))
+            const i = new Set(item["name"].toLowerCase().split(' '))
+            const intersect = new Set([...q].filter(function (j) {
+                // need to check for substrings not only full strings
+                const substring = [...i].filter(k => k.startsWith(j))
+                return substring.length > 0
+                // return i.has(j)
+            }))
+            return intersect.size === q.size
+        },
         download() {
             utils.downloadJSON(this.editorUpdate.get())
         },
@@ -45,11 +56,11 @@ const entityupdate = {
             utils.fiwareUpdateEntity(this.editorUpdate.get(), function (res) {
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK" // "OK: " + res["statusText"]
+                tis.response = "Update"
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err["response"]["data"]["description"]
+                tis.response = err["response"]["data"]["description"]
             })
         },
         setSelectedUpdate(domain, id) {
