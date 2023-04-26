@@ -31,7 +31,10 @@ const mapbuilder = {
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err["response"]["data"]["msg"]
+                tis.response = "Error: "
+                if (err["response"] && err["response"]["data"] && err["response"]["data"]["msg"]) {
+                    tis.response += err["response"]["data"]["msg"]
+                }
             })
         },
     },
