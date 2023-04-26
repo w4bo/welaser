@@ -5,6 +5,7 @@ module.exports = function (app) {
     app.route('/api/stats/:domain/:datetimefrom/:datetimeto/:timestep').get(entityController.downloadStatsFromTo)
     app.route('/api/download/count/:domain/:datetimefrom/:datetimeto').get(entityController.downloadCountFromTo)
     app.route('/api/download/distinct/:domain/:datetimefrom/:datetimeto').get(entityController.downloadDistinctFromTo)
+    app.route('/api/dropdata/:domain').get(entityController.dropData)
     app.route('/api/entitytypes/:domain').get(entityController.entitytypes)
     app.route('/api/entities/:domain').get(entityController.entities)
     app.route('/api/entities/:domain/:id').get(entityController.historicEntities)

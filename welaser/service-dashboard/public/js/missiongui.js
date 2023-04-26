@@ -192,7 +192,9 @@ const missiongui = {
                     tis.missions.push({name: utils.getName(task), id: task["id"]})
                 }
             })
-            tis.mission = tis.missions[0].id
+            if (tis.missions.length > 0) {
+                tis.mission = tis.missions[0].id
+            }
         })
         utils.kafkaProxyNewTopic(io.connect(utils.proxyurl) , config.DRACO_RAW_TOPIC + "." + utils.agrifarm, this.handleStreamData)
     }

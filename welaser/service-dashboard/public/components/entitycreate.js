@@ -19,8 +19,8 @@ const entitycreate = {
     data() {
         return {
             visibleCreate: false,
-            entitytype: "",
-            entitytypes: [],
+            entitytype: "AgriFarm",
+            entitytypes: ["AgriFarm", "AgriParcel", "Device"],
             editorCreate: null,
             response: "",
             showModal: true,
@@ -57,14 +57,13 @@ const entitycreate = {
                 "name": `User-friendly name here`,
                 "createdBy": `A user from the web gui`
             }
-            this.editorCreate.set(data)
+            this.editorCreate.set(type === "AgriFarm" ? utils.copenhagenFarm : data)
         },
     },
     mounted() {
         // load the distinct entity types
         axios.get(utils.nodeurl + `/api/entitytypes/${utils.agrifarm}`).then(result => {
-            this.entitytypes = result.data
-            this.entitytype = result.data[0]
+            this.entitytypes = [...new Set(this.entitytypes.concat(result.data))].sort()
             this.setSelectedCreate(utils.agrifarm, this.entitytype)
         })
         const schema = {

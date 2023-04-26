@@ -6,7 +6,7 @@ const entitydownload = {
                 Entity type <v-autocomplete :items="entitytypes" v-model="entitytype" style="padding: 0" dense></v-autocomplete>
                 <div>Date range</div><v-date-picker v-model="dates" range></v-date-picker>
             </v-card-text>
-            <v-card-actions class="flex-column align-center"><v-btn v-on:click="download(agrifarm, entitytype, dates[0], dates[1])">Download</v-btn></v-card-actions>
+            <v-card-actions class="flex-column align-center"><v-btn v-on:click="download(agrifarm, entitytype, dates[0], dates[1])" :disabled="entitytypes.length == 0">Download</v-btn></v-card-actions>
         </v-card>`,
     data() {
         return {

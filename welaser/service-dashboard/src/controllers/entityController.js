@@ -4,10 +4,10 @@ const env = require('dotenv')
 env.config() // load the environment variables
 const url = 'mongodb://' + process.env.MONGO_DB_PERS_IP + ':' + process.env.MONGO_DB_PERS_PORT_EXT
 
-function connect(next) {
+function connect(next, dbName = process.env.MONGO_DB_PERS_DB) {
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err
-        const dbo = db.db(process.env.MONGO_DB_PERS_DB)
+        const dbo = db.db(dbName)
         await next(dbo)
         // await db.close()
     })
@@ -157,6 +157,15 @@ exports.historicEntities = async function (req, res) {
             send(res, err, result)
         })
     })
+}
+
+/**
+ * Return the entity with a given id
+ */
+exports.dropData = async function (req, res) {
+    const domain = req.params.domain
+    connect(dbo => dbo.collection(domain).drop())
+    connect(dbo => dbo.collection("entities").drop(), "orion")
 }
 
 /**

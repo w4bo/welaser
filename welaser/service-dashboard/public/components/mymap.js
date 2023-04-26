@@ -36,7 +36,7 @@ const mymap = {
             const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
             const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
             // creating the map
-            this.map = L.map('map', {center: utils.mapcenter, zoom: 17, layers: [satellite, this.layerBoundary, this.layerStream]})
+            this.map = L.map('map', {layers: [satellite, this.layerBoundary, this.layerStream]})
             // add the layers to the group
             const baseMaps = { "Satellite": satellite,  "OpenStreetMap": osm }
             const overlayMaps = { "Boundaries": this.layerBoundary, "Stream": this.layerStream } // , "Weeding Heatmap": this.layerHeatmap
@@ -95,6 +95,17 @@ const mymap = {
                 .get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
+                    const farmLoc = agrifarm.location // agrifarm.landLocation
+                    tis.map.setView(
+                        new L.LatLng(farmLoc.coordinates[1], farmLoc.coordinates[0]), // map center
+                        (farmLoc.properties && farmLoc.properties.zoom) ? farmLoc.properties.zoom : 17 // zoom level
+                    )
+                    // To show the geometry of the farm
+                    // const geojson = {
+                    //     "type": "Feature",
+                    //     "geometry": { "type": agrifarm.location.type,  "coordinates": agrifarm.location.coordinates }
+                    // }
+                    // L.geoJSON(geojson).bindPopup(agrifarm.name).addTo(tis.layerBoundary)
                     const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasBuilding", "hasRoadSegment"]
                     attrs.forEach(function (attr, index) {
                         if (agrifarm[attr]) {

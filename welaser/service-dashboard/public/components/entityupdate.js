@@ -17,8 +17,8 @@ const entityupdate = {
                 <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
             </v-card-text>
             <v-card-actions class="flex-inline justify-content-center align-center">
-                <v-btn v-on:click="update()">Update</v-btn>
-                <v-btn v-on:click="download()">Download JSON</v-btn>
+                <v-btn v-on:click="update()" :disabled="selectableentities.length == 0">Update</v-btn>
+                <v-btn v-on:click="download()" :disabled="selectableentities.length == 0">Download JSON</v-btn>
             </v-card-actions>
         </v-card>`,
     data() {
@@ -64,20 +64,16 @@ const entityupdate = {
             })
         },
         setSelectedUpdate(domain, id) {
-            axios.get(utils.nodeurl + `/api/entity/${domain}/${id}`).then(entity => {
-                this.visibleUpdate = true
-                this.showModal = false
-                this.editorUpdate.set(entity.data)
-            })
+            this.editorUpdate.set(this.selectableentities.filter(entity=> entity["id"] === id)[0])
         },
     },
     mounted() {
         // load the distinct entity names
-        axios.get(utils.nodeurl + `/api/entities/${utils.agrifarm}`).then(result => {
+        axios.get(utils.orionurl + `entities?options=keyValues&limit=1000`).then(result => {
             this.selectableentities = result.data
-            this.selectedentity = result.data[0]
-            if (typeof this.selectedentity !== "undefined") {
-                this.setSelectedUpdate(utils.agrifarm, this.selectedentity["id"])
+            if (result.data.length > 0) {
+                this.selectedentity = result.data[0]["id"]
+                this.setSelectedUpdate(utils.agrifarm, this.selectedentity)
             }
         })
         const options = {

@@ -2,7 +2,7 @@ const entitymenu = {
     template: `
         <v-list nav dense class="pl-10">
             <template v-for="type in types">
-                {{ type.name }}
+                <div v-if="devicesbytype[type.name]">{{ type.name }}</div>
                 <template v-for="device in devicesbytype[type.name]">
                         <v-list-item>
                             <v-list-item-content class="nav-link">

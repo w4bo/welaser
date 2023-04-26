@@ -15,7 +15,10 @@ const navbar = {
             </v-navigation-drawer>
             <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="primary" dark dense>
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title class="ml-0 pl-4">WeLASER</v-toolbar-title>
+                <v-toolbar-title class="ml-0 pl-4">
+                    WeLASER
+                    <v-btn depressed style="margin-left: 15px" color="error" v-if="this.$route.query.mode === 'sim'" @click="dropData()">Delete ALL data</v-btn>
+                </v-toolbar-title>
             </v-app-bar>
         </div>`,
     data() {
@@ -25,5 +28,10 @@ const navbar = {
     },
     components: {
         entitymenu: entitymenu
+    },
+    methods: {
+        dropData() {
+            axios.get(utils.nodeurl + `/api/dropdata/${utils.agrifarm}`)
+        }
     }
 }
