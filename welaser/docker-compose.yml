@@ -140,6 +140,23 @@ services:
       interval: 5s
       timeout: 10s
 
+  missionsupervisor:
+    init: true
+    hostname: missionsupervisor
+    build: ./service-missionsupervisor
+    container_name: missionsupervisor
+    ports:
+      - "${SUPERVISOR_PORT_EXT}:${SUPERVISOR_PORT_EXT}"
+    networks:
+      - default
+    env_file:
+      - .env
+    healthcheck:
+      test: |
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${SUPERVISOR_IP}:${SUPERVISOR_PORT_EXT}
+      interval: 5s
+      timeout: 10s
+
   missionplanner:
     init: true
     hostname: missionplanner

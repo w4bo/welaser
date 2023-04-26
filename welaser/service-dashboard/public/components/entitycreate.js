@@ -41,11 +41,11 @@ const entitycreate = {
             utils.fiwareCreateEntity(data, function (res) {
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK: " + res["statusText"]
+                tis.response = res["statusText"]
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err["response"]["data"]["description"]
+                tis.response = err["response"]["data"]["description"]
             })
         },
         setSelectedCreate(domain, type) {

@@ -29,11 +29,11 @@ const missiongui = {
                                     <tr v-if="is(robots[device.data.id], 'choosemission')">
                                         <td><v-btn v-on:click="missionChosen(robots[device.data.id])" class="m-1">Choose mission</v-btn></td>
                                         <td>
-                                            <v-autocomplete :items="missions" item-value="id" item-text="name" v-model="mission" style="padding: 0" dense>
+                                            <v-select :items="missions" item-value="id" item-text="name" v-model="mission" style="padding: 0" dense>
                                                 <template v-slot:item="data">
                                                     <autocompleteitem :data="data"></autocompleteitem>
                                                 </template>
-                                            </v-autocomplete>
+                                            </v-select>
                                         </td>
                                     </tr>
                                     <template v-for="cmd in device.data.cmdList">
@@ -67,7 +67,7 @@ const missiongui = {
                         <v-card :color="device.color" elevation="2">
                             <v-card-title class="p-0">{{getName(device.data)}}</v-card-title>
                             <v-card-text class="p-0">
-                                <iframe v-if="device.data.streamURL" :src="device.data.streamURL" width="100%"></iframe>
+                                <iframe v-if="device.data.streamURL" :src="device.data.streamURL" width="100%" style="height: 280px"></iframe>
                                 <img v-if="(typeof device.data.streamURL === 'undefined' || device.data.streamURL === '') && device.data.imageSnapshot" :src="device.data.imageSnapshot" width="100%" />
                                 <!--<div v-if="device.data.timestamp">Update: {{ formatDateTime(device.data.timestamp) }}</div>-->
                             </v-card-text>

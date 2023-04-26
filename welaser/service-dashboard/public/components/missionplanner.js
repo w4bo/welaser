@@ -17,6 +17,10 @@ const missionplanner = {
                       <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
                   </v-autocomplete>
               <div><div style="float: left">Roundtrip</div> <v-checkbox v-model="roundtrip"></v-checkbox></div>
+
+              Jumps<v-select :items="selectablejumps" v-model="jumps" style="padding: 0" dense></v-select>
+              Lines<v-select :items="selectablelines" v-model="lines" style="padding: 0" dense></v-select>
+              Initial line <v-select :items="selectableinitiallines" v-model="initialline" style="padding: 0" dense></v-select>
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
           </v-card-text>
@@ -31,6 +35,14 @@ const missionplanner = {
             },
             robot: undefined,
             from: undefined,
+            lines: "All",
+            selectablelines: ["All", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30],
+            initialline: 1,
+            selectableinitiallines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30],
+            jumps: 3,
+            selectablejumps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            farm: utils.agrifarm,
+            to: "",
             robots: [],
             froms: [],
             parcels: [],
@@ -47,19 +59,23 @@ const missionplanner = {
             const data = {}
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot["id"]
-            data["agrifarm_id"] = utils.agrifarm
-            data["from_place_id"] = this.from
-            data["agriparcel_id"] = this.parcel
+            data["agrifarm_id"] = utils.farm
+            data["from_place_id"] = this.from["id"]
+            data["agriparcel_id"] = this.parcel["id"]
             data["roundtrip_flag"] = "" + this.roundtrip
+            data["lines"] = this.lines
+            data["jumps"] = this.jumps
+            data["initialline"] = this.initialline
             const tis = this
             utils.plannerCreatePlan(data, function (res) {
+                console.log(res)
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK"
+                tis.response = res.data.info
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err
+                tis.response = err.response.data.info
             })
         },
     },
@@ -85,7 +101,6 @@ const missionplanner = {
             }
         }
         rec(["AgriParcel", "Building", "RoadSegment"])
-
         // get the agrirobots
         axios.get(utils.orionurl + `entities?type=AgriRobot&options=keyValues&limit=1000`).then(robots => {
             robots = robots.data
