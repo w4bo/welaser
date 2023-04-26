@@ -45,11 +45,11 @@ const entityupdate = {
             utils.fiwareUpdateEntity(this.editorUpdate.get(), function (res) {
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK" // "OK: " + res["statusText"]
+                tis.response = "Update"
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err["response"]["data"]["description"]
+                tis.response = err["response"]["data"]["description"]
             })
         },
         setSelectedUpdate(domain, id) {

@@ -27,13 +27,13 @@ const mapbuilder = {
             utils.builderCreateMap(data, function (res) {
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK: " + res["statusText"]
+                tis.response = res["statusText"]
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: "
+                tis.response = "Error"
                 if (err["response"] && err["response"]["data"] && err["response"]["data"]["msg"]) {
-                    tis.response += err["response"]["data"]["msg"]
+                    tis.response = err["response"]["data"]["msg"]
                 }
             })
         },

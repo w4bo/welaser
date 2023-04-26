@@ -60,21 +60,22 @@ const missionplanner = {
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot["id"]
             data["agrifarm_id"] = this.farm
-            data["from_place_id"] = this.from
-            data["agriparcel_id"] = this.parcel
+            data["from_place_id"] = this.from["id"]
+            data["agriparcel_id"] = this.parcel["id"]
             data["roundtrip_flag"] = "" + this.roundtrip
             data["lines"] = this.lines
             data["jumps"] = this.jumps
             data["initialline"] = this.initialline
             const tis = this
             utils.plannerCreatePlan(data, function (res) {
+                console.log(res)
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK" + res.response.data.mission_id
+                tis.response = res.data.info
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err.response.data.info
+                tis.response = err.response.data.info
             })
         },
     },
