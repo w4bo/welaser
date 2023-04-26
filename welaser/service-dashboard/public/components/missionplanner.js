@@ -57,11 +57,11 @@ const missionplanner = {
             utils.plannerCreatePlan(data, function (res) {
                 tis.showModal = true
                 tis.success = true
-                tis.response = "OK"
+                tis.response = "OK" + res.response.data.mission_id
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = "Error: " + err
+                tis.response = "Error: " + err.response.data.info
             })
         },
     },
