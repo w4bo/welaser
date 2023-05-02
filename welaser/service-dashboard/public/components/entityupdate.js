@@ -39,7 +39,6 @@ const entityupdate = {
             let match = false;
             ["name", "id"].forEach((attribute) => {
                 if (item[attribute]) {
-                    console.log(item[attribute])
                     const i = new Set(item[attribute].toLowerCase().split(' '))
                     const intersect = new Set([...q].filter(function (j) {
                         // need to check for substrings not only full strings
