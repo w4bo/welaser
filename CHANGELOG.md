@@ -1,3 +1,15 @@
+## [1.1.131](https://github.com/w4bo/welaser/compare/1.1.130...1.1.131) (2023-04-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.3.0 ([7956d4e](https://github.com/w4bo/welaser/commit/7956d4eeca2b0b3eec9c8156254403d4a6b9a9d0))
+
+
+### Dependency updates
+
+* **deps:** update dependency requests to v2.29.0 ([8b844c4](https://github.com/w4bo/welaser/commit/8b844c47a0cee2abe3ccf1676ac54b6c44906bc3))
+
 ## [1.1.130](https://github.com/w4bo/welaser/compare/1.1.129...1.1.130) (2023-04-26)
 
 
