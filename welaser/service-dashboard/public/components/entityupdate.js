@@ -36,14 +36,21 @@ const entityupdate = {
     methods: {
         customFilter(item, queryText, itemText) {
             const q = new Set(queryText.toLowerCase().split(' '))
-            const i = new Set(item["name"].toLowerCase().split(' '))
-            const intersect = new Set([...q].filter(function (j) {
-                // need to check for substrings not only full strings
-                const substring = [...i].filter(k => k.startsWith(j))
-                return substring.length > 0
-                // return i.has(j)
-            }))
-            return intersect.size === q.size
+            let match = false;
+            ["name", "id"].forEach((attribute) => {
+                if (item[attribute]) {
+                    console.log(item[attribute])
+                    const i = new Set(item[attribute].toLowerCase().split(' '))
+                    const intersect = new Set([...q].filter(function (j) {
+                        // need to check for substrings not only full strings
+                        const substring = [...i].filter(k => k.includes(j))
+                        return substring.length > 0
+                        // return i.has(j)
+                    }))
+                    match |= intersect.size === q.size
+                }
+            })
+            return match
         },
         download() {
             utils.downloadJSON(this.editorUpdate.get())
