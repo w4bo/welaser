@@ -49,7 +49,7 @@ const entityupdate = {
                     match |= intersect.size === q.size
                 }
             })
-            return match
+            return queryText === "" || match
         },
         download() {
             utils.downloadJSON(this.editorUpdate.get())
