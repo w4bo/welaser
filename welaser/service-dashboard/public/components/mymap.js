@@ -95,17 +95,17 @@ const mymap = {
                 .get(utils.orionurl + `entities/${utils.agrifarm}?options=keyValues`)
                 .then(agrifarm => {
                     agrifarm = agrifarm.data
-                    const farmLoc = agrifarm.location // agrifarm.landLocation
+                    const farmLoc = agrifarm.landLocation
                     tis.map.setView(
                         new L.LatLng(farmLoc.coordinates[1], farmLoc.coordinates[0]), // map center
                         (farmLoc.properties && farmLoc.properties.zoom) ? farmLoc.properties.zoom : 17 // zoom level
                     )
                     // To show the geometry of the farm
-                    // const geojson = {
-                    //     "type": "Feature",
-                    //     "geometry": { "type": agrifarm.location.type,  "coordinates": agrifarm.location.coordinates }
-                    // }
-                    // L.geoJSON(geojson).bindPopup(agrifarm.name).addTo(tis.layerBoundary)
+                    const geojson = {
+                        "type": "Feature",
+                        "geometry": { "type": agrifarm.location.type,  "coordinates": agrifarm.location.coordinates }
+                    }
+                    L.geoJSON(geojson, myStyle = {"color": "white", "weight": 1, "opacity": 0.6}).bindPopup(agrifarm.name).addTo(tis.layerBoundary)
                     const attrs = ["hasAgriParcel", "hasRestrictedTrafficArea", "hasBuilding", "hasRoadSegment"]
                     attrs.forEach(function (attr, index) {
                         if (agrifarm[attr]) {
@@ -124,7 +124,7 @@ const mymap = {
                                         } else if (type === "Building") {
                                             color = utils.colors[0]
                                         }
-                                        const myStyle = {"color": color, "weight": 5, "opacity": 1}
+                                        const myStyle = {"color": color, "weight": 3, "opacity": 1, "fillOpacity": .75}
                                         const geojson = {
                                             "type": "Feature",
                                             "properties": {},
