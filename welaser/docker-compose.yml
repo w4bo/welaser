@@ -162,8 +162,6 @@ services:
     hostname: missionplanner
     build: ./service-missionplanner
     container_name: missionplanner
-    expose:
-      - "${PLANNER_PORT_EXT}"
     ports:
       - "${PLANNER_PORT_EXT}:${PLANNER_PORT_EXT}"
     networks:
@@ -181,8 +179,6 @@ services:
     hostname: mapbuilder
     build: ./service-mapbuilder
     container_name: mapbuilder
-    expose:
-      - "${BUILDER_PORT_EXT}"
     ports:
       - "${BUILDER_PORT_EXT}:${BUILDER_PORT_EXT}"
     networks:
