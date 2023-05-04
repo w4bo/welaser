@@ -1,3 +1,10 @@
+## [1.1.133](https://github.com/w4bo/welaser/compare/1.1.132...1.1.133) (2023-05-04)
+
+
+### Bug Fixes
+
+* **service-dashboard:** move the missionplanner ([e7f0bbc](https://github.com/w4bo/welaser/commit/e7f0bbcb29a0dafa80b8eca9de6990336203b5de))
+
 ## [1.1.132](https://github.com/w4bo/welaser/compare/1.1.131...1.1.132) (2023-05-04)
 
 
