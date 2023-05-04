@@ -1,3 +1,16 @@
+## [1.1.132](https://github.com/w4bo/welaser/compare/1.1.131...1.1.132) (2023-05-04)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix the landLocation on the map ([2862588](https://github.com/w4bo/welaser/commit/28625888324913bf9de06f6146ff772bbaff5e36))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.26 ([618889a](https://github.com/w4bo/welaser/commit/618889a463ac7a0656f822e7e1fab72f31c39f89))
+* **deps:** update welaser/welaser-datamodels digest to 350f507 ([39b11de](https://github.com/w4bo/welaser/commit/39b11de49062092a46be694a378a44879b1da248))
+
 ## [1.1.131](https://github.com/w4bo/welaser/compare/1.1.130...1.1.131) (2023-04-27)
 
 
