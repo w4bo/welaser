@@ -10,13 +10,11 @@ find . -type d \( -name mongodb -o -name portainer \) -prune -o -name \.env -typ
 cp .env.example .env
 sed -i "s/127.0.0.1/$IP/g" .env
 sed -i 's+/path/to/code/here+'$(pwd)'+g' .env
-
-. scripts/loadEnv.sh
-python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, v in os.environ.items() if "_EXT" in k or "_IP" in k or "_TOPIC" in k})))' > service-dashboard/public/env.js
-
 if [ -f "scripts/updatePwd.sh" ]; then
     . ./scripts/updatePwd.sh
 fi
+. scripts/loadEnv.sh
+python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, v in os.environ.items() if "_EXT" in k or "_IP" in k or "_TOPIC" in k})))' > service-dashboard/public/env.js
 
 # Node
 echo "madridGeoJSON = " > service-dashboard/public/maps/madrid.js
