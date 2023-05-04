@@ -41,7 +41,6 @@ const missionplanner = {
             selectableinitiallines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30],
             jumps: 3,
             selectablejumps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            farm: utils.agrifarm,
             to: "",
             robots: [],
             froms: [],
@@ -59,7 +58,7 @@ const missionplanner = {
             const data = {}
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot["id"]
-            data["agrifarm_id"] = utils.farm
+            data["agrifarm_id"] = utils.agrifarm
             data["from_place_id"] = this.from["id"]
             data["agriparcel_id"] = this.parcel["id"]
             data["roundtrip_flag"] = "" + this.roundtrip
@@ -68,14 +67,13 @@ const missionplanner = {
             data["initialline"] = this.initialline
             const tis = this
             utils.plannerCreatePlan(data, function (res) {
-                console.log(res)
                 tis.showModal = true
                 tis.success = true
                 tis.response = res.data.info
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
-                tis.response = err.response.data.info
+                tis.response = err.response.data? err.response.data.info: "Error"
             })
         },
     },
