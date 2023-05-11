@@ -1,3 +1,16 @@
+## [1.1.134](https://github.com/w4bo/welaser/compare/1.1.133...1.1.134) (2023-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency vue to v3.3.1 ([ed9be6c](https://github.com/w4bo/welaser/commit/ed9be6ca51d009854fa7e92f4d7947d667b39160))
+
+
+### Dependency updates
+
+* **deps:** update dependency requests to v2.30.0 ([22b6388](https://github.com/w4bo/welaser/commit/22b6388822476ebeb98145d6438a1758345f2f96))
+* **deps:** update dependency urllib3 to v2 ([2f0cb40](https://github.com/w4bo/welaser/commit/2f0cb404ff99956c4c670f50b2895826789ffbda))
+
 ## [1.1.133](https://github.com/w4bo/welaser/compare/1.1.132...1.1.133) (2023-05-04)
 
 
