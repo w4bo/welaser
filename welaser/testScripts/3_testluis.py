@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 conf = dotenv_values("../.env")
 
 url = "http://{}:{}/data".format(conf["BUILDER_IP"], conf["BUILDER_PORT_EXT"])
-with open('../service-mapbuilder/Maps/Map_CAR_real_test.geojson', 'r') as f:
+with open('../service-mapbuilder/Maps/Map_CAR.geojson', 'r') as f:
     response = requests.post(url, json=json.load(f))
     assert (response.status_code == 200), "MapBuilder: " + str(response)
 print("MapBuilder is ok")
