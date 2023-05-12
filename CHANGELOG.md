@@ -1,3 +1,10 @@
+## [1.1.136](https://github.com/w4bo/welaser/compare/1.1.135...1.1.136) (2023-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency vue to v3.3.2 ([da336f5](https://github.com/w4bo/welaser/commit/da336f5a3e6579507414503d07992c353a208fc9))
+
 ## [1.1.135](https://github.com/w4bo/welaser/compare/1.1.134...1.1.135) (2023-05-12)
 
 
