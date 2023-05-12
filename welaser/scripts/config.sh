@@ -18,7 +18,7 @@ python -c 'import os; import json; print("config = " + json.dumps(({k: v for k, 
 
 # Node
 echo "madridGeoJSON = " > service-dashboard/public/maps/madrid.js
-cat service-mapbuilder/Maps/Map_CAR_real_test.geojson >> service-dashboard/public/maps/madrid.js
+cat service-mapbuilder/Maps/Map_CAR.geojson >> service-dashboard/public/maps/madrid.js
 
 # Devices python
 rm devices-python/carob-1.json || true
