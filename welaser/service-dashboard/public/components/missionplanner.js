@@ -23,6 +23,7 @@ const missionplanner = {
               Initial line <v-select :items="selectableinitiallines" v-model="initialline" style="padding: 0" dense></v-select>
               <p v-if="showModal"></p>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
+              <img v-if="showModal" :src="'data:image/png;base64,' + image" width="100%" :alt="image">
           </v-card-text>
           <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from)">Create</v-btn></v-card-actions>
         </v-card>
@@ -47,6 +48,7 @@ const missionplanner = {
             parcels: [],
             parcel: undefined,
             response: "",
+            image: "",
             showModal: true,
             success: true,
             roundtrip: true,
@@ -57,10 +59,10 @@ const missionplanner = {
         send() {
             const data = {}
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
-            data["agrirobot_id"] = this.robot["id"]
+            data["agrirobot_id"] = this.robot
             data["agrifarm_id"] = utils.agrifarm
-            data["from_place_id"] = this.from["id"]
-            data["agriparcel_id"] = this.parcel["id"]
+            data["from_place_id"] = this.from
+            data["agriparcel_id"] = this.parcel
             data["roundtrip_flag"] = "" + this.roundtrip
             data["lines"] = this.lines
             data["jumps"] = this.jumps
@@ -70,10 +72,12 @@ const missionplanner = {
                 tis.showModal = true
                 tis.success = true
                 tis.response = res.data.info
+                tis.image = res.data.img.replace(/%3D/g, "=")
             }, function (err) {
                 tis.showModal = true
                 tis.success = false
                 tis.response = err.response.data? err.response.data.info: "Error"
+                tis.image = ""
             })
         },
     },
@@ -82,9 +86,9 @@ const missionplanner = {
         function rec(l) {
             if (l.length === 0) {
                 tis.froms = tis.froms.sort((a, b) => a.name > b.name)
-                tis.from = tis.froms[0]
+                tis.from = tis.froms[0]["id"]
                 tis.parcels = tis.parcels.sort((a, b) => a.name > b.name)
-                tis.parcel = tis.parcels[0]
+                tis.parcel = tis.parcels[0]["id"]
             } else {
                 const type = l.pop()
                 utils.getDevices(tis, type, {}, function (acc) {
@@ -105,7 +109,7 @@ const missionplanner = {
             robots.forEach(robot => {
                 this.robots.push({"name": robot["name"], "id": robot["id"]})
             })
-            this.robot = this.robots[0]
+            this.robot = this.robots[0]["id"]
         })
     },
     components: {
