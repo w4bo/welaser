@@ -1,3 +1,10 @@
+## [1.1.135](https://github.com/w4bo/welaser/compare/1.1.134...1.1.135) (2023-05-12)
+
+
+### Bug Fixes
+
+* **service-missionplanner:** visualize the resulting image ([95bc824](https://github.com/w4bo/welaser/commit/95bc8247d43a64c26063c401a57b148c44999797))
+
 ## [1.1.134](https://github.com/w4bo/welaser/compare/1.1.133...1.1.134) (2023-05-11)
 
 
