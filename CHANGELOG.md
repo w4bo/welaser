@@ -1,3 +1,15 @@
+## [1.1.137](https://github.com/w4bo/welaser/compare/1.1.136...1.1.137) (2023-05-15)
+
+
+### Bug Fixes
+
+* **service-missionplanner:** update ([#514](https://github.com/w4bo/welaser/issues/514)) ([50a1004](https://github.com/w4bo/welaser/commit/50a1004f509b3078557014c680fd4e04506c671a))
+
+
+### Dependency updates
+
+* **deps:** update dependency jsoneditor to v9.10.1 ([8f0e1c4](https://github.com/w4bo/welaser/commit/8f0e1c403a2d85ef45bcff8a33faece15b58ccd6))
+
 ## [1.1.136](https://github.com/w4bo/welaser/compare/1.1.135...1.1.136) (2023-05-12)
 
 
