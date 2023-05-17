@@ -1,3 +1,15 @@
+## [1.1.138](https://github.com/w4bo/welaser/compare/1.1.137...1.1.138) (2023-05-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commons-io:commons-io to v2.12.0 ([1d9cf9e](https://github.com/w4bo/welaser/commit/1d9cf9e76730519db420a4410a44981ab0af6560))
+
+
+### Dependency updates
+
+* **deps:** update dependency jsoneditor to v9.10.2 ([e0b8f08](https://github.com/w4bo/welaser/commit/e0b8f08a60a7833ae31606dce2a6c96d89281a72))
+
 ## [1.1.137](https://github.com/w4bo/welaser/compare/1.1.136...1.1.137) (2023-05-15)
 
 
