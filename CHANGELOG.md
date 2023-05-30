@@ -1,3 +1,16 @@
+## [1.1.140](https://github.com/w4bo/welaser/compare/1.1.139...1.1.140) (2023-05-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.0 ([56c5088](https://github.com/w4bo/welaser/commit/56c508864499c9252f1eb653107f5e23550ec31f))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.0.2 ([c4b8a03](https://github.com/w4bo/welaser/commit/c4b8a0313157bee4b8fb805c5513514ac55b65d8))
+* **deps:** update dependency requests to v2.31.0 ([2de36f4](https://github.com/w4bo/welaser/commit/2de36f4f848553f019fbfd7cbc0540e1f8de1278))
+
 ## [1.1.139](https://github.com/w4bo/welaser/compare/1.1.138...1.1.139) (2023-05-18)
 
 
