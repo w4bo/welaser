@@ -1,3 +1,15 @@
+## [1.1.142](https://github.com/w4bo/welaser/compare/1.1.141...1.1.142) (2023-05-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.3 ([56503e1](https://github.com/w4bo/welaser/commit/56503e135953eed3fd1d7389dc54b7a5a2f40fd3))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.28 ([b4acbeb](https://github.com/w4bo/welaser/commit/b4acbeb5a307f17818aaa31bb44d67a0462ad90b))
+
 ## [1.1.141](https://github.com/w4bo/welaser/compare/1.1.140...1.1.141) (2023-05-31)
 
 
