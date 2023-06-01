@@ -1,3 +1,15 @@
+## [1.1.144](https://github.com/w4bo/welaser/compare/1.1.143...1.1.144) (2023-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.3.1 ([e7e8513](https://github.com/w4bo/welaser/commit/e7e851326f6917337d2cbe13aead908c96d4dd62))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.30 ([e4cae8d](https://github.com/w4bo/welaser/commit/e4cae8d37c491dea483cfba361d51c4859eff44d))
+
 ## [1.1.143](https://github.com/w4bo/welaser/compare/1.1.142...1.1.143) (2023-06-01)
 
 
