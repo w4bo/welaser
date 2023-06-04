@@ -1,3 +1,10 @@
+## [1.1.145](https://github.com/w4bo/welaser/compare/1.1.144...1.1.145) (2023-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.4 ([cdf81f2](https://github.com/w4bo/welaser/commit/cdf81f271d21f285e4f28dc36dbdba8a43456ebb))
+
 ## [1.1.144](https://github.com/w4bo/welaser/compare/1.1.143...1.1.144) (2023-06-01)
 
 
