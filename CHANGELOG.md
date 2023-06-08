@@ -1,3 +1,16 @@
+## [1.1.147](https://github.com/w4bo/welaser/compare/1.1.146...1.1.147) (2023-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mongodb:mongo-java-driver to v3.12.14 ([73b5b39](https://github.com/w4bo/welaser/commit/73b5b396c6dd70ade747cdf025269ffba9010b1a))
+
+
+### Dependency updates
+
+* **deps:** update dependency urllib3 to v2.0.3 ([669d88b](https://github.com/w4bo/welaser/commit/669d88b13dd1da7f5213621d56e8c98c273717d5))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.22 ([06d7200](https://github.com/w4bo/welaser/commit/06d7200924f9f32a27634fd6f0fe16f2cc7598a3))
+
 ## [1.1.146](https://github.com/w4bo/welaser/compare/1.1.145...1.1.146) (2023-06-06)
 
 
