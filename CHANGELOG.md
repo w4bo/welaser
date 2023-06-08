@@ -1,3 +1,10 @@
+## [1.1.148](https://github.com/w4bo/welaser/compare/1.1.147...1.1.148) (2023-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commons-io:commons-io to v2.13.0 ([da5e2b4](https://github.com/w4bo/welaser/commit/da5e2b431422b1cf79541be5f9e840ce757b49ee))
+
 ## [1.1.147](https://github.com/w4bo/welaser/compare/1.1.146...1.1.147) (2023-06-08)
 
 
