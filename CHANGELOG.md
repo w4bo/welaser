@@ -1,3 +1,20 @@
+## [1.1.149](https://github.com/w4bo/welaser/compare/1.1.148...1.1.149) (2023-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.5.0 ([08e0578](https://github.com/w4bo/welaser/commit/08e0578092f663dda07c4910ea5becc6b2f1214a))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.3 ([a62fe47](https://github.com/w4bo/welaser/commit/a62fe47ef449681f985ca6b621cd0bbb41e385b1))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.37 ([5f43d84](https://github.com/w4bo/welaser/commit/5f43d848d2e4070263c3047acc4559d5e3201196))
+
 ## [1.1.148](https://github.com/w4bo/welaser/compare/1.1.147...1.1.148) (2023-06-08)
 
 
