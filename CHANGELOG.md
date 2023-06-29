@@ -1,3 +1,18 @@
+## [1.1.154](https://github.com/w4bo/welaser/compare/1.1.153...1.1.154) (2023-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.3.2 ([7472ac7](https://github.com/w4bo/welaser/commit/7472ac7051a57d3651ff0ef5b36118aab00534f5))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.0.3 ([c236c83](https://github.com/w4bo/welaser/commit/c236c83c425f680e7a98d6f9a185395e064475b7))
+* **deps:** update dependency pymongo to v4.4.0 ([929e555](https://github.com/w4bo/welaser/commit/929e555c20a905efea0fe369a02f783b3691166f))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.38 ([1338cb3](https://github.com/w4bo/welaser/commit/1338cb321bfc4ae0b68229451f838c2881edb743))
+* **deps:** update fiware/orion docker tag to v3.10.1 ([e3d40f5](https://github.com/w4bo/welaser/commit/e3d40f5d70c6e3c4394f954bd841b1f78a193474))
+
 ## [1.1.153](https://github.com/w4bo/welaser/compare/1.1.152...1.1.153) (2023-06-18)
 
 
