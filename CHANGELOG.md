@@ -1,3 +1,17 @@
+## [1.1.156](https://github.com/w4bo/welaser/compare/1.1.155...1.1.156) (2023-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.0 ([ea6b406](https://github.com/w4bo/welaser/commit/ea6b40682806338f587944ea0dd766786e6d762d))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.6.2 ([b59c6c4](https://github.com/w4bo/welaser/commit/b59c6c454a859804d00040502a0492651ca28a45))
+* **deps:** update dependency matplotlib to v3.7.2 ([d5d1cfc](https://github.com/w4bo/welaser/commit/d5d1cfc1c4351e86ecbc55b0f6d509d3fb9de736))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.39 ([01e079d](https://github.com/w4bo/welaser/commit/01e079d457a7f836adcb19e32e08ee4558057d51))
+
 ## [1.1.155](https://github.com/w4bo/welaser/compare/1.1.154...1.1.155) (2023-06-29)
 
 
