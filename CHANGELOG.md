@@ -1,3 +1,15 @@
+## [1.1.157](https://github.com/w4bo/welaser/compare/1.1.156...1.1.157) (2023-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.1 ([44392ad](https://github.com/w4bo/welaser/commit/44392adbc3291642da35b89450dfa5355c14e59e))
+
+
+### Dependency updates
+
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.9.0 ([923f8a9](https://github.com/w4bo/welaser/commit/923f8a9eedffb05d631cf66345e4b9fee0956809))
+
 ## [1.1.156](https://github.com/w4bo/welaser/compare/1.1.155...1.1.156) (2023-07-06)
 
 
