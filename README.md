@@ -6,18 +6,26 @@
 
 ## Set up
 
-This project requires Java 11 and Python 3.8.
 Refer to this [Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) for the complete setup.
+This project requires Java 11,  Python 3.8, and docker installed.
 
-Simple installation on Ubuntu
-```
+```sh
 sudo apt install git openjdk-11-jre-headless -y
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt install python3.8 python3.8-dev python3.8-venv -y
 sudo ln -s /usr/bin/python3.8 /usr/bin/python
 ```
 
-To do the mandatory configuration, run:
+Chech the instructions to install docker here: https://docs.docker.com/engine/install/ubuntu/
+
+The user executing the WeLASER architecture should be in the `docker` group:
+
+```sh
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+Then, to do the mandatory configuration, run:
 
 ```sh
 scripts/submodule.sh
