@@ -9,11 +9,19 @@
 This project requires Java 11 and Python 3.8.
 Refer to this [Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) for the complete setup.
 
+Simple installation on Ubuntu
+```
+sudo apt install git openjdk-11-jre-headless -y
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.8 python3.8-dev python3.8-venv -y
+sudo ln -s /usr/bin/python3.8 /usr/bin/python
+```
+
 To do the mandatory configuration, run:
 
 ```sh
-scripts/config.sh
 scripts/submodule.sh
+scripts/config.sh
 ```
 
 Note that this will replace the content of the `.env` file with `.env.example`. 
