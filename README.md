@@ -7,7 +7,7 @@
 ## Set up
 
 Refer to this [Github action](https://github.com/w4bo/welaser/blob/master/.github/workflows/build.yml) for the complete setup.
-This project requires Java 11,  Python 3.8, and docker installed.
+This project requires Java 11,  Python 3.8, docker, and docker compose installed.
 
 ```sh
 sudo apt install git openjdk-11-jre-headless -y
