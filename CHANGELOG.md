@@ -1,3 +1,16 @@
+## [1.1.158](https://github.com/w4bo/welaser/compare/1.1.157...1.1.158) (2023-07-13)
+
+
+### Bug Fixes
+
+* **docker:** move from docker-compose to docker compose ([4e96b77](https://github.com/w4bo/welaser/commit/4e96b771ad3fe4417f48f575b4d688414e079c7d))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.40 ([7e0d46f](https://github.com/w4bo/welaser/commit/7e0d46f01355857f18c91fcb77541d194db43ca8))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.41 ([f972f06](https://github.com/w4bo/welaser/commit/f972f06cac0f409a999a1a734e78b10de25946ee))
+
 ## [1.1.157](https://github.com/w4bo/welaser/compare/1.1.156...1.1.157) (2023-07-06)
 
 
