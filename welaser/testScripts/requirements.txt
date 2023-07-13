@@ -7,4 +7,4 @@ matplotlib==3.7.2
 notebook==6.5.4
 pandas==2.0.3
 requests==2.31.0
-pymongo==4.4.0
+pymongo==4.4.1
