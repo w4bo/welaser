@@ -63,8 +63,8 @@ services:
       - "${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}" # 27017
     networks:
       - default
-    # volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
-    #   - ./mounts/mongodb:/data/db
+    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
+      - ./mounts/mongodb:/data/db
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
