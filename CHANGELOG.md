@@ -1,3 +1,204 @@
+## [1.1.158](https://github.com/w4bo/welaser/compare/1.1.157...1.1.158) (2023-07-13)
+
+
+### Bug Fixes
+
+* **docker:** move from docker-compose to docker compose ([4e96b77](https://github.com/w4bo/welaser/commit/4e96b771ad3fe4417f48f575b4d688414e079c7d))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.40 ([7e0d46f](https://github.com/w4bo/welaser/commit/7e0d46f01355857f18c91fcb77541d194db43ca8))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.41 ([f972f06](https://github.com/w4bo/welaser/commit/f972f06cac0f409a999a1a734e78b10de25946ee))
+
+## [1.1.157](https://github.com/w4bo/welaser/compare/1.1.156...1.1.157) (2023-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.1 ([44392ad](https://github.com/w4bo/welaser/commit/44392adbc3291642da35b89450dfa5355c14e59e))
+
+
+### Dependency updates
+
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.9.0 ([923f8a9](https://github.com/w4bo/welaser/commit/923f8a9eedffb05d631cf66345e4b9fee0956809))
+
+## [1.1.156](https://github.com/w4bo/welaser/compare/1.1.155...1.1.156) (2023-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.0 ([ea6b406](https://github.com/w4bo/welaser/commit/ea6b40682806338f587944ea0dd766786e6d762d))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.6.2 ([b59c6c4](https://github.com/w4bo/welaser/commit/b59c6c454a859804d00040502a0492651ca28a45))
+* **deps:** update dependency matplotlib to v3.7.2 ([d5d1cfc](https://github.com/w4bo/welaser/commit/d5d1cfc1c4351e86ecbc55b0f6d509d3fb9de736))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.39 ([01e079d](https://github.com/w4bo/welaser/commit/01e079d457a7f836adcb19e32e08ee4558057d51))
+
+## [1.1.155](https://github.com/w4bo/welaser/compare/1.1.154...1.1.155) (2023-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.3.2 ([c30689b](https://github.com/w4bo/welaser/commit/c30689ba347b6acd1e6d640985e52f064e1afb0d))
+
+## [1.1.154](https://github.com/w4bo/welaser/compare/1.1.153...1.1.154) (2023-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.3.2 ([7472ac7](https://github.com/w4bo/welaser/commit/7472ac7051a57d3651ff0ef5b36118aab00534f5))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.0.3 ([c236c83](https://github.com/w4bo/welaser/commit/c236c83c425f680e7a98d6f9a185395e064475b7))
+* **deps:** update dependency pymongo to v4.4.0 ([929e555](https://github.com/w4bo/welaser/commit/929e555c20a905efea0fe369a02f783b3691166f))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.38 ([1338cb3](https://github.com/w4bo/welaser/commit/1338cb321bfc4ae0b68229451f838c2881edb743))
+* **deps:** update fiware/orion docker tag to v3.10.1 ([e3d40f5](https://github.com/w4bo/welaser/commit/e3d40f5d70c6e3c4394f954bd841b1f78a193474))
+
+## [1.1.153](https://github.com/w4bo/welaser/compare/1.1.152...1.1.153) (2023-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.json:json to v20230618 ([2eddb43](https://github.com/w4bo/welaser/commit/2eddb432eda63e69517fd5997e118f656cde210f))
+
+## [1.1.152](https://github.com/w4bo/welaser/compare/1.1.151...1.1.152) (2023-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.3.1 ([52726b7](https://github.com/w4bo/welaser/commit/52726b7f1e2e710c6065ccd505275abbfbbcb199))
+
+## [1.1.151](https://github.com/w4bo/welaser/compare/1.1.150...1.1.151) (2023-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.3.0 ([19b1b7d](https://github.com/w4bo/welaser/commit/19b1b7d102132812ba8e18c0b00f86bfe01abf8e))
+
+## [1.1.150](https://github.com/w4bo/welaser/compare/1.1.149...1.1.150) (2023-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.2.0 ([82ec0a2](https://github.com/w4bo/welaser/commit/82ec0a25c8ab0167c88636174e3986f69b914824))
+
+## [1.1.149](https://github.com/w4bo/welaser/compare/1.1.148...1.1.149) (2023-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.5.0 ([08e0578](https://github.com/w4bo/welaser/commit/08e0578092f663dda07c4910ea5becc6b2f1214a))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.3 ([a62fe47](https://github.com/w4bo/welaser/commit/a62fe47ef449681f985ca6b621cd0bbb41e385b1))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.37 ([5f43d84](https://github.com/w4bo/welaser/commit/5f43d848d2e4070263c3047acc4559d5e3201196))
+
+## [1.1.148](https://github.com/w4bo/welaser/compare/1.1.147...1.1.148) (2023-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commons-io:commons-io to v2.13.0 ([da5e2b4](https://github.com/w4bo/welaser/commit/da5e2b431422b1cf79541be5f9e840ce757b49ee))
+
+## [1.1.147](https://github.com/w4bo/welaser/compare/1.1.146...1.1.147) (2023-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mongodb:mongo-java-driver to v3.12.14 ([73b5b39](https://github.com/w4bo/welaser/commit/73b5b396c6dd70ade747cdf025269ffba9010b1a))
+
+
+### Dependency updates
+
+* **deps:** update dependency urllib3 to v2.0.3 ([669d88b](https://github.com/w4bo/welaser/commit/669d88b13dd1da7f5213621d56e8c98c273717d5))
+* **deps:** update plugin org.jetbrains.kotlin.jvm to v1.8.22 ([06d7200](https://github.com/w4bo/welaser/commit/06d7200924f9f32a27634fd6f0fe16f2cc7598a3))
+
+## [1.1.146](https://github.com/w4bo/welaser/compare/1.1.145...1.1.146) (2023-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.4.1 ([010d314](https://github.com/w4bo/welaser/commit/010d314c5a87aa61a7d57b9e81a842e2165dbd9b))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.32 ([52d1483](https://github.com/w4bo/welaser/commit/52d1483c5bbef9180281a12aaa9fb650567dc8f0))
+
+## [1.1.145](https://github.com/w4bo/welaser/compare/1.1.144...1.1.145) (2023-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.4 ([cdf81f2](https://github.com/w4bo/welaser/commit/cdf81f271d21f285e4f28dc36dbdba8a43456ebb))
+
+## [1.1.144](https://github.com/w4bo/welaser/compare/1.1.143...1.1.144) (2023-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.3.1 ([e7e8513](https://github.com/w4bo/welaser/commit/e7e851326f6917337d2cbe13aead908c96d4dd62))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.30 ([e4cae8d](https://github.com/w4bo/welaser/commit/e4cae8d37c491dea483cfba361d51c4859eff44d))
+
+## [1.1.143](https://github.com/w4bo/welaser/compare/1.1.142...1.1.143) (2023-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.3.1 ([66aaf04](https://github.com/w4bo/welaser/commit/66aaf0474a00c06b5a99b4f69a5b01234ff5aa8c))
+
+## [1.1.142](https://github.com/w4bo/welaser/compare/1.1.141...1.1.142) (2023-05-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.3 ([56503e1](https://github.com/w4bo/welaser/commit/56503e135953eed3fd1d7389dc54b7a5a2f40fd3))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.28 ([b4acbeb](https://github.com/w4bo/welaser/commit/b4acbeb5a307f17818aaa31bb44d67a0462ad90b))
+
+## [1.1.141](https://github.com/w4bo/welaser/compare/1.1.140...1.1.141) (2023-05-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.1 ([ab03479](https://github.com/w4bo/welaser/commit/ab03479a4138238d5a21a6da00ca1c27bb363e34))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.27 ([7ed3565](https://github.com/w4bo/welaser/commit/7ed3565e1b54cf6ba0520cefc163e5af86776af1))
+
+## [1.1.140](https://github.com/w4bo/welaser/compare/1.1.139...1.1.140) (2023-05-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16.1.0 ([56c5088](https://github.com/w4bo/welaser/commit/56c508864499c9252f1eb653107f5e23550ec31f))
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.0.2 ([c4b8a03](https://github.com/w4bo/welaser/commit/c4b8a0313157bee4b8fb805c5513514ac55b65d8))
+* **deps:** update dependency requests to v2.31.0 ([2de36f4](https://github.com/w4bo/welaser/commit/2de36f4f848553f019fbfd7cbc0540e1f8de1278))
+
 ## [1.1.139](https://github.com/w4bo/welaser/compare/1.1.138...1.1.139) (2023-05-18)
 
 
