@@ -91,7 +91,7 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
                 // by write to mongo. This is necessary to avoid burdening the OCB with unnecessary data. Also, if this process
                 // is slower than then GUI, then on the GUI the user will perceive delayed image updates (e.g., the user is seeing image#10,
                 // but then it receives an update for image#4
-                // val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}"}"""
+                // val payload = """{"$attr": "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["NGINX_PORT_HTTP_EXT"]}/${filename}"}"""
                 // val url = "${ORION_URL}entities/$id/attrs?options=keyValues"
                 // if (async) {
                 //     khttp.async.patch(url, mapOf(CONTENTTYPE), data = payload)
