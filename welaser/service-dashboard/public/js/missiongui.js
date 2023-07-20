@@ -50,7 +50,7 @@ const missiongui = {
                     <v-card elevation="3">
                         <v-card-title class="p-0">Events</v-card-title>
                         <template v-for="robot in Object.values(robots)">
-                            <v-list-item v-if="robot.data.supervisor && isSelected(robot.data)" v-for="supervisor in robot.data.supervisor" style="background-color: #ff33f3" class="p-1">
+                            <v-list-item v-if="robot.data.supervisor && isSelected(robot.data)" v-for="supervisor in robot.data.supervisor" style="background-color: #add8e6" class="p-1">
                                 <v-list-item-content>{{supervisor}}</v-list-item-content>
                             </v-list-item>
                             <v-list-item v-if="robot.data.errors && isSelected(robot.data)" v-for="error in robot.data.errors" style="background-color: #ff3300" class="p-1">
