@@ -1,3 +1,15 @@
+## [1.1.159](https://github.com/w4bo/welaser/compare/1.1.158...1.1.159) (2023-07-20)
+
+
+### Bug Fixes
+
+* **node:** add notification from supervisor ([#571](https://github.com/w4bo/welaser/issues/571)) ([99280ac](https://github.com/w4bo/welaser/commit/99280acaa562937b629901937995696445746e34))
+
+
+### Dependency updates
+
+* **deps:** update dependency pymongo to v4.4.1 ([c57c8bc](https://github.com/w4bo/welaser/commit/c57c8bca5cfb0de97ef56444acfea9ab8e60b77f))
+
 ## [1.1.158](https://github.com/w4bo/welaser/compare/1.1.157...1.1.158) (2023-07-13)
 
 
