@@ -55,7 +55,8 @@ const entitycreate = {
                 "id": `urn:nsgi-ld:${type}:${utils.uuidv4()}`,
                 "type": type,
                 "name": `User-friendly name here`,
-                "createdBy": `A user from the web gui`
+                "createdBy": `A user from the web gui`,
+                "areaServed": utils.agrifarm
             }
             this.editorCreate.set(type === "AgriFarm" ? utils.copenhagenFarm : data)
         },
@@ -81,7 +82,7 @@ const entitycreate = {
                     "type": "string",
                 },
             },
-            "required": ["id", "type", "name", "createdBy"]
+            "required": ["id", "type", "name", "createdBy", "areaServed"]
         }
 
         const options = {
