@@ -1,3 +1,10 @@
+## [1.1.161](https://github.com/w4bo/welaser/compare/1.1.160...1.1.161) (2023-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.10.0 ([d345232](https://github.com/w4bo/welaser/commit/d345232c260bfdb1742ba14608525c08c49660ca))
+
 ## [1.1.160](https://github.com/w4bo/welaser/compare/1.1.159...1.1.160) (2023-07-21)
 
 
