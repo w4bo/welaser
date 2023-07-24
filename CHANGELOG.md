@@ -1,3 +1,16 @@
+## [1.1.162](https://github.com/w4bo/welaser/compare/1.1.161...1.1.162) (2023-07-24)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix entity creation ([698daa1](https://github.com/w4bo/welaser/commit/698daa1c6a99a8152d9e34fc8cba400c4890acb5))
+* **service-dashboard:** fix entity update ([235e420](https://github.com/w4bo/welaser/commit/235e42003055e3908c4a1d0729ac372d546bfbae))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.17 ([021b835](https://github.com/w4bo/welaser/commit/021b835a01d6b077a6bd5dc2621a9266de83b645))
+
 ## [1.1.161](https://github.com/w4bo/welaser/compare/1.1.160...1.1.161) (2023-07-23)
 
 
