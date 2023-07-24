@@ -52,7 +52,7 @@ const entitycreate = {
             this.visibleCreate = true
             this.showModal = false
             const data = {
-                "id": `urn:nsgi-ld:${type}:${utils.uuidv4()}`,
+                "id": `urn:ngsi-ld:${type}:${utils.uuidv4()}`,
                 "type": type,
                 "name": `User-friendly name here`,
                 "createdBy": `A user from the web gui`,
@@ -90,10 +90,6 @@ const entitycreate = {
             mode: 'code',
             modes: ['code', 'tree', 'view'],
             onValidate: function (json) {
-                // rules:
-                // - team, names, and ages must be filled in and be of correct type
-                // - a team must have 4 members
-                // - at lease one member of the team must be adult
                 const errors = []
                 if (json.id && !json.id.startsWith("urn:ngsi-ld:")) {
                     errors.push({
@@ -101,7 +97,7 @@ const entitycreate = {
                         message: "The id should start with 'urn:ngsi-ld:'"
                     })
                 }
-                if (json.createdBy && json.createdBy.length > 0) {
+                if (json.createdBy && json.createdBy.length === 0) {
                     errors.push({
                         path: ['createdBy'],
                         message: "The field should not be empty"
@@ -110,23 +106,12 @@ const entitycreate = {
                 return errors
             },
             onEditable: function (node) {
-                // node is an object like:
-                //   {
-                //     field: 'FIELD',
-                //     value: 'VALUE',
-                //     path: ['PATH', 'TO', 'NODE']
-                //   }
                 switch (node.field) {
+                    case 'areaServed':
                     case 'type':
-                        return {
-                            field: false,
-                            value: false
-                        }
+                        return { field: false, value: false }
                     default:
-                        return {
-                            field: false,
-                            value: true
-                        }
+                        return { field: false, value: true }
                 }
             }
         }
