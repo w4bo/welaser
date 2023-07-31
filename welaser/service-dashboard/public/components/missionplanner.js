@@ -64,9 +64,9 @@ const missionplanner = {
             data["from_place_id"] = this.from
             data["agriparcel_id"] = this.parcel
             data["roundtrip_flag"] = "" + this.roundtrip
-            data["lines"] = this.alllines? "All": this.lines
-            data["jumps"] = this.jumps
-            data["initialline"] = this.initialline
+            data["lines"] = this.alllines? "All": parseInt(this.lines)
+            data["jumps"] = parseInt(this.jumps)
+            data["initialline"] = parseInt(this.initialline)
             const tis = this
             utils.plannerCreatePlan(data, function (res) {
                 tis.showModal = true
