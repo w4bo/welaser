@@ -26,7 +26,7 @@ const missionplanner = {
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
               <img v-if="showModal" :src="'data:image/png;base64,' + image" width="100%" :alt="image">
           </v-card-text>
-          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from)">Create</v-btn></v-card-actions>
+          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(parcel && from)">Create</v-btn></v-card-actions>
         </v-card>
     `,
     data() {
@@ -109,7 +109,7 @@ const missionplanner = {
             robots.forEach(robot => {
                 this.robots.push({"name": robot["name"], "id": robot["id"]})
             })
-            this.robot = this.robots[0]["id"]
+            this.robot = this.robots[0]? this.robots[0]["id"] : ""
         })
     },
     components: {
