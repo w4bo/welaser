@@ -4,6 +4,12 @@ from dotenv import dotenv_values
 
 conf = dotenv_values("../.env")
 
+print("Cleaning")
+for type in ["AgriFarm", "AgriParcel", "Building", "Road", "RestrictedArea"]:
+    response = requests.get("http://{}:{}/v2/entities".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), params={"type": type, "options": "keyValues", "limit": 1000, "attrs": "id,type"})
+    if response.text != "[]":
+         requests.post("http://{}:{}/v2/op/update".format(conf["ORION_IP"], conf["ORION_PORT_EXT"]), json={"actionType": "delete", "entities": json.loads(response.text)})
+
 url = "http://{}:{}/data".format(conf["BUILDER_IP"], conf["BUILDER_PORT_EXT"])
 with open('../service-mapbuilder/Maps/Map_CAR.geojson', 'r') as f:
     response = requests.post(url, json=json.load(f))
