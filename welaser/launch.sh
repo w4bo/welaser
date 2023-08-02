@@ -46,5 +46,5 @@ curl -iX POST \
 
 devices/gradlew -p devices --stacktrace --scan
 
-((run_simulation)) devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt &
+((run_simulation)) && devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt &
 ((run_tests)) && scripts/runTests.sh
