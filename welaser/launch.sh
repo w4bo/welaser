@@ -11,6 +11,17 @@ else
 fi
 
 ./stop.sh
+run_simulation=0
+run_tests=0
+while getopts "cst" opt
+do
+    case $opt in
+    (c) sudo find mounts/mongodb ! -name '.dummy' -type f -exec rm -f {} + ;;
+    (s) run_simulation=1 ;;
+    (t) run_tests=1 ;;
+    (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
+    esac
+done
 ./scripts/createVenv.sh
 ./scripts/setupKafka.sh
 ./scripts/setupFiware.sh
@@ -35,13 +46,5 @@ curl -iX POST \
 
 devices/gradlew -p devices --stacktrace --scan
 
-run_tests=0
-while getopts "st" opt
-do
-    case $opt in
-    (s) devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt & ;;
-    (t) run_tests=1 ;;
-    (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
-    esac
-done
+((run_simulation)) && devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt &
 ((run_tests)) && scripts/runTests.sh
