@@ -1,3 +1,11 @@
+## [1.1.164](https://github.com/w4bo/welaser/compare/1.1.163...1.1.164) (2023-08-02)
+
+
+### Bug Fixes
+
+* **ci:** feat cleandb ([#582](https://github.com/w4bo/welaser/issues/582)) ([f97407b](https://github.com/w4bo/welaser/commit/f97407b8dd919fb605cf334d431057ba43a7a5f8))
+* **missionplanner:** update ([#583](https://github.com/w4bo/welaser/issues/583)) ([d4e06e7](https://github.com/w4bo/welaser/commit/d4e06e73e8582a616cc2b9ab1a918af032b35e51))
+
 ## [1.1.163](https://github.com/w4bo/welaser/compare/1.1.162...1.1.163) (2023-07-31)
 
 
