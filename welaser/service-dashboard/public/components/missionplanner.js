@@ -16,16 +16,17 @@ const missionplanner = {
                   <v-autocomplete :items="parcels" item-text="name" item-value="id"  v-model="parcel" style="padding: 0" dense>
                       <template v-slot:item="data"><autocompleteitem :data="data"></autocompleteitem></template>
                   </v-autocomplete>
-              <div><div style="float: left">Roundtrip</div> <v-checkbox v-model="roundtrip"></v-checkbox></div>
-
-              Jumps<v-select :items="selectablejumps" v-model="jumps" style="padding: 0" dense></v-select>
-              Lines<v-select :items="selectablelines" v-model="lines" style="padding: 0" dense></v-select>
-              Initial line <v-select :items="selectableinitiallines" v-model="initialline" style="padding: 0" dense></v-select>
-              <p v-if="showModal"></p>
+              <div style="display: flex">
+                  <v-checkbox class="p-3" v-model="roundtrip" label="Roundtrip"></v-checkbox>
+                  <v-checkbox class="p-3" v-model="alllines" label="All lines"></v-checkbox>
+                  <v-text-field class="p-3" style="width: 80px" v-if="!alllines" v-model="lines" type="number" min="1" max="100" density="compact" hide-details variant="outlined" label="Max lines"></v-text-field>
+                  <v-text-field class="p-3" style="width: 80px" v-model="initialline" type="number" min="1" max="100" density="compact" hide-details variant="outlined" label="Initial line"></v-text-field>
+                  <v-text-field class="p-3" style="width: 80px" v-model="jumps" type="number" min="1" max="100" density="compact" hide-details variant="outlined" label="Jumps"></v-text-field>
+              </div>
               <div :class="{success: success, error: !success}" v-if="showModal" @close="showModal = false">{{ response }}</div>
               <img v-if="showModal" :src="'data:image/png;base64,' + image" width="100%" :alt="image">
           </v-card-text>
-          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(robot && parcel && from)">Create</v-btn></v-card-actions>
+          <v-card-actions class="flex-column align-center"><v-btn v-on:click="send()" :disabled="!(parcel && from)">Create</v-btn></v-card-actions>
         </v-card>
     `,
     data() {
@@ -36,12 +37,10 @@ const missionplanner = {
             },
             robot: undefined,
             from: undefined,
-            lines: "All",
-            selectablelines: ["All", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30],
+            alllines: true,
+            lines: 1,
             initialline: 1,
-            selectableinitiallines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30],
             jumps: 3,
-            selectablejumps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             to: "",
             robots: [],
             froms: [],
@@ -57,6 +56,7 @@ const missionplanner = {
     },
     methods: {
         send() {
+            this.showModal = false
             const data = {}
             data["timestamp"] = Math.round(parseFloat(moment(this.date).format('x')) / 1000)
             data["agrirobot_id"] = this.robot
@@ -64,9 +64,9 @@ const missionplanner = {
             data["from_place_id"] = this.from
             data["agriparcel_id"] = this.parcel
             data["roundtrip_flag"] = "" + this.roundtrip
-            data["lines"] = this.lines
-            data["jumps"] = this.jumps
-            data["initialline"] = this.initialline
+            data["lines"] = this.alllines? "All": parseInt(this.lines)
+            data["jumps"] = parseInt(this.jumps)
+            data["initialline"] = parseInt(this.initialline)
             const tis = this
             utils.plannerCreatePlan(data, function (res) {
                 tis.showModal = true
@@ -109,7 +109,7 @@ const missionplanner = {
             robots.forEach(robot => {
                 this.robots.push({"name": robot["name"], "id": robot["id"]})
             })
-            this.robot = this.robots[0]["id"]
+            this.robot = this.robots[0]? this.robots[0]["id"] : ""
         })
     },
     components: {

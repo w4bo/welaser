@@ -1,3 +1,44 @@
+## [1.1.163](https://github.com/w4bo/welaser/compare/1.1.162...1.1.163) (2023-07-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.2 ([aab1ef7](https://github.com/w4bo/welaser/commit/aab1ef7fae58548df824c2b01f0548e3a9a10f0b))
+
+## [1.1.162](https://github.com/w4bo/welaser/compare/1.1.161...1.1.162) (2023-07-24)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix entity creation ([698daa1](https://github.com/w4bo/welaser/commit/698daa1c6a99a8152d9e34fc8cba400c4890acb5))
+* **service-dashboard:** fix entity update ([235e420](https://github.com/w4bo/welaser/commit/235e42003055e3908c4a1d0729ac372d546bfbae))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.17 ([021b835](https://github.com/w4bo/welaser/commit/021b835a01d6b077a6bd5dc2621a9266de83b645))
+
+## [1.1.161](https://github.com/w4bo/welaser/compare/1.1.160...1.1.161) (2023-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.10.0 ([d345232](https://github.com/w4bo/welaser/commit/d345232c260bfdb1742ba14608525c08c49660ca))
+
+## [1.1.160](https://github.com/w4bo/welaser/compare/1.1.159...1.1.160) (2023-07-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.5.1 ([9be454a](https://github.com/w4bo/welaser/commit/9be454acebba32ab21b1d4c1ee6d324aeb858b4c))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v7 ([23d0a76](https://github.com/w4bo/welaser/commit/23d0a7687f791a38a9107af421b75581759f86ed))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.43 ([1056256](https://github.com/w4bo/welaser/commit/10562565dfd17aed2f11f011425c4a0ad84adada))
+* **deps:** update dependency urllib3 to v2.0.4 ([c4228e7](https://github.com/w4bo/welaser/commit/c4228e76ca28843c569f157ee5f6e9cb2bf3ea2c))
+
 ## [1.1.159](https://github.com/w4bo/welaser/compare/1.1.158...1.1.159) (2023-07-20)
 
 
