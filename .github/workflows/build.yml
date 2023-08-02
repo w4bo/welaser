@@ -30,7 +30,7 @@ jobs:
           do
             echo "Run $i"
             scripts/config.sh
-            ./launch.sh -ts
+            ./launch.sh -cst
             scripts/mongodb-dump.sh
             ./stop.sh
           done
