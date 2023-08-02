@@ -13,7 +13,7 @@ print("MapBuilder is ok")
 url = "http://{}:{}/data".format(conf["PLANNER_IP"], conf["PLANNER_PORT_EXT"])
 response = requests.post(url, json={"timestamp":1545730073,
                                     "agrifarm_id":"urn:ngsi-ld:AgriFarm:6991ac61-8db8-4a32-8fef-c462e2369055", 
-                                    "from_place_id":"urn:ngsi-ld:Building:91b41dea-6def-44cc-b140-3c112b781233", 
+                                    "from_place_id":"urn:ngsi-ld:Building:dd4cf746-d622-4284-a722-538550266002",
                                     "agriparcel_id":"urn:ngsi-ld:AgriParcel:ce109a14-09a3-48a9-90e1-e76b61dee0fd", 
                                     "roundtrip_flag":"false",
                                     "agrirobot_id":"AgriRobot:9ea60389-9246-4dda-a083-3e3bcb444131"})
