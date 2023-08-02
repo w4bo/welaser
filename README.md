@@ -16,7 +16,9 @@ sudo apt install python3.8 python3.8-dev python3.8-venv -y
 sudo ln -s /usr/bin/python3.8 /usr/bin/python
 ```
 
-Chech the instructions to install docker here: https://docs.docker.com/engine/install/ubuntu/
+Check the instructions to install docker and the compose plugin here:
+- https://docs.docker.com/engine/install/ubuntu/
+- https://docs.docker.com/compose/install/linux/
 
 The user executing the WeLASER architecture should be in the `docker` group:
 
