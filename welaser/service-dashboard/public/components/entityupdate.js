@@ -86,28 +86,12 @@ const entityupdate = {
             mode: 'code',
             modes: ['code', 'tree', 'view'],
             onEditable: function (node) {
-                // node is an object like:
-                //   {
-                //     field: 'FIELD',
-                //     value: 'VALUE',
-                //     path: ['PATH', 'TO', 'NODE']
-                //   }
                 switch (node.field) {
                     case 'id':
-                        return {
-                            field: false,
-                            value: false
-                        }
                     case 'type':
-                        return {
-                            field: false,
-                            value: false
-                        }
+                        return { field: false, value: false }
                     default:
-                        return {
-                            field: false,
-                            value: true
-                        }
+                        return { field: false, value: true }
                 }
             }
         }

@@ -1,3 +1,83 @@
+## [1.1.166](https://github.com/w4bo/welaser/compare/1.1.165...1.1.166) (2023-08-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-netty to v2.3.3 ([da5cf94](https://github.com/w4bo/welaser/commit/da5cf94c1ca106d1d9644195ea3030799791718d))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v7.0.2 ([d2da85b](https://github.com/w4bo/welaser/commit/d2da85b863b44bd7a7adb5c1ca0917d5b78e225d))
+
+## [1.1.165](https://github.com/w4bo/welaser/compare/1.1.164...1.1.165) (2023-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.ktor:ktor-server-core to v2.3.3 ([39db999](https://github.com/w4bo/welaser/commit/39db999a247f3f0c3e85b258276fcdde732a0a44))
+
+## [1.1.164](https://github.com/w4bo/welaser/compare/1.1.163...1.1.164) (2023-08-02)
+
+
+### Bug Fixes
+
+* **ci:** feat cleandb ([#582](https://github.com/w4bo/welaser/issues/582)) ([f97407b](https://github.com/w4bo/welaser/commit/f97407b8dd919fb605cf334d431057ba43a7a5f8))
+* **missionplanner:** update ([#583](https://github.com/w4bo/welaser/issues/583)) ([d4e06e7](https://github.com/w4bo/welaser/commit/d4e06e73e8582a616cc2b9ab1a918af032b35e51))
+
+## [1.1.163](https://github.com/w4bo/welaser/compare/1.1.162...1.1.163) (2023-07-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jest to v29.6.2 ([aab1ef7](https://github.com/w4bo/welaser/commit/aab1ef7fae58548df824c2b01f0548e3a9a10f0b))
+
+## [1.1.162](https://github.com/w4bo/welaser/compare/1.1.161...1.1.162) (2023-07-24)
+
+
+### Bug Fixes
+
+* **service-dashboard:** fix entity creation ([698daa1](https://github.com/w4bo/welaser/commit/698daa1c6a99a8152d9e34fc8cba400c4890acb5))
+* **service-dashboard:** fix entity update ([235e420](https://github.com/w4bo/welaser/commit/235e42003055e3908c4a1d0729ac372d546bfbae))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.17 ([021b835](https://github.com/w4bo/welaser/commit/021b835a01d6b077a6bd5dc2621a9266de83b645))
+
+## [1.1.161](https://github.com/w4bo/welaser/compare/1.1.160...1.1.161) (2023-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update junit5 monorepo to v5.10.0 ([d345232](https://github.com/w4bo/welaser/commit/d345232c260bfdb1742ba14608525c08c49660ca))
+
+## [1.1.160](https://github.com/w4bo/welaser/compare/1.1.159...1.1.160) (2023-07-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.kafka:kafka-clients to v3.5.1 ([9be454a](https://github.com/w4bo/welaser/commit/9be454acebba32ab21b1d4c1ee6d324aeb858b4c))
+
+
+### Dependency updates
+
+* **deps:** update dependency notebook to v7 ([23d0a76](https://github.com/w4bo/welaser/commit/23d0a7687f791a38a9107af421b75581759f86ed))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.43 ([1056256](https://github.com/w4bo/welaser/commit/10562565dfd17aed2f11f011425c4a0ad84adada))
+* **deps:** update dependency urllib3 to v2.0.4 ([c4228e7](https://github.com/w4bo/welaser/commit/c4228e76ca28843c569f157ee5f6e9cb2bf3ea2c))
+
+## [1.1.159](https://github.com/w4bo/welaser/compare/1.1.158...1.1.159) (2023-07-20)
+
+
+### Bug Fixes
+
+* **node:** add notification from supervisor ([#571](https://github.com/w4bo/welaser/issues/571)) ([99280ac](https://github.com/w4bo/welaser/commit/99280acaa562937b629901937995696445746e34))
+
+
+### Dependency updates
+
+* **deps:** update dependency pymongo to v4.4.1 ([c57c8bc](https://github.com/w4bo/welaser/commit/c57c8bca5cfb0de97ef56444acfea9ab8e60b77f))
+
 ## [1.1.158](https://github.com/w4bo/welaser/compare/1.1.157...1.1.158) (2023-07-13)
 
 
