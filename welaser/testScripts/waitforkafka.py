@@ -25,7 +25,7 @@ def wait_kafka(retry=50):
             bootstrap_servers=[KAFKA_IP + ':' + KAFKA_PORT],
             value_serializer=lambda x: json.dumps(x).encode('utf-8')
         )
-        for _ in range(50):
+        for _ in range(10):
             producer.send(topic, {})
             # print('Message:', e)
             time.sleep(0.5)
@@ -40,6 +40,8 @@ def wait_kafka(retry=50):
             sys.exit(0)
     except Exception as e:
         print(e)
+        if retry <= 0:
+            sys.exit(1)
         time.sleep(2)
         wait_kafka(retry - 1)
 

@@ -91,6 +91,8 @@ services:
     build: ./service-dashboard
     ports:
       - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
+    labels:
+      - "traefik.http.routers.node.rule=Host(`node.localhost`)"
     networks:
       - welaser-network
     volumes:
@@ -107,6 +109,8 @@ services:
     hostname: portainer
     container_name: portainer
     image: portainer/portainer-ce:latest
+    labels:
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
     ports:
       - "${PORTAINER_PORT_EXT}:9443"
     volumes:
@@ -123,7 +127,9 @@ services:
     build: ./etl
     container_name: etl
     ports:
-      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+      - "${DRACO_PORT_EXT}:80"
+    labels:
+      - "traefik.http.routers.etl.rule=Host(`etl.localhost`)"
     networks:
       - welaser-network
     env_file:
@@ -141,6 +147,8 @@ services:
     container_name: missionsupervisor
     ports:
       - "${SUPERVISOR_PORT_EXT}:${SUPERVISOR_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.missionsupervisor.rule=Host(`missionsupervisor.localhost`)"
     networks:
       - welaser-network
     env_file:
@@ -158,6 +166,8 @@ services:
     container_name: missionplanner
     ports:
       - "${PLANNER_PORT_EXT}:${PLANNER_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.missionplanner.rule=Host(`missionplanner.localhost`)"
     networks:
       - welaser-network
     env_file:
@@ -175,6 +185,8 @@ services:
     container_name: mapbuilder
     ports:
       - "${BUILDER_PORT_EXT}:${BUILDER_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.mapbuilder.rule=Host(`mapbuilder.localhost`)"
     networks:
       - welaser-network
     env_file:
@@ -193,6 +205,8 @@ services:
     build: ./service-kafkaproxy
     ports:
       - "${PROXY_PORT_EXT}:${PROXY_PORT_INT}"
+    labels:
+      - "traefik.http.routers.kafkaproxy.rule=Host(`kafkaproxy.localhost`)"
     networks:
       - welaser-network
     volumes:
@@ -257,6 +271,8 @@ services:
     init: true
     restart: always
     image: jetbrainsinfra/nginx-file-listing:0.2
+    labels:
+      - "traefik.http.routers.nginx.rule=Host(`nginx.localhost`)"
     ports:
       - "${NGINX_PORT_HTTP_EXT}:80"
       - "${NGINX_PORT_HTTPS_EXT}:443"
@@ -291,5 +307,4 @@ services:
 
 networks:
   welaser-network:
-    external:
-      name: welaser-network
+    name: welaser-network
