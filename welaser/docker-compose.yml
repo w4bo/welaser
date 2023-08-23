@@ -220,6 +220,8 @@ services:
       - default
     env_file:
       - .env
+    volumes:
+      - ./devices/src/main/resources/ftpimages:/src/main/resources/ftpimages
     depends_on:
       mongo-db:
         condition: service_healthy
