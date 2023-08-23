@@ -57,10 +57,8 @@ services:
     image: mongo:6.0
     hostname: mongo-db
     container_name: mongo-db
-    expose:
-      - "${MONGO_DB_PERS_PORT_INT}"
     ports:
-      - "${MONGO_DB_PERS_PORT_EXT}:${MONGO_DB_PERS_PORT_INT}" # 27017
+      - "${MONGO_DB_PERS_PORT_EXT}:27017"
     networks:
       - default
     volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
