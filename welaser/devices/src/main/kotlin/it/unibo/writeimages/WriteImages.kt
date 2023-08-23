@@ -73,7 +73,7 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
                 val filename = ftpImageName(obj, attr, getExt(curUrl))
                 val path = "src/main/resources/ftpimages/$filename"
                 URL(curUrl).openStream().use {
-                    val file: File = File(path)
+                    val file = File(path)
                     File(path.split("/").dropLast(1).joinToString("/")).mkdirs()
                     file.createNewFile()
                     file.outputStream().use { output ->
