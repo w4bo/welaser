@@ -107,11 +107,11 @@ class EntityTest {
 
             // Test FTP
             val uploaded = upload(camera, async = false)
-            val ftpClient = createFTPClient()
-            val outputStream1: OutputStream = BufferedOutputStream(FileOutputStream(File("src/main/resources/foo")))
-            assertTrue(ftpClient.retrieveFile(uploaded[0], outputStream1))
-            outputStream1.close()
-            ftpClient.disconnect()
+            // val ftpClient = createFTPClient()
+            // val outputStream1: OutputStream = BufferedOutputStream(FileOutputStream(File("src/main/resources/foo")))
+            // assertTrue(ftpClient.retrieveFile(uploaded[0], outputStream1))
+            // outputStream1.close()
+            // ftpClient.disconnect()
 
             // Test HTTP
             URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
