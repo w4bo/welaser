@@ -3,9 +3,7 @@
 package it.unibo.writeimages
 
 import io.github.cdimascio.dotenv.Dotenv
-import it.unibo.AREA_SERVED
-import it.unibo.DOMAIN
-import it.unibo.IMAGE_URL
+import it.unibo.*
 import it.unibo.writetomongo.consumeFromKafka
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
@@ -56,7 +54,7 @@ fun getExt(curUrl: String): String {
 fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
     val id = obj.getString("id")
     val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
-    val date = Date(System.currentTimeMillis())
+    val date = if (obj.has(TIMESTAMP_SUBSCRIPTION)) obj.getLong(TIMESTAMP_SUBSCRIPTION) else Date(System.currentTimeMillis())
     val jdf = SimpleDateFormat("yyyy-MM-dd")
     val jdf2 = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ")
     return "${domain}/${id}/" + jdf.format(date) + "/" + jdf2.format(date) + "_" + id + "_" + attr + ext
