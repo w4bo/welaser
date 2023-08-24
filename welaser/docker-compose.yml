@@ -221,7 +221,7 @@ services:
     env_file:
       - .env
     volumes:
-      - "./mounts/ftpimages:/src/main/resources/ftpimages"
+      - ./mounts/images-dump:/usr/src/myapp/resources/ftpimages
     depends_on:
       - ftp
 
