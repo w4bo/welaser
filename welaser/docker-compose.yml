@@ -15,8 +15,6 @@ services:
       - mongo-db                           # Create the `mongo-db` before this container
     networks:
       - default                            # Name of the Docker network
-    expose:
-      - "${ORION_PORT_INT}"                    # Port that is accessible from outside the container
     ports:
       - "${ORION_PORT_EXT}:${ORION_PORT_INT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
     # Append this string to the final command that is executed by the container
@@ -32,6 +30,7 @@ services:
   iot-agent:
     init: true
     restart: always
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/iot-agent
     build:
       context: ./devices
       dockerfile: iota.Dockerfile
@@ -41,12 +40,10 @@ services:
       - mosquitto
     networks:
       - default
-    expose:
-      - "${IOTA_PORT_EXT}"
     ports:
       - "${IOTA_PORT_EXT}:${IOTA_PORT_EXT}"
     healthcheck:
-      test: curl --fail -s http://${IOTA_IP}:${IOTA_PORT_EXT}
+      test: curl --fail -s http://localhost:${IOTA_PORT_EXT}
       interval: 5s
       timeout: 10s
 
@@ -87,11 +84,12 @@ services:
       - default
 
   # Web server
-  node:
+  nodews:
     init: true
     restart: always
-    hostname: node
-    container_name: node
+    hostname: nodews
+    container_name: nodews
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/nodews
     build: ./service-dashboard
     ports:
       - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
@@ -112,18 +110,20 @@ services:
     ports:
       - 9443:9443
     volumes:
-        - ${SWARM_NFS}/portainer:/data
-        - /var/run/docker.sock:/var/run/docker.sock
+      - ${SWARM_NFS}/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.labels.role==master
 
   etl:
     init: true
-    restart: always
     hostname: etl
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/etl
     build: ./etl
     container_name: etl
-    expose:
-      - "${DRACO_PORT_EXT}"
     ports:
       - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
     networks:
@@ -132,13 +132,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${DRACO_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   missionsupervisor:
     init: true
     hostname: missionsupervisor
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/missionsupervisor
     build: ./service-missionsupervisor
     container_name: missionsupervisor
     ports:
@@ -149,13 +150,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${SUPERVISOR_IP}:${SUPERVISOR_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${SUPERVISOR_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   missionplanner:
     init: true
     hostname: missionplanner
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/missionplanner
     build: ./service-missionplanner
     container_name: missionplanner
     ports:
@@ -166,13 +168,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${PLANNER_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   mapbuilder:
     init: true
     hostname: mapbuilder
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/mapbuilder
     build: ./service-mapbuilder
     container_name: mapbuilder
     ports:
@@ -183,7 +186,7 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${BUILDER_IP}:${BUILDER_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${BUILDER_PORT_EXT}
       interval: 5s
       timeout: 10s
 
@@ -191,6 +194,7 @@ services:
     init: true
     restart: always
     hostname: kafkaproxy
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/kafkaproxy
     container_name: kafkaproxy
     build: ./service-kafkaproxy
     ports:
@@ -208,6 +212,7 @@ services:
     init: true
     restart: always
     hostname: writeimages
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writeimages
     build:
       context: ./devices
       dockerfile: writeimages.Dockerfile
@@ -223,6 +228,7 @@ services:
     init: true
     restart: always
     hostname: writetomongo
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writetomongo
     build:
       context: ./devices
       dockerfile: writetomongo.Dockerfile
@@ -232,13 +238,13 @@ services:
     env_file:
       - .env
     depends_on:
-      mongo-db:
-        condition: service_healthy
+      - mongo-db
 
   device-python:
     init: true
     hostname: device-python
     build: ./devices-python
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/device-python
     container_name: device-python
     networks:
       - default
@@ -246,9 +252,6 @@ services:
       - .env
     ports:
       - "12346-13000:12346-13000"
-    depends_on:
-      orion:
-        condition: service_healthy
 
   nginx:
     hostname: nginx
