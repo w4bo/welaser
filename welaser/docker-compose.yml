@@ -61,8 +61,8 @@ services:
       - "${MONGO_DB_PERS_PORT_EXT}:27017"
     networks:
       - default
-    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
-      - ./mounts/mongodb:/data/db
+    volumes:
+      - ${SWARM_NFS}/mongodb:/data/db
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
@@ -80,9 +80,9 @@ services:
       - "${MOSQUITTO_PORT_EXT}:1883"
       - "${MOSQUITTO_PORT_EXT_TLS}:8883"
     volumes:
-      - ./mosquitto/config:/mosquitto/config:ro
-      - ./mosquitto/log:/mosquitto/log
-      - ./mosquitto/data:/mosquitto/data
+      - ${SWARM_NFS}/mosquitto/config:/mosquitto/config:ro
+      - ${SWARM_NFS}/mosquitto/log:/mosquitto/log
+      - ${SWARM_NFS}/mosquitto/data:/mosquitto/data
     networks:
       - default
 
@@ -97,8 +97,6 @@ services:
       - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
     networks:
       - default
-    volumes:
-      - ./service-dashboard:/code
     env_file:
       - .env
     healthcheck:
@@ -114,7 +112,7 @@ services:
     ports:
       - 9443:9443
     volumes:
-        - ./mounts/portainer:/data
+        - ${SWARM_NFS}/portainer:/data
         - /var/run/docker.sock:/var/run/docker.sock
     restart: always
 
@@ -199,8 +197,6 @@ services:
       - "${PROXY_PORT_EXT}:${PROXY_PORT_INT}"
     networks:
       - default
-    volumes:
-      - ./service-kafkaproxy:/code
     env_file:
       - .env
     healthcheck:
@@ -221,9 +217,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./mounts/images-dump:/usr/src/myapp/resources/ftpimages
-    depends_on:
-      - ftp
+      - ${SWARM_NFS}/images-dump:/usr/src/myapp/resources/ftpimages
 
   writetomongo:
     init: true
@@ -266,7 +260,7 @@ services:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
       # - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
-      - "./mounts/images-dump:/mnt/data"
+      - "${SWARM_NFS}/images-dump:/mnt/data"
     # healthcheck:
     #   test: curl --fail -s http://localhost:80
     #   interval: 5s
@@ -288,7 +282,7 @@ services:
       ADDED_FLAGS: "-d -d"
       PUBLICHOST: "${IMAGESERVER_IP}"
     volumes:
-      - "./mounts/images-dump:/data"
+      - "${SWARM_NFS}/images-dump:/data"
     ports:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
