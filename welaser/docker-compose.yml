@@ -7,7 +7,7 @@ services:
   # Orion is the context broker
   orion:
     init: true
-    restart: always
+    # restart: always
     image: fiware/orion:3.10.1              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
@@ -16,20 +16,20 @@ services:
     networks:
       - default                            # Name of the Docker network
     ports:
-      - "${ORION_PORT_EXT}:${ORION_PORT_INT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
+      - "${ORION_PORT_EXT}:1026"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
     # Append this string to the final command that is executed by the container
     # Here, we are launching the OCB with: the possibility to perform "cors" requests, the name of the database, and the maximum payload parameter
     # You can also set the log level by adding `-logLevel DEBUG`
     command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
       # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version
-      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 #
+      test: curl --fail -s http://localhost:1026/v2/entities?options=keyValues&limit=1
       interval: 5s
       timeout: 10s
 
   iot-agent:
     init: true
-    restart: always
+    # restart: always
     image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/iot-agent
     build:
       context: ./devices
@@ -42,15 +42,15 @@ services:
       - default
     ports:
       - "${IOTA_PORT_EXT}:${IOTA_PORT_EXT}"
-    healthcheck:
-      test: curl --fail -s http://localhost:${IOTA_PORT_EXT}
-      interval: 5s
-      timeout: 10s
+    # healthcheck:
+    #   test: curl --fail -s http://localhost:${IOTA_PORT_EXT}
+    #   interval: 5s
+    #   timeout: 10s
 
   # Database (orion + persistence)
   mongo-db:
     init: true
-    restart: always
+    # restart: always
     image: mongo:6.0
     hostname: mongo-db
     container_name: mongo-db
@@ -86,7 +86,7 @@ services:
   # Web server
   nodews:
     init: true
-    restart: always
+    # restart: always
     hostname: nodews
     container_name: nodews
     image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/nodews
@@ -112,7 +112,7 @@ services:
     volumes:
       - ${SWARM_NFS}/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+    # restart: always
     deploy:
       placement:
         constraints:
@@ -192,7 +192,7 @@ services:
 
   kafkaproxy:
     init: true
-    restart: always
+    # restart: always
     hostname: kafkaproxy
     image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/kafkaproxy
     container_name: kafkaproxy
@@ -210,7 +210,7 @@ services:
 
   writeimages:
     init: true
-    restart: always
+    # restart: always
     hostname: writeimages
     image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writeimages
     build:
@@ -226,7 +226,7 @@ services:
 
   writetomongo:
     init: true
-    restart: always
+    # restart: always
     hostname: writetomongo
     image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writetomongo
     build:
@@ -257,7 +257,7 @@ services:
     hostname: nginx
     container_name: nginx
     init: true
-    restart: always
+    # restart: always
     image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
     ports:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
@@ -273,7 +273,7 @@ services:
     hostname: ftp
     container_name: ftp
     init: true
-    restart: always
+    # restart: always
     image: stilliard/pure-ftpd
     environment:
       FTP_USER_NAME: "${IMAGESERVER_USER}"
