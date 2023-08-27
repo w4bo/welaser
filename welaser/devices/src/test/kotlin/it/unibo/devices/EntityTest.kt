@@ -114,7 +114,7 @@ class EntityTest {
             ftpClient.disconnect()
 
             // Test HTTP
-            URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
+            URL("http://" + dotenv["NGINX_IP"] + ":" + dotenv["NGINX_PORT_HTTP_EXT"]).openStream().use {
                 var itemCount = 0
                 val br = BufferedReader(InputStreamReader(it))
                 var line: String?

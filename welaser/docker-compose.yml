@@ -14,9 +14,7 @@ services:
     depends_on:
       - mongo-db                           # Create the `mongo-db` before this container
     networks:
-      - default                            # Name of the Docker network
-    expose:
-      - "${ORION_PORT_INT}"                    # Port that is accessible from outside the container
+      - welaser-network
     ports:
       - "${ORION_PORT_EXT}:${ORION_PORT_INT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
     # Append this string to the final command that is executed by the container
@@ -40,9 +38,7 @@ services:
     depends_on:
       - mosquitto
     networks:
-      - default
-    expose:
-      - "${IOTA_PORT_EXT}"
+      - welaser-network
     ports:
       - "${IOTA_PORT_EXT}:${IOTA_PORT_EXT}"
     healthcheck:
@@ -60,7 +56,7 @@ services:
     ports:
       - "${MONGO_DB_PERS_PORT_EXT}:27017"
     networks:
-      - default
+      - welaser-network
     volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
       - ./mounts/mongodb:/data/db
     healthcheck:
@@ -84,7 +80,7 @@ services:
       - ./mosquitto/log:/mosquitto/log
       - ./mosquitto/data:/mosquitto/data
     networks:
-      - default
+      - welaser-network
 
   # Web server
   node:
@@ -95,8 +91,10 @@ services:
     build: ./service-dashboard
     ports:
       - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
+    labels:
+      - "traefik.http.routers.node.rule=Host(`node.localhost`)"
     networks:
-      - default
+      - welaser-network
     volumes:
       - ./service-dashboard:/code
     env_file:
@@ -111,12 +109,16 @@ services:
     hostname: portainer
     container_name: portainer
     image: portainer/portainer-ce:latest
+    labels:
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
     ports:
-      - 9443:9443
+      - "${PORTAINER_PORT_EXT}:9443"
     volumes:
         - ./mounts/portainer:/data
         - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    networks:
+      - welaser-network
 
   etl:
     init: true
@@ -124,12 +126,12 @@ services:
     hostname: etl
     build: ./etl
     container_name: etl
-    expose:
-      - "${DRACO_PORT_EXT}"
     ports:
-      - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
+      - "${DRACO_PORT_EXT}:80"
+    labels:
+      - "traefik.http.routers.etl.rule=Host(`etl.localhost`)"
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     healthcheck:
@@ -145,8 +147,10 @@ services:
     container_name: missionsupervisor
     ports:
       - "${SUPERVISOR_PORT_EXT}:${SUPERVISOR_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.missionsupervisor.rule=Host(`missionsupervisor.localhost`)"
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     healthcheck:
@@ -162,8 +166,10 @@ services:
     container_name: missionplanner
     ports:
       - "${PLANNER_PORT_EXT}:${PLANNER_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.missionplanner.rule=Host(`missionplanner.localhost`)"
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     healthcheck:
@@ -179,8 +185,10 @@ services:
     container_name: mapbuilder
     ports:
       - "${BUILDER_PORT_EXT}:${BUILDER_PORT_EXT}"
+    labels:
+      - "traefik.http.routers.mapbuilder.rule=Host(`mapbuilder.localhost`)"
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     healthcheck:
@@ -197,8 +205,10 @@ services:
     build: ./service-kafkaproxy
     ports:
       - "${PROXY_PORT_EXT}:${PROXY_PORT_INT}"
+    labels:
+      - "traefik.http.routers.kafkaproxy.rule=Host(`kafkaproxy.localhost`)"
     networks:
-      - default
+      - welaser-network
     volumes:
       - ./service-kafkaproxy:/code
     env_file:
@@ -217,7 +227,7 @@ services:
       dockerfile: writeimages.Dockerfile
     container_name: writeimages
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     depends_on:
@@ -233,7 +243,7 @@ services:
       dockerfile: writetomongo.Dockerfile
     container_name: writetomongo
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     depends_on:
@@ -246,7 +256,7 @@ services:
     build: ./devices-python
     container_name: device-python
     networks:
-      - default
+      - welaser-network
     env_file:
       - .env
     ports:
@@ -260,16 +270,16 @@ services:
     container_name: nginx
     init: true
     restart: always
-    image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
+    image: jetbrainsinfra/nginx-file-listing:0.2
+    labels:
+      - "traefik.http.routers.nginx.rule=Host(`nginx.localhost`)"
     ports:
-      - "${IMAGESERVER_PORT_HTTP_EXT}:80"
-      # - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
+      - "${NGINX_PORT_HTTP_EXT}:80"
+      - "${NGINX_PORT_HTTPS_EXT}:443"
     volumes:
       - "./mounts/images-dump:/mnt/data"
-    # healthcheck:
-    #   test: curl --fail -s http://localhost:80
-    #   interval: 5s
-    #   timeout: 10s
+    networks:
+      - welaser-network
 
   ftp:
     hostname: ftp
@@ -292,13 +302,9 @@ services:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
       - "${IMAGESERVER_PORT_FTP_MIN}-${IMAGESERVER_PORT_FTP_MAX}:${IMAGESERVER_PORT_FTP_MIN}-${IMAGESERVER_PORT_FTP_MAX}/tcp"
-    # healthcheck:
-    #   test: wget -O .dummy ftp://${IMAGESERVER_USER}:${IMAGESERVER_PWD}@localhost:21/.dummy
-    #   interval: 5s
-    #   timeout: 10s
+    networks:
+      - welaser-network
 
 networks:
-  default_net:
-    ipam:
-      config:
-        - subnet: 172.18.1.0/24
+  welaser-network:
+    name: welaser-network
