@@ -17,7 +17,7 @@
     "socket.io": "^2.2.0",
     "vue": "^3.0.0",
     "start-server-and-test": "^2.0.0",
-    "mongodb": "^4.0.0",
+    "mongodb": "^6.0.0",
     "http-status-codes": "^2.0.0"
   }
 }
