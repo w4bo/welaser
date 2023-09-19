@@ -7,8 +7,6 @@ services:
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   kafka:
     hostname: kafka
@@ -23,6 +21,3 @@ services:
       DOCKER_API_VERSION: 1.22
       KAFKA_ADVERTISED_HOST_NAME: "${KAFKA_IP}"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "${DRACO_RAW_TOPIC}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
