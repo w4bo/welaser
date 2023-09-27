@@ -54,7 +54,7 @@ services:
   mongo-db:
     init: true
     restart: always
-    image: mongo:6.0
+    image: mongo:7.0
     hostname: mongo-db
     container_name: mongo-db
     ports:
