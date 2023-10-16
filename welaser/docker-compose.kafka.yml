@@ -4,7 +4,6 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     init: true
-    restart: always
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
