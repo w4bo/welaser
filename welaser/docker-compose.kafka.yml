@@ -4,9 +4,12 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     init: true
+    restart: always
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   kafka:
     hostname: kafka
@@ -19,5 +22,7 @@ services:
       - "${KAFKA_PORT_EXT}:9092"
     environment:
       DOCKER_API_VERSION: 1.22
-      KAFKA_ADVERTISED_HOST_NAME: "${KAFKA_IP}"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_IP}
+      KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER_IP}:${ZOOKEEPER_PORT_EXT}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -3,7 +3,7 @@ set -exo
 
 . ./scripts/loadEnv.sh
 
-if [ -f mosquitto/config/pwfile ]; then
+if [ -f ${SWARM_NFS}/mosquitto/config/pwfile ]; then
     echo "pwfile ok"
 else
     echo "Could not find the mosquitto/config/pwfile file"
