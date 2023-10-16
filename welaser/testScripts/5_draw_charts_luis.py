@@ -33,18 +33,20 @@ for fromdate, todate in boundaries:
     df.to_csv("{}.csv".format(name), index=False)
 
     fig, axs = plt.subplots(1, 2, figsize=(4 * 2, 3 * 1))
-    df.plot(x="timestamp", y="count", ax=axs[0])
-    df.plot(x="timestamp", y="avg_delay_ocb", ax=axs[1])
-    df.plot(x="timestamp", y="avg_delay_kafka", ax=axs[1])
+    df.plot(x="timestamp", y="count", ax=axs[0], label="Count")
+    df["avg_delay_kafka"] = df["avg_delay_kafka"] - df["avg_delay_ocb"]
+    df.plot(x="timestamp", y="avg_delay_ocb", ax=axs[1], label="External")
+    df.plot(x="timestamp", y="avg_delay_kafka", ax=axs[1], label="Internal")
 
     axs[0].set_title("Messages by time")
     axs[0].set_ylabel("Count")
     axs[1].set_title("Delay (ms) by time")
     axs[1].set_ylabel("Delay (ms)")
-
+    axs[0].legend()
+    axs[1].legend()
     for ax in axs:
         ax.set_xlabel('Time')
-        xfmt = md.DateFormatter('%Y-%m-%d %H:%M:%S')
+        xfmt = md.DateFormatter('%Y-%m-%d %H:%M') # :%M:%S 
         ax.xaxis.set_major_formatter(xfmt)
         # show the grid
         ax.grid(visible=True, which='major', linestyle='-', axis='y')
