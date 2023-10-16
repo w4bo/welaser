@@ -4,9 +4,11 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     init: true
-    image: wurstmeister/zookeeper
+    image: bitnami/zookeeper:3.9
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
