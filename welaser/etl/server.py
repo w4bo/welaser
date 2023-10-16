@@ -21,7 +21,6 @@ DRACO_RAW_TOPIC = os.getenv("DRACO_RAW_TOPIC")
 ORION_PORT_EXT = int(os.getenv("ORION_PORT_EXT"))
 ORION_IP = os.getenv("ORION_IP")
 ORION_URL = "http://" + ORION_IP + ":" + str(ORION_PORT_EXT) + "/v2"
-print(KAFKA_IP + ":" + str(KAFKA_PORT))
 producer = KafkaProducer(bootstrap_servers=[KAFKA_IP + ":" + str(KAFKA_PORT)], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
 
