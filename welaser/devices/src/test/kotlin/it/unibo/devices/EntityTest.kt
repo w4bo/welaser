@@ -106,23 +106,24 @@ class EntityTest {
             val camera = readJsonFromFile(path)
 
             // Test FTP
-            val uploaded = upload(camera, async = false)
-            val ftpClient = createFTPClient()
-            val outputStream1: OutputStream = BufferedOutputStream(FileOutputStream(File("src/main/resources/foo")))
-            assertTrue(ftpClient.retrieveFile(uploaded[0], outputStream1))
-            outputStream1.close()
-            ftpClient.disconnect()
-
-            // Test HTTP
-            URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
-                var itemCount = 0
-                val br = BufferedReader(InputStreamReader(it))
-                var line: String?
-                while (br.readLine().also { line = it } != null) {
-                    if (line!!.contains("<a href")) itemCount++
-                }
-                assertTrue(itemCount > 1) // the page also contains <a href="../">../</a>
-            }
+            upload(camera, async = false)
+            // val uploaded = upload(camera, async = false)
+            // val ftpClient = createFTPClient()
+            // val outputStream1: OutputStream = BufferedOutputStream(FileOutputStream(File("src/main/resources/foo")))
+            // assertTrue(ftpClient.retrieveFile(uploaded[0], outputStream1))
+            // outputStream1.close()
+            // ftpClient.disconnect()
+            // Test HTTP (not working anymore, the image is written locally, and mapped to the web server through docker mounts
+            // ... and not FTP containers
+            // URL("http://" + dotenv["IMAGESERVER_IP"] + ":" + dotenv["IMAGESERVER_PORT_HTTP_EXT"]).openStream().use {
+            //     var itemCount = 0
+            //     val br = BufferedReader(InputStreamReader(it))
+            //     var line: String?
+            //     while (br.readLine().also { line = it } != null) {
+            //         if (line!!.contains("<a href")) itemCount++
+            //     }
+            //     assertTrue(itemCount > 1) // the page also contains <a href="../">../</a>
+            // }
             // Test update of the URL. NO, the URL is not uploaded in FIWARE
             // val t = waitDevice(e, 1000L)
             // val obj = JSONArray(t).getJSONObject(0)

@@ -42,7 +42,8 @@ ln .env service-dashboard/.env
 ln .env service-kafkaproxy/.env
 
 # Mosquitto
-cd mosquitto/config
+. ./scripts/loadEnv.sh
+cd ${SWARM_NFS}/mosquitto/config
 if [ ! -f "pwfile" ]; then
     cp pwfile.example pwfile
 fi

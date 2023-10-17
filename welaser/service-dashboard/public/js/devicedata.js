@@ -33,6 +33,10 @@ const devicedata = {
     },
     methods: {
         iterate(device, tis, root) {
+            if (device.type === "AgriRobot") {
+                device["controlledProperty"] = device.serviceProvided//.concat(["speed"])
+                device["value"] = device.status//.concat([device.speed])
+            }
             if (typeof tis.devices[root.id] === "undefined") {
                 // if the device is unknown, create the object to visualize. Do not consider the timestamp attribute
                 const v = Object.assign({}, device)
@@ -157,14 +161,15 @@ const devicedata = {
             const tis = this
             const min = parseFloat(moment(this.fromdate, 'DD/MM/YYYY HH:mm:ss').format('x'))
             const max = parseFloat(moment(this.todate, 'DD/MM/YYYY HH:mm:ss').format('x'))
-            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000`)
-                .then(entities => {
-                    entities.data.forEach(function (device) {
-                        tis.iterate(device, tis, device)
-                    })
-                    this.$forceUpdate()
-                    setTimeout(this.plot, 1000)
+            function nested(tis, entities, next) {
+                entities.data.forEach(function (device) {
+                    tis.iterate(device, tis, device)
                 })
+                tis.$forceUpdate()
+                setTimeout(tis.plot, 1000)
+            }
+            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/AgriRobot/${min}/${max}/0/1000`).then(entities => nested(tis, entities))
+            axios.get(utils.nodeurl + `/api/download/${utils.agrifarm}/Device/${min}/${max}/0/1000`).then(entities => nested(tis, entities))
         }
     },
     mounted() {

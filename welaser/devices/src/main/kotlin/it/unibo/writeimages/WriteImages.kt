@@ -3,14 +3,15 @@
 package it.unibo.writeimages
 
 import io.github.cdimascio.dotenv.Dotenv
-import it.unibo.AREA_SERVED
-import it.unibo.DOMAIN
-import it.unibo.IMAGE_URL
+import it.unibo.*
 import it.unibo.writetomongo.consumeFromKafka
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
+import java.io.File
 import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
@@ -53,7 +54,7 @@ fun getExt(curUrl: String): String {
 fun ftpImageName(obj: JSONObject, attr: String, ext: String): String {
     val id = obj.getString("id")
     val domain = if (obj.has(DOMAIN)) obj.getString(DOMAIN) else obj.getString(AREA_SERVED)
-    val date = Date(System.currentTimeMillis())
+    val date = if (obj.has(TIMESTAMP_SUBSCRIPTION)) obj.getLong(TIMESTAMP_SUBSCRIPTION) else Date(System.currentTimeMillis())
     val jdf = SimpleDateFormat("yyyy-MM-dd")
     val jdf2 = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ")
     return "${domain}/${id}/" + jdf.format(date) + "/" + jdf2.format(date) + "_" + id + "_" + attr + ext
@@ -68,24 +69,14 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
                 // val id = obj.getString("id")
                 // println("Received")
                 val filename = ftpImageName(obj, attr, getExt(curUrl))
+                val path = "resources/ftpimages/$filename"
                 URL(curUrl).openStream().use {
-                    val ftpClient = createFTPClient()
-                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE)
-                    var cd = "/"
-                    val dirs = filename.split('/')
-                    dirs.subList(0, dirs.size - 1).filter { it.isNotEmpty() }.forEach {
-                        cd += "/$it"
-                        ftpClient.makeDirectory(cd)
+                    val file = File(path)
+                    File(path.split("/").dropLast(1).joinToString("/")).mkdirs()
+                    file.createNewFile()
+                    file.outputStream().use { output ->
+                        it.copyTo(output)
                     }
-                    val res = ftpClient.storeFile(filename, it)
-                    ftpClient.logout()
-                    ftpClient.disconnect()
-                    if (!res) {
-                        throw java.lang.IllegalArgumentException("Cannot store the file: $filename")
-                    } else {
-                        uploaded.add(filename)
-                    }
-                    // println("Written $filename")
                 }
                 // DO NOT UPDATE THE ENTITY ON FIWARE, the entity will be uploaded not on fiware but on the historic data
                 // by write to mongo. This is necessary to avoid burdening the OCB with unnecessary data. Also, if this process
@@ -111,7 +102,7 @@ fun upload(obj: JSONObject, async: Boolean = true): List<String> {
 }
 
 fun main() {
-    val executor = Executors.newFixedThreadPool(5) // .newCachedThreadPool() Need this to limit the connections
+    val executor = Executors.newCachedThreadPool()
     consumeFromKafka("writeimages") { obj ->
         executor.submit { upload(obj) }
     }

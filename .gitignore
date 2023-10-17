@@ -1,6 +1,8 @@
 .idea/
 madrid.js
 filelist.txt
+**/ftpimages/*
+!**/ftpimages/.dummy
 **/scripts/updatePwd.sh
 **/datamodels/**/*.json
 **/testScripts/*.svg

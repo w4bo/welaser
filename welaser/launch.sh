@@ -3,7 +3,7 @@ set -exo
 
 . ./scripts/loadEnv.sh
 
-if [ -f mosquitto/config/pwfile ]; then
+if [ -f ${SWARM_NFS}/mosquitto/config/pwfile ]; then
     echo "pwfile ok"
 else
     echo "Could not find the mosquitto/config/pwfile file"
@@ -16,7 +16,7 @@ run_tests=0
 while getopts "cst" opt
 do
     case $opt in
-    (c) sudo find mounts/mongodb ! -name '.dummy' -type f -exec rm -f {} + ;;
+    (c) sudo find ${SWARM_NFS}/mongodb ! -name '.dummy' -type f -exec rm -f {} + ;;
     (s) run_simulation=1 ;;
     (t) run_tests=1 ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
@@ -46,5 +46,5 @@ curl -iX POST \
 
 devices/gradlew -p devices --stacktrace --scan
 
-((run_simulation)) && devices/gradlew runMission -p devices --stacktrace --scan &>logs/mission-$(date +%s)-devices.txt &
+((run_simulation)) && devices/gradlew runMission -p devices --stacktrace --scan & #&>logs/mission-$(date +%s)-devices.txt &
 ((run_tests)) && scripts/runTests.sh

@@ -7,7 +7,7 @@ services:
   # Orion is the context broker
   orion:
     init: true
-    restart: always
+    # restart: always
     image: fiware/orion:3.10.1              # This variable `${ORION_VERSION}` is drawn from the `.env` file
     hostname: orion                        # Container's name within the network (e.g., `ping orion` is a valid command)
     container_name: orion                  # Name of the created container (e.g., `docker exec -it orion /bin/bash` or `docker logs orion`)
@@ -15,23 +15,22 @@ services:
       - mongo-db                           # Create the `mongo-db` before this container
     networks:
       - default                            # Name of the Docker network
-    expose:
-      - "${ORION_PORT_INT}"                    # Port that is accessible from outside the container
     ports:
-      - "${ORION_PORT_EXT}:${ORION_PORT_INT}"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
+      - "${ORION_PORT_EXT}:1026"  # Map a local port to a container's port (e.g., `IP:8082` to `IP:1026`)
     # Append this string to the final command that is executed by the container
     # Here, we are launching the OCB with: the possibility to perform "cors" requests, the name of the database, and the maximum payload parameter
     # You can also set the log level by adding `-logLevel DEBUG`
     command: -corsOrigin __ALL -dbhost mongo-db -inReqPayloadMaxSize ${ORION_MAX_PAYLOAD}
     healthcheck: # Every 5seconds do a request to the OCB to ensure that the OCB is running
       # test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/version
-      test: curl --fail -s http://${ORION_IP}:${ORION_PORT_EXT}/v2/entities?options=keyValues&limit=1 #
+      test: curl --fail -s http://localhost:1026/v2/entities?options=keyValues&limit=1
       interval: 5s
       timeout: 10s
 
   iot-agent:
     init: true
-    restart: always
+    # restart: always
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/iot-agent
     build:
       context: ./devices
       dockerfile: iota.Dockerfile
@@ -41,19 +40,17 @@ services:
       - mosquitto
     networks:
       - default
-    expose:
-      - "${IOTA_PORT_EXT}"
     ports:
       - "${IOTA_PORT_EXT}:${IOTA_PORT_EXT}"
-    healthcheck:
-      test: curl --fail -s http://${IOTA_IP}:${IOTA_PORT_EXT}
-      interval: 5s
-      timeout: 10s
+    # healthcheck:
+    #   test: curl --fail -s http://localhost:${IOTA_PORT_EXT}
+    #   interval: 5s
+    #   timeout: 10s
 
   # Database (orion + persistence)
   mongo-db:
     init: true
-    restart: always
+    # restart: always
     image: mongo:6.0
     hostname: mongo-db
     container_name: mongo-db
@@ -61,8 +58,8 @@ services:
       - "${MONGO_DB_PERS_PORT_EXT}:27017"
     networks:
       - default
-    volumes: # Specify that the `/data` folder **inside** the container is mapped to the volume `mongo-db`
-      - ./mounts/mongodb:/data/db
+    volumes:
+      - ${SWARM_NFS}/mongodb:/data/db
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`;
@@ -80,25 +77,24 @@ services:
       - "${MOSQUITTO_PORT_EXT}:1883"
       - "${MOSQUITTO_PORT_EXT_TLS}:8883"
     volumes:
-      - ./mosquitto/config:/mosquitto/config:ro
-      - ./mosquitto/log:/mosquitto/log
-      - ./mosquitto/data:/mosquitto/data
+      - ${SWARM_NFS}/mosquitto/config:/mosquitto/config:ro
+      - ${SWARM_NFS}/mosquitto/log:/mosquitto/log
+      - ${SWARM_NFS}/mosquitto/data:/mosquitto/data
     networks:
       - default
 
   # Web server
-  node:
+  nodews:
     init: true
-    restart: always
-    hostname: node
-    container_name: node
+    # restart: always
+    hostname: nodews
+    container_name: nodews
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/nodews
     build: ./service-dashboard
     ports:
       - "${WEB_SERVER_PORT_EXT}:${WEB_SERVER_PORT_INT}"
     networks:
       - default
-    volumes:
-      - ./service-dashboard:/code
     env_file:
       - .env
     healthcheck:
@@ -114,18 +110,20 @@ services:
     ports:
       - 9443:9443
     volumes:
-        - ./mounts/portainer:/data
-        - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+      - ${SWARM_NFS}/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    # restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.labels.role==master
 
   etl:
     init: true
-    restart: always
     hostname: etl
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/etl
     build: ./etl
     container_name: etl
-    expose:
-      - "${DRACO_PORT_EXT}"
     ports:
       - "${DRACO_PORT_EXT}:${DRACO_PORT_EXT}"
     networks:
@@ -134,13 +132,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${DRACO_IP}:${DRACO_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${DRACO_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   missionsupervisor:
     init: true
     hostname: missionsupervisor
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/missionsupervisor
     build: ./service-missionsupervisor
     container_name: missionsupervisor
     ports:
@@ -151,13 +150,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${SUPERVISOR_IP}:${SUPERVISOR_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${SUPERVISOR_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   missionplanner:
     init: true
     hostname: missionplanner
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/missionplanner
     build: ./service-missionplanner
     container_name: missionplanner
     ports:
@@ -168,13 +168,14 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${PLANNER_IP}:${PLANNER_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${PLANNER_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   mapbuilder:
     init: true
     hostname: mapbuilder
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/mapbuilder
     build: ./service-mapbuilder
     container_name: mapbuilder
     ports:
@@ -185,22 +186,21 @@ services:
       - .env
     healthcheck:
       test: |
-        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://${BUILDER_IP}:${BUILDER_PORT_EXT}
+        curl --fail -H 'Content-Type: application/json' -d '{"heartbeat": ""}' -s http://localhost:${BUILDER_PORT_EXT}
       interval: 5s
       timeout: 10s
 
   kafkaproxy:
     init: true
-    restart: always
+    # restart: always
     hostname: kafkaproxy
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/kafkaproxy
     container_name: kafkaproxy
     build: ./service-kafkaproxy
     ports:
       - "${PROXY_PORT_EXT}:${PROXY_PORT_INT}"
     networks:
       - default
-    volumes:
-      - ./service-kafkaproxy:/code
     env_file:
       - .env
     healthcheck:
@@ -210,8 +210,9 @@ services:
 
   writeimages:
     init: true
-    restart: always
+    # restart: always
     hostname: writeimages
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writeimages
     build:
       context: ./devices
       dockerfile: writeimages.Dockerfile
@@ -220,14 +221,14 @@ services:
       - default
     env_file:
       - .env
-    depends_on:
-      mongo-db:
-        condition: service_healthy
+    volumes:
+      - ${SWARM_NFS}/images-dump:/usr/src/myapp/resources/ftpimages
 
   writetomongo:
     init: true
-    restart: always
+    # restart: always
     hostname: writetomongo
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/writetomongo
     build:
       context: ./devices
       dockerfile: writetomongo.Dockerfile
@@ -237,13 +238,13 @@ services:
     env_file:
       - .env
     depends_on:
-      mongo-db:
-        condition: service_healthy
+      - mongo-db
 
   device-python:
     init: true
     hostname: device-python
     build: ./devices-python
+    image: ${SWARM_REGISTER_IP}:${SWARM_REGISTER_PORT}/device-python
     container_name: device-python
     networks:
       - default
@@ -251,21 +252,18 @@ services:
       - .env
     ports:
       - "12346-13000:12346-13000"
-    depends_on:
-      orion:
-        condition: service_healthy
 
   nginx:
     hostname: nginx
     container_name: nginx
     init: true
-    restart: always
+    # restart: always
     image: jetbrainsinfra/nginx-file-listing:0.2 # nginx:1.23.2
     ports:
       - "${IMAGESERVER_PORT_HTTP_EXT}:80"
       # - "${IMAGESERVER_PORT_HTTPS_EXT}:443"
     volumes:
-      - "./mounts/images-dump:/mnt/data"
+      - "${SWARM_NFS}/images-dump:/mnt/data"
     # healthcheck:
     #   test: curl --fail -s http://localhost:80
     #   interval: 5s
@@ -275,7 +273,7 @@ services:
     hostname: ftp
     container_name: ftp
     init: true
-    restart: always
+    # restart: always
     image: stilliard/pure-ftpd
     environment:
       FTP_USER_NAME: "${IMAGESERVER_USER}"
@@ -287,7 +285,7 @@ services:
       ADDED_FLAGS: "-d -d"
       PUBLICHOST: "${IMAGESERVER_IP}"
     volumes:
-      - "./mounts/images-dump:/data"
+      - "${SWARM_NFS}/images-dump:/data"
     ports:
       - "${IMAGESERVER_PORT_FTP20_EXT}:20"
       - "${IMAGESERVER_PORT_FTP21_EXT}:21"
