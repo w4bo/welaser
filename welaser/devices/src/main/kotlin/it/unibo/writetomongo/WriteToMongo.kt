@@ -77,7 +77,7 @@ fun main() {
             // if the object has an imageSnapshot, replace it in the historic data
             if (data.has(IMAGE_URL)) {
                 val filename = ftpImageName(data, IMAGE_URL, getExt(data.getString(IMAGE_URL)))
-                data.put(IMAGE_URL, "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["IMAGESERVER_PORT_HTTP_EXT"]}/${filename}")
+                data.put(IMAGE_URL, "http://${dotenv["IMAGESERVER_IP"]}:${dotenv["NGINX_PORT_HTTP_EXT"]}/${filename}")
             }
             mongoClient
                     .getDatabase(dotenv["MONGO_DB_PERS_DB"])

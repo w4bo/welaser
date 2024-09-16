@@ -7,8 +7,51 @@ services:
     image: wurstmeister/zookeeper
     ports:
       - "${ZOOKEEPER_PORT_EXT}:2181"
+    labels:
+      - "traefik.tcp.routers.zookeeper.service=zookeeper"
+      - "traefik.tcp.services.zookeeper.loadbalancer.server.port=2181"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - welaser-network
+
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      # Enable Docker in Traefik, so that it reads labels from Docker services
+      - --providers.docker
+      # Add a constraint to only use services with the label "traefik.constraint-label=traefik-public"
+      # - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      # Do not expose all Docker services, only the ones explicitly exposed
+      # - --providers.docker.exposedbydefault=false
+      # Enable Docker Swarm mode
+      # - --providers.docker.swarmmode
+      # Create an entrypoint "http" listening on address 80
+      - --entrypoints.http.address=:80
+      # Create an entrypoint "https" listening on address 443
+      - --entrypoints.https.address=:443
+      # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
+      # - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
+      # Store the Let's Encrypt certificates in the mounted volume
+      # - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      # Use the TLS Challenge for Let's Encrypt
+      # - --certificatesresolvers.le.acme.tlschallenge=true
+      # Enable the access log, with HTTP requests
+      #  - --accesslog
+      # Enable the Traefik log, for configurations and errors
+      - --log
+      # Enable the Dashboard and API
+      - --api
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+    ports:
+      - "${TRAEFIK_PORT_EXT}:80"
+      - "${TRAEFIK_PORT_GUI}:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - welaser-network
 
   kafka:
     hostname: kafka
@@ -19,10 +62,20 @@ services:
       - zookeeper
     ports:
       - "${KAFKA_PORT_EXT}:9092"
+    labels:
+      - "traefik.tcp.routers.kafka.service=kafka"
+      - "traefik.tcp.services.kafka.loadbalancer.server.port=9092"
     environment:
       DOCKER_API_VERSION: 1.22
       KAFKA_ADVERTISED_HOST_NAME: "${KAFKA_IP}"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "${DRACO_RAW_TOPIC}"
+      KAFKA_ZOOKEEPER_CONNECT: "${ZOOKEEPER_IP}:${ZOOKEEPER_PORT_EXT}"
+      # KAFKA_CREATE_TOPICS: "${DRACO_RAW_TOPIC}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - welaser-network
+
+networks:
+  welaser-network:
+    name: welaser-network
+    driver: bridge
